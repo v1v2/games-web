@@ -3,6 +3,8 @@ const withTM = require('next-transpile-modules')([
   '@babylonjs/gui',
   '@babylonjs/inspector',
   '@babylonjs/loaders',
+  '@babylonjs/materials',
+  '@babylonjs/serializers',
   'react-babylonjs',
 ])
 

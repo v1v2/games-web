@@ -1,10 +1,40 @@
+import { useEffect } from 'react'
+
 import { Vector3 } from '@babylonjs/core'
-import { Engine, Scene } from 'react-babylonjs'
+import { Engine, Scene, useScene } from 'react-babylonjs'
+import { useHotkeys } from 'react-hotkeys-hook'
+
+import ClientOnly from 'components/ClientOnly'
+
+const Inspector = () => {
+  const scene = useScene()
+
+  const showInspector = async () => {
+    await import('@babylonjs/inspector')
+    await import('@babylonjs/core/Debug/debugLayer')
+    scene.debugLayer.show()
+  }
+
+  useEffect(() => {
+    showInspector()
+  }, [])
+
+  useHotkeys('ctrl+i, cmd+i', () => {
+    showInspector()
+  })
+
+  return null
+}
 
 const GameLayout = ({ children }) => (
   <>
     <Engine antialias adaptToDeviceRatio canvasId="babylonJS">
       <Scene>
+        {process.env.NODE_ENV === 'development' && (
+          <ClientOnly>
+            <Inspector />
+          </ClientOnly>
+        )}
         <arcRotateCamera
           name="camera1"
           target={Vector3.Zero()}
