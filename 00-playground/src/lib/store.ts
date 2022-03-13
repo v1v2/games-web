@@ -2,9 +2,20 @@ import create from 'zustand'
 import { persist } from 'zustand/middleware'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 
-interface MemoryStore {}
+type Construction = 'simple' | 'splash' | 'strong'
 
-export const useMemoryStore = create<MemoryStore>(set => ({}))
+interface MemoryStore {
+  currentConstruction: null | Construction
+  setCurrentConstruction: (construction: Construction) => void
+  clearCurrentConstruction: () => void
+}
+
+export const useMemoryStore = create<MemoryStore>(set => ({
+  currentConstruction: null,
+  setCurrentConstruction: (construction: Construction) =>
+    set({ currentConstruction: construction }),
+  clearCurrentConstruction: () => set({ currentConstruction: null }),
+}))
 
 interface LocalStore {}
 

@@ -43,21 +43,19 @@ const SpinningBox = ({ name, position, color, hoveredColor, href }: Props) => {
   })
 
   return (
-    <>
-      <box
-        name={name}
-        ref={boxRef}
-        size={2}
-        position={position}
-        scaling={clicked ? BiggerScale : DefaultScale}
-      >
-        <standardMaterial
-          name={`${name}-mat`}
-          diffuseColor={hovered ? hoveredColor : color}
-          specularColor={Color3.Black()}
-        />
-      </box>
-    </>
+    <box
+      name={name}
+      ref={boxRef}
+      size={2}
+      position={position}
+      scaling={clicked ? BiggerScale : DefaultScale}
+    >
+      <standardMaterial
+        name={`${name}-mat`}
+        diffuseColor={hovered ? hoveredColor : color}
+        specularColor={Color3.Black()}
+      />
+    </box>
   )
 }
 
