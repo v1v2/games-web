@@ -140,6 +140,11 @@
   resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
   integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
 
+"@v1v2/next@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@v1v2/next/-/next-1.0.0.tgz#7142fb97c26dcd7d53afab98b0c16249069a945a"
+  integrity sha512-VAzv04ODpkzbFCQi6jgOG3rlOMTtUFmPJdp/RrU+EEBSJcybC8x1sBJsImtT+fhugfV71BD+QuIC/OStCBAVmA==
+
 babylonjs-gltf2interface@4.2.2:
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/babylonjs-gltf2interface/-/babylonjs-gltf2interface-4.2.2.tgz#365daf43110ec98b52379e6a9081e06b6835588b"

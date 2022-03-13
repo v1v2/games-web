@@ -9,6 +9,7 @@
     "@babylonjs/core": "^4.2.2",
     "@babylonjs/gui": "^4.2.2",
     "@babylonjs/inspector": "^4.2.2",
+    "@v1v2/next": "^1.0.0",
     "next": "^12.1.0",
     "react": "^17.0.2",
     "react-babylonjs": "^3.0.31",
