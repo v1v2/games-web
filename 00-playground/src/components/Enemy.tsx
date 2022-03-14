@@ -13,8 +13,10 @@ const distanceFromGround = 2
 const Enemy = ({ id }) => {
   const ref = useRef(null)
   const tweenRef = useRef(null)
+  const getEnemy = useMemoryStore(s => s.getEnemy)
   const decrementLivesLeft = useMemoryStore(s => s.decrementLivesLeft)
   const removeEnemy = useMemoryStore(s => s.removeEnemy)
+  const updateEnemyCoordinates = useMemoryStore(s => s.updateEnemyCoordinates)
   const [targetWaypointIndex, setTargetWaypointIndex] = useState(0)
   const targetWaypoint = waypoints[targetWaypointIndex]
   const targetWaypointPosition = getCellPosition(targetWaypoint[0], targetWaypoint[1])
@@ -23,6 +25,15 @@ const Enemy = ({ id }) => {
     distanceFromGround,
     targetWaypointPosition.z
   )
+
+  const enemy = getEnemy(id)
+  const hp = enemy?.hp
+
+  useEffect(() => {
+    if (hp <= 0) {
+      removeEnemy(id)
+    }
+  }, [hp])
 
   useEffect(() => {
     const coords = ref.current.position
@@ -52,6 +63,7 @@ const Enemy = ({ id }) => {
       }
     } else {
       tweenRef?.current?.update()
+      updateEnemyCoordinates(id, ref.current.position.x, ref.current.position.z)
     }
   })
 

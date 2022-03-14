@@ -3,16 +3,16 @@ import { useState } from 'react'
 import { Vector3 } from 'three'
 
 import { useMemoryStore } from 'lib/store'
-import { cells, mapSize, towersConfig, waypoints } from 'lib/config'
+import { cells, mapSize, towersConfig } from 'lib/config'
 
 const Cell = ({ i, j }) => {
   const [hovered, setHovered] = useState(false)
-  const constructionDetails = useMemoryStore(s => s.constructionDetails)
+  const towers = useMemoryStore(s => s.towers)
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
-  const addConstructionDetails = useMemoryStore(s => s.addConstructionDetails)
+  const addTower = useMemoryStore(s => s.addTower)
 
-  const foundConstruction = constructionDetails.find(cd => cd.i === i && cd.j === j)
+  const foundConstruction = towers.find(t => t.i === i && t.j === j)
 
   return (
     <>
@@ -23,7 +23,7 @@ const Cell = ({ i, j }) => {
         onPointerOut={() => setHovered(false)}
         onClick={() => {
           if (currentConstruction) {
-            addConstructionDetails({ type: currentConstruction, i, j })
+            addTower({ type: currentConstruction, i, j })
             clearCurrentConstruction()
           }
         }}
@@ -36,12 +36,6 @@ const Cell = ({ i, j }) => {
         <mesh position={new Vector3(mapSize / 2 - i * 10 - 5, 0.1, mapSize / 2 - j * 10 - 5)}>
           <sphereGeometry args={[5, 5, 10, 10, 10]} />
           <meshStandardMaterial color={towersConfig[currentConstruction].color} />
-        </mesh>
-      )}
-      {foundConstruction && (
-        <mesh position={new Vector3(mapSize / 2 - i * 10 - 5, 0.1, mapSize / 2 - j * 10 - 5)}>
-          <sphereGeometry args={[5, 5, 10, 10, 10]} />
-          <meshStandardMaterial color={towersConfig[foundConstruction.type].color} />
         </mesh>
       )}
     </>
