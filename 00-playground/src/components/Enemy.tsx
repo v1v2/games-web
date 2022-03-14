@@ -14,6 +14,7 @@ const Enemy = ({ id }) => {
   const ref = useRef(null)
   const tweenRef = useRef(null)
   const getEnemy = useMemoryStore(s => s.getEnemy)
+  const addMoney = useMemoryStore(s => s.addMoney)
   const decrementLivesLeft = useMemoryStore(s => s.decrementLivesLeft)
   const removeEnemy = useMemoryStore(s => s.removeEnemy)
   const updateEnemyCoordinates = useMemoryStore(s => s.updateEnemyCoordinates)
@@ -32,6 +33,7 @@ const Enemy = ({ id }) => {
   useEffect(() => {
     if (hp <= 0) {
       removeEnemy(id)
+      addMoney(1)
     }
   }, [hp])
 
@@ -68,10 +70,16 @@ const Enemy = ({ id }) => {
   })
 
   return (
-    <mesh ref={ref} position={[0, distanceFromGround, 0]}>
-      <boxGeometry args={[3, 3, 3]} />
-      <meshStandardMaterial color="#fff" />
-    </mesh>
+    <group ref={ref} position={[0, distanceFromGround, 0]}>
+      <mesh>
+        <boxGeometry args={[3, 3, 3]} />
+        <meshStandardMaterial color="#fff" />
+      </mesh>
+      <mesh position={[0, distanceFromGround, 0]} scale={[hp / 100, 1, 1]}>
+        <planeGeometry args={[10, 1]} />
+        <meshStandardMaterial color="#0f0" />
+      </mesh>
+    </group>
   )
 }
 

@@ -1,9 +1,7 @@
-import { Vector3 } from 'three'
-
 export const towersConfig = {
-  simple: { color: '#00ff00' },
-  splash: { color: '#ff0000' },
-  strong: { color: '#0000ff' },
+  simple: { color: '#00ff00', reloadTime: 200, damage: 10, range: 30, cost: 10 },
+  splash: { color: '#ff0000', reloadTime: 300, damage: 20, range: 20, cost: 20 },
+  strong: { color: '#0000ff', reloadTime: 500, damage: 100, range: 40, cost: 50 },
 }
 
 export const mapSize = 120

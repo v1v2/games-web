@@ -5,12 +5,14 @@ import { OrbitControls, OrthographicCamera } from '@react-three/drei'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import { useMemoryStore } from 'lib/store'
+import { towersConfig } from 'lib/config'
 
 const GameLayout = ({ children }) => {
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
   const setCurrentConstruction = useMemoryStore(s => s.setCurrentConstruction)
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
   const livesLeft = useMemoryStore(s => s.livesLeft)
+  const money = useMemoryStore(s => s.money)
 
   useEffect(() => {
     if (livesLeft <= 0) {
@@ -30,27 +32,41 @@ const GameLayout = ({ children }) => {
           <button onClick={() => clearCurrentConstruction()}>Cancel</button>
         ) : (
           <>
-            <button onClick={() => setCurrentConstruction('simple')}>Simple Tower</button>
-            <button onClick={() => setCurrentConstruction('splash')}>Splash Tower</button>
-            <button onClick={() => setCurrentConstruction('strong')}>Strong Tower</button>
+            <button
+              disabled={money < towersConfig.simple.cost}
+              onClick={() => setCurrentConstruction('simple')}
+            >
+              Simple Tower
+            </button>
+            <button
+              disabled={money < towersConfig.splash.cost}
+              onClick={() => setCurrentConstruction('splash')}
+            >
+              Splash Tower
+            </button>
+            <button
+              disabled={money < towersConfig.strong.cost}
+              onClick={() => setCurrentConstruction('strong')}
+            >
+              Strong Tower
+            </button>
           </>
         )}
-        <div>{livesLeft} lives left</div>
+        <div style={{ color: 'white', fontSize: 24 }}>{livesLeft} lives left</div>
+        <div style={{ color: 'white', fontSize: 24 }}>Money: ${money}</div>
       </div>
       <Canvas>
         <ambientLight intensity={1} />
         <OrbitControls
           makeDefault
-          maxPolarAngle={Math.PI / 2.3}
-          minPolarAngle={Math.PI / 2.3}
+          maxPolarAngle={Math.PI / 3}
+          minPolarAngle={Math.PI / 3}
+          enableRotate={false}
           // enableZoom={false}
-          // enablePan={false}
+          enableDamping={false}
+          enablePan={false}
         />
-        <OrthographicCamera
-          makeDefault
-          position={[100, 100, 100]}
-          // rotation={[-Math.PI / 4, Math.atan(-1 / Math.sqrt(2)), 0, 'YXZ']}
-        />
+        <OrthographicCamera makeDefault position={[100, 0, 100]} zoom={8} />
         {children}
       </Canvas>
       <style global jsx>{`
@@ -63,6 +79,7 @@ const GameLayout = ({ children }) => {
         body {
           margin: 0;
           background: #333;
+          font-family: sans-serif;
         }
 
         canvas {
