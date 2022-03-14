@@ -1,35 +1,23 @@
 import { useEffect } from 'react'
 
-import { Vector3 } from '@babylonjs/core'
-import { Engine, Scene, useScene } from 'react-babylonjs'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, OrthographicCamera } from '@react-three/drei'
 import { useHotkeys } from 'react-hotkeys-hook'
 
-import ClientOnly from 'components/ClientOnly'
 import { useMemoryStore } from 'lib/store'
 
-const Inspector = () => {
-  const scene = useScene()
-
-  const toggleInspector = async () => {
-    await import('@babylonjs/inspector')
-    await import('@babylonjs/core/Debug/debugLayer')
-    scene.debugLayer.isVisible() ? scene.debugLayer.hide() : scene.debugLayer.show()
-  }
-
-  useEffect(() => {
-    toggleInspector()
-  }, [])
-
-  useHotkeys('ctrl+i, cmd+i', () => {
-    toggleInspector()
-  })
-
-  return null
-}
-
 const GameLayout = ({ children }) => {
+  const currentConstruction = useMemoryStore(s => s.currentConstruction)
   const setCurrentConstruction = useMemoryStore(s => s.setCurrentConstruction)
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
+  const livesLeft = useMemoryStore(s => s.livesLeft)
+
+  useEffect(() => {
+    if (livesLeft <= 0) {
+      alert('You lost!')
+      window.location.reload()
+    }
+  }, [livesLeft])
 
   useHotkeys('esc', () => {
     clearCurrentConstruction()
@@ -37,29 +25,34 @@ const GameLayout = ({ children }) => {
 
   return (
     <>
-      <button style={{ position: 'fixed' }} onClick={() => setCurrentConstruction('simple')}>
-        Simple Tower
-      </button>
-      <Engine antialias adaptToDeviceRatio canvasId="babylonJS">
-        <Scene>
-          {process.env.NODE_ENV === 'development' && (
-            <ClientOnly>
-              <Inspector />
-            </ClientOnly>
-          )}
-          <arcRotateCamera
-            name="camera1"
-            target={Vector3.Zero()}
-            alpha={Math.PI / 4}
-            beta={Math.PI / 3.5}
-            radius={560}
-            fov={0.2}
-            panningSensibility={0}
-          />
-          <hemisphericLight name="light1" intensity={0.7} direction={Vector3.Up()} />
-          {children}
-        </Scene>
-      </Engine>
+      <div style={{ position: 'fixed', zIndex: 1 }}>
+        {currentConstruction ? (
+          <button onClick={() => clearCurrentConstruction()}>Cancel</button>
+        ) : (
+          <>
+            <button onClick={() => setCurrentConstruction('simple')}>Simple Tower</button>
+            <button onClick={() => setCurrentConstruction('splash')}>Splash Tower</button>
+            <button onClick={() => setCurrentConstruction('strong')}>Strong Tower</button>
+          </>
+        )}
+        <div>{livesLeft} lives left</div>
+      </div>
+      <Canvas>
+        <ambientLight intensity={1} />
+        <OrbitControls
+          makeDefault
+          maxPolarAngle={Math.PI / 2.3}
+          minPolarAngle={Math.PI / 2.3}
+          // enableZoom={false}
+          // enablePan={false}
+        />
+        <OrthographicCamera
+          makeDefault
+          position={[100, 100, 100]}
+          // rotation={[-Math.PI / 4, Math.atan(-1 / Math.sqrt(2)), 0, 'YXZ']}
+        />
+        {children}
+      </Canvas>
       <style global jsx>{`
         html,
         body,
@@ -69,6 +62,7 @@ const GameLayout = ({ children }) => {
 
         body {
           margin: 0;
+          background: #333;
         }
 
         canvas {

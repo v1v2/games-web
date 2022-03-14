@@ -1,14 +1,15 @@
-const withTM = require('next-transpile-modules')([
-  '@babylonjs/core',
-  '@babylonjs/gui',
-  '@babylonjs/inspector',
-  '@babylonjs/loaders',
-  '@babylonjs/materials',
-  '@babylonjs/serializers',
-  'react-babylonjs',
-])
+// const withTM = require('next-transpile-modules')([
+  // '@babylonjs/core',
+  // '@babylonjs/gui',
+  // '@babylonjs/inspector',
+  // '@babylonjs/loaders',
+  // '@babylonjs/materials',
+  // '@babylonjs/serializers',
+  // 'react-babylonjs',
+  // 'three',
+// ])
 
-module.exports = withTM()
+// module.exports = withTM()
 
 // Doesn't work, but it should be something like that in Next 12:
 //

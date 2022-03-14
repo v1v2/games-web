@@ -1,106 +1,94 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 
-import { Vector3, Color3 } from '@babylonjs/core'
-import { useHover } from 'react-babylonjs'
+import { Vector3 } from 'three'
 
 import { useMemoryStore } from 'lib/store'
-
-const cells = [
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
-  [1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1],
-  [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1],
-  [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
-  [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
-  [1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1],
-  [1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-  [1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1],
-  [1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1],
-  [1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 2],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-]
-
-const mapSize = 120
+import { cells, mapSize, towersConfig, waypoints } from 'lib/config'
 
 const Cell = ({ i, j }) => {
   const [hovered, setHovered] = useState(false)
+  const constructionDetails = useMemoryStore(s => s.constructionDetails)
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
-  const ref = useRef(null)
+  const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
+  const addConstructionDetails = useMemoryStore(s => s.addConstructionDetails)
 
-  useHover(
-    () => setHovered(true),
-    () => setHovered(false),
-    ref
-  )
+  const foundConstruction = constructionDetails.find(cd => cd.i === i && cd.j === j)
 
   return (
-    <plane
-      ref={ref}
-      name={`${i}-${j}`}
-      size={9}
-      position={new Vector3(mapSize / 2 - i * 10 - 5, 0.1, mapSize / 2 - j * 10 - 5)}
-      rotation={new Vector3(Math.PI / 2, 0, 0)}
-    >
-      <standardMaterial
-        name="cell"
-        diffuseColor={Color3.FromHexString(hovered && currentConstruction ? '#55ff55' : '#aaaaaa')}
-        specularColor={Color3.Black()}
-      />
-    </plane>
+    <>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={new Vector3(mapSize / 2 - i * 10 - 5, 0.5, mapSize / 2 - j * 10 - 5)}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+        onClick={() => {
+          if (currentConstruction) {
+            addConstructionDetails({ type: currentConstruction, i, j })
+            clearCurrentConstruction()
+          }
+        }}
+      >
+        <planeGeometry args={[9, 9, 1]} />
+        <meshStandardMaterial color="#777" />
+      </mesh>
+
+      {currentConstruction && hovered && (
+        <mesh position={new Vector3(mapSize / 2 - i * 10 - 5, 0.1, mapSize / 2 - j * 10 - 5)}>
+          <sphereGeometry args={[5, 5, 10, 10, 10]} />
+          <meshStandardMaterial color={towersConfig[currentConstruction].color} />
+        </mesh>
+      )}
+      {foundConstruction && (
+        <mesh position={new Vector3(mapSize / 2 - i * 10 - 5, 0.1, mapSize / 2 - j * 10 - 5)}>
+          <sphereGeometry args={[5, 5, 10, 10, 10]} />
+          <meshStandardMaterial color={towersConfig[foundConstruction.type].color} />
+        </mesh>
+      )}
+    </>
   )
 }
 
 const Ground = () => (
   <>
-    <plane
-      name="ground"
-      size={mapSize + 1}
-      position={new Vector3(0, 0, 0)}
-      rotation={new Vector3(Math.PI / 2, 0, 0)}
-    >
-      <standardMaterial
-        name={`${name}-mat`}
-        diffuseColor={Color3.FromHexString('#333333')}
-        specularColor={Color3.Black()}
-      />
-    </plane>
+    <mesh rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[mapSize + 1, mapSize + 1, 1]} />
+      <meshStandardMaterial color="#333" />
+    </mesh>
     {cells.map((row, i) =>
       row.map((c, j) =>
         c === 1 ? (
-          <Cell i={i} j={j} />
+          <Cell i={i} j={j} key={`cell-${i}-${j}`} />
         ) : c === 2 ? (
-          <box
-            name="start"
-            size={9}
-            position={
-              new Vector3(mapSize / 2 - i * 10 - 5, (0.7 / 2) * 9 + 0.1, mapSize / 2 - j * 10 - 5)
-            }
-            scaling={new Vector3(1, 0.7, 1)}
+          <mesh
+            key={`cell-${i}-${j}`}
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={new Vector3(mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5)}
           >
-            <standardMaterial
-              name="cell"
-              diffuseColor={Color3.FromHexString('#66ff66')}
-              specularColor={Color3.Black()}
-            />
-          </box>
+            <boxGeometry args={[9, 9, 5]} />
+            <meshStandardMaterial color="#3f3" />
+          </mesh>
         ) : c === 3 ? (
-          <box
-            name="end"
-            size={9}
-            position={
-              new Vector3(mapSize / 2 - i * 10 - 5, (0.7 / 2) * 9 + 0.1, mapSize / 2 - j * 10 - 5)
-            }
-            scaling={new Vector3(1, 0.7, 1)}
+          <mesh
+            key={`cell-${i}-${j}`}
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={new Vector3(mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5)}
           >
-            <standardMaterial
-              name="cell"
-              diffuseColor={Color3.FromHexString('#ff6666')}
-              specularColor={Color3.Black()}
-            />
-          </box>
+            <boxGeometry args={[9, 9, 5]} />
+            <meshStandardMaterial color="#f33" />
+          </mesh>
         ) : null
       )
     )}
+    {/* {waypoints.map(([i, j]) => (
+      <mesh
+        key={`waypoint-${i}-${j}`}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={new Vector3(mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5)}
+      >
+        <boxGeometry args={[3, 3, 10]} />
+        <meshStandardMaterial color="#f33" />
+      </mesh>
+    ))} */}
   </>
 )
 
