@@ -16,7 +16,8 @@ const Tower = ({ id }) => {
 
   useFrame(() => {
     if (isReadyToFire) {
-      enemies.forEach(e => {
+      for (let i = 0; i < enemies.length; i++) {
+        const e = enemies[i]
         const enemyVector = new Vector3(e.x, 0, e.z)
         const towerVector = new Vector3(x, 0, z)
         if (enemyVector.distanceTo(towerVector) < towersConfig[type].range) {
@@ -24,8 +25,9 @@ const Tower = ({ id }) => {
           createProjectile(id, e.id)
           setIsReadyToFire(false)
           setTimeout(() => setIsReadyToFire(true), towersConfig[type].reloadTime)
+          break;
         }
-      })
+      }
     }
   })
 

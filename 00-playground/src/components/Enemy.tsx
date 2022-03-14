@@ -7,7 +7,7 @@ import { Vector3 } from 'three'
 import { getCellPosition, waypoints } from 'lib/config'
 import { useMemoryStore } from 'lib/store'
 
-const speed = 0.05
+const speed = 0.012
 const distanceFromGround = 2
 
 const Enemy = ({ id }) => {
@@ -26,6 +26,9 @@ const Enemy = ({ id }) => {
     distanceFromGround,
     targetWaypointPosition.z
   )
+
+  const initialWaypoint = waypoints[0]
+  const initialWaypointPosition = getCellPosition(initialWaypoint[0], initialWaypoint[1])
 
   const enemy = getEnemy(id)
   const hp = enemy?.hp
@@ -70,7 +73,10 @@ const Enemy = ({ id }) => {
   })
 
   return (
-    <group ref={ref} position={[0, distanceFromGround, 0]}>
+    <group
+      ref={ref}
+      position={[initialWaypointPosition.x, distanceFromGround, initialWaypointPosition.z]}
+    >
       <mesh>
         <boxGeometry args={[3, 3, 3]} />
         <meshStandardMaterial color="#fff" />
