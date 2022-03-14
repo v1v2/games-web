@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { useFrame } from '@react-three/fiber'
 import { Vector3 } from 'three'
@@ -15,12 +15,15 @@ const IndexPage = () => {
   const spawnEnemy = useMemoryStore(s => s.spawnEnemy)
   const towers = useMemoryStore(s => s.towers)
   const projectiles = useMemoryStore(s => s.projectiles)
+  const spawnTimerRef = useRef(0)
 
-  useEffect(() => {
-    setInterval(() => {
+  useFrame((state, delta) => {
+    spawnTimerRef.current += delta
+    if (spawnTimerRef.current > 1) {
+      spawnTimerRef.current = 0
       spawnEnemy()
-    }, 1000)
-  }, [])
+    }
+  })
 
   return (
     <>

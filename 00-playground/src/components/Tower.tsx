@@ -21,11 +21,21 @@ const Tower = ({ id }) => {
         const enemyVector = new Vector3(e.x, 0, e.z)
         const towerVector = new Vector3(x, 0, z)
         if (enemyVector.distanceTo(towerVector) < towersConfig[type].range) {
-          decreaseEnemyHp(e.id, 10)
+          if (towersConfig[type].splashRange) {
+            enemies.forEach(en => {
+              if (
+                enemyVector.distanceTo(new Vector3(en.x, 0, en.z)) < towersConfig[type].splashRange
+              ) {
+                decreaseEnemyHp(en.id, towersConfig[type].damage)
+              }
+            })
+          } else {
+            decreaseEnemyHp(e.id, towersConfig[type].damage)
+          }
           createProjectile(id, e.id)
           setIsReadyToFire(false)
           setTimeout(() => setIsReadyToFire(true), towersConfig[type].reloadTime)
-          break;
+          break
         }
       }
     }
