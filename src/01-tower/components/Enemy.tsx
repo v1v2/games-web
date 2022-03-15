@@ -7,11 +7,11 @@ import { Vector3 } from 'three'
 import { getCellPosition, waypoints } from '01-tower/lib/config'
 import { useMemoryStore } from '01-tower/lib/store'
 
-const speed = 0.012
 const distanceFromGround = 2
 
 const Enemy = ({ id }) => {
   const ref = useRef(null)
+  const wave = useMemoryStore(s => s.wave)
   const tweenRef = useRef(null)
   const getEnemy = useMemoryStore(s => s.getEnemy)
   const addMoney = useMemoryStore(s => s.addMoney)
@@ -31,14 +31,19 @@ const Enemy = ({ id }) => {
   const initialWaypointPosition = getCellPosition(initialWaypoint[0], initialWaypoint[1])
 
   const enemy = getEnemy(id)
-  const hp = enemy?.hp
+  const totalHp = enemy?.totalHp
+  const currentHp = enemy?.currentHp
+  const speed = enemy?.speed
+  const color = enemy?.color
+  const size = enemy?.size
+  const value = enemy?.value
 
   useEffect(() => {
-    if (hp <= 0) {
+    if (currentHp <= 0) {
       removeEnemy(id)
-      addMoney(1)
+      addMoney(Math.floor(value * (1 + wave * 0.06)))
     }
-  }, [hp])
+  }, [currentHp])
 
   useEffect(() => {
     const coords = ref.current.position
@@ -78,10 +83,10 @@ const Enemy = ({ id }) => {
       position={[initialWaypointPosition.x, distanceFromGround, initialWaypointPosition.z]}
     >
       <mesh>
-        <boxGeometry args={[3, 3, 3]} />
-        <meshStandardMaterial color="#fff" />
+        <boxGeometry args={[3 * size, 3 * size, 3 * size]} />
+        <meshStandardMaterial color={color} />
       </mesh>
-      <mesh position={[0, distanceFromGround, 0]} scale={[hp / 100, 1, 1]}>
+      <mesh position={[0, distanceFromGround + size, 0]} scale={[currentHp / totalHp, 1, 1]}>
         <planeGeometry args={[10, 1]} />
         <meshStandardMaterial color="#0f0" />
       </mesh>

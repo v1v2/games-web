@@ -18,6 +18,8 @@ import Projectile from '01-tower/components/Projectile'
 // const initialTowerPos = new Vector3(5, distanceFromGround, 0)
 
 const IndexPage = () => {
+  const isStarted = useMemoryStore(s => s.isStarted)
+  const wave = useMemoryStore(s => s.wave)
   const enemies = useMemoryStore(s => s.enemies)
   const spawnEnemy = useMemoryStore(s => s.spawnEnemy)
   const towers = useMemoryStore(s => s.towers)
@@ -29,10 +31,14 @@ const IndexPage = () => {
   const laserRef = useRef(null)
 
   useFrame((state, delta) => {
-    spawnTimerRef.current += delta
-    if (spawnTimerRef.current > 1) {
-      spawnTimerRef.current = 0
-      spawnEnemy()
+    if (isStarted) {
+      spawnTimerRef.current += delta
+      if (spawnTimerRef.current > 1) {
+        spawnTimerRef.current = 0
+        const typeIndex = Math.floor(Math.random() * 10) % 4
+        // @ts-ignore
+        spawnEnemy(['basic', 'fast', 'tank', 'boss'][typeIndex], 50 + wave * 50)
+      }
     }
     // if (enemyisGoingPositive) {
     //   enemyRef.current.position.z += 0.1
@@ -45,7 +51,7 @@ const IndexPage = () => {
     // if (enemyRef.current.position.z >= 3) {
     //   enemyisGoingPositive = false
     // }
-    
+
     // This works
     // const towerPos = towerRef.current.position
     // const enemyPos = enemyRef.current.position

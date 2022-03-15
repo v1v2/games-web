@@ -22,7 +22,7 @@ const Cell = ({ i, j }) => {
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
         onClick={() => {
-          if (currentConstruction) {
+          if (currentConstruction && !towers.some(t => t.i === i && t.j === j)) {
             addTower({ type: currentConstruction, i, j })
             clearCurrentConstruction()
           }

@@ -13,10 +13,32 @@ type TowerConfig = {
   splashRange?: number
 }
 
+type EnemyConfig = {
+  color: string
+  hpFactor: number
+  speed: number
+  value: number
+  size: number
+}
+
+type EnemyConfigs = {
+  basic: EnemyConfig
+  fast: EnemyConfig
+  tank: EnemyConfig
+  boss: EnemyConfig
+}
+
 export const towersConfig: TowerConfigs = {
   simple: { color: '#00ff00', reloadTime: 200, damage: 10, range: 30, cost: 10 },
   splash: { color: '#ff0000', reloadTime: 500, damage: 10, range: 20, cost: 20, splashRange: 20 },
   strong: { color: '#0000ff', reloadTime: 1000, damage: 100, range: 40, cost: 50 },
+}
+
+export const enemiesConfig: EnemyConfigs = {
+  basic: { color: '#0f0', hpFactor: 1, speed: 0.012, value: 1, size: 1 },
+  fast: { color: '#f0f', hpFactor: 0.5, speed: 0.024, value: 1, size: 0.75 },
+  tank: { color: '#f00', hpFactor: 3, speed: 0.008, value: 2, size: 1.25 },
+  boss: { color: '#000', hpFactor: 10, speed: 0.012, value: 10, size: 2 },
 }
 
 export const mapSize = 120

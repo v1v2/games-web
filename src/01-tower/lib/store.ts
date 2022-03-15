@@ -2,13 +2,21 @@ import create from 'zustand'
 import { persist } from 'zustand/middleware'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 
-import { getCellPosition, towersConfig } from '01-tower/lib/config'
+import { getCellPosition, towersConfig, enemiesConfig } from '01-tower/lib/config'
 
 type TowerType = 'simple' | 'splash' | 'strong'
 
+type EnemyType = 'basic' | 'fast' | 'tank'
+
 type Enemy = {
   id: string
-  hp: number
+  type: EnemyType
+  speed: number
+  color: string
+  totalHp: number
+  currentHp: number
+  size: number
+  value: number
   x: number
   z: number
 }
@@ -31,12 +39,16 @@ type Projectile = {
 }
 
 interface MemoryStore {
+  isStarted: boolean
+  start: () => void
+  wave: number
+  enemiesKilled: number
   livesLeft: number
   money: number
   addMoney: (amount: number) => void
   decrementLivesLeft: () => void
   enemies: Enemy[]
-  spawnEnemy: () => void
+  spawnEnemy: (type: EnemyType, baseHp: number) => void
   removeEnemy: (id: string) => void
   decreaseEnemyHp: (id: string, value: number) => void
   updateEnemyCoordinates: (id: string, x: number, z: number) => void
@@ -54,6 +66,10 @@ interface MemoryStore {
 }
 
 export const useMemoryStore = create<MemoryStore>((set, get) => ({
+  isStarted: false,
+  start: () => set({ isStarted: true }),
+  wave: 1,
+  enemiesKilled: 0,
   livesLeft: 20,
   money: process.env.NODE_ENV === 'development' ? 100 : 20,
   addMoney: amount => set(state => ({ money: state.money + amount })),
@@ -62,10 +78,26 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
   projectiles: [],
   getEnemy: (id: string) => get().enemies.find(e => e.id === id),
   getTower: (id: string) => get().towers.find(t => t.id === id),
-  spawnEnemy: () => {
+  spawnEnemy: (type: EnemyType, baseHp: number) => {
     const id = Math.random().toString()
+    const hp = enemiesConfig[type].hpFactor * baseHp
     set(state => ({
-      enemies: [...state.enemies, { id, hp: 100, x: 0, z: 0 }],
+      // To make them not spawn in the middle of the map
+      enemies: [
+        ...state.enemies,
+        {
+          id,
+          type,
+          totalHp: hp,
+          currentHp: hp,
+          speed: enemiesConfig[type].speed,
+          color: enemiesConfig[type].color,
+          size: enemiesConfig[type].size,
+          value: enemiesConfig[type].value,
+          x: 9999,
+          z: 9999,
+        },
+      ],
     }))
   },
   createProjectile: (towerId: string, enemyId: string) => {
@@ -90,6 +122,8 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
   getProjectile: (id: string) => get().projectiles.find(p => p.id === id),
   removeEnemy: (id: string) => {
     set(state => ({
+      wave: 1 + Math.round((state.enemiesKilled + 1) / 20),
+      enemiesKilled: state.enemiesKilled + 1,
       enemies: state.enemies.filter(enemy => enemy.id !== id),
     }))
   },
@@ -97,7 +131,7 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
     set(state => ({
       enemies: state.enemies.map(enemy => {
         if (enemy.id === id) {
-          return { ...enemy, hp: enemy.hp - value }
+          return { ...enemy, currentHp: enemy.currentHp - value }
         }
         return enemy
       }),

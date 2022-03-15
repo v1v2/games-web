@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { OrbitControls, OrthographicCamera } from '@react-three/drei'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -8,7 +8,12 @@ import FullCanvas from 'components/FullCanvas'
 import { useMemoryStore } from '01-tower/lib/store'
 import { towersConfig } from '01-tower/lib/config'
 
+const music = typeof window !== 'undefined' && new Audio('/audio/Quincas Moreira - Chtulthu.mp3')
+
 const GameLayout = ({ children }) => {
+  const isStarted = useMemoryStore(s => s.isStarted)
+  const start = useMemoryStore(s => s.start)
+  const wave = useMemoryStore(s => s.wave)
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
   const setCurrentConstruction = useMemoryStore(s => s.setCurrentConstruction)
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
@@ -16,8 +21,12 @@ const GameLayout = ({ children }) => {
   const money = useMemoryStore(s => s.money)
 
   useEffect(() => {
+    music.play()
+  }, [])
+
+  useEffect(() => {
     if (livesLeft <= 0) {
-      alert('You lost!')
+      alert(`You lost at wave ${wave}!`)
       window.location.reload()
     }
   }, [livesLeft])
@@ -55,6 +64,20 @@ const GameLayout = ({ children }) => {
         )}
         <div style={{ color: 'white', fontSize: 24 }}>{livesLeft} lives left</div>
         <div style={{ color: 'white', fontSize: 24 }}>Money: ${money}</div>
+        <div style={{ color: 'white', fontSize: 24 }}>Wave {wave}</div>
+        {!isStarted && (
+          <div>
+            <button
+              disabled={money < towersConfig.strong.cost}
+              onClick={() => {
+                start()
+                music.play()
+              }}
+            >
+              Start
+            </button>
+          </div>
+        )}
       </div>
       <FullCanvas>
         <ambientLight intensity={1} />
@@ -62,7 +85,7 @@ const GameLayout = ({ children }) => {
           makeDefault
           maxPolarAngle={Math.PI / 3}
           minPolarAngle={Math.PI / 3}
-          // enableRotate={false}
+          enableRotate={false}
           // enableZoom={false}
           // enableDamping={false}
           // enablePan={false}
