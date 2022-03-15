@@ -1,45 +1,43 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
-import { Mesh, Vector3 } from 'three'
+import { Vector3 } from 'three'
 
 import { useMemoryStore } from 'lib/store'
+import { useFrame } from '@react-three/fiber'
 
 const Projectile = ({ id }) => {
   const getProjectile = useMemoryStore(s => s.getProjectile)
   const removeProjectile = useMemoryStore(s => s.removeProjectile)
   const { fromX, fromZ, toX, toZ } = getProjectile(id)
 
+  const laserRef = useRef(null)
+
   useEffect(() => {
     setTimeout(() => removeProjectile(id), 100)
   }, [])
 
-  const fromVector = new Vector3(fromX, 2, fromZ)
-  const toVector = new Vector3(toX, 2, toZ)
-  const distance = fromVector.distanceTo(toVector)
-  // const towerVector = new Vector3(fromX, 2, fromZ /*+ distance / 2*/)
-  const towerVector = fromVector
-  const angle = fromVector.angleTo(toVector)
-  // const angle = Math.atan2(toZ - fromZ, toX - fromX)
-  // console.log(angle)
+  const towerPos = new Vector3(fromX, 2, fromZ)
+  const enemyPos = new Vector3(toX, 2, toZ)
+  const distance = towerPos.distanceTo(enemyPos)
 
-  // const ref = useRef()
-  // const points = useMemo(() => [fromVector, toVector], [])
-  const onUpdate = useCallback(
-    (self: Mesh) => {
-      self.setRotationFromAxisAngle(new Vector3(0, 1, 0), Math.PI * angle)
-      // self.translateOnAxis(new Vector3(1, 0, 0), distance / 2)
-    },
-    [angle]
-  )
+  useFrame(() => {
+    const betweenPos = towerPos.clone().lerp(enemyPos, 0.5)
+    const angle = Math.atan2(enemyPos.z - towerPos.z, enemyPos.x - towerPos.x)
+    const lookAngle = -(angle - Math.PI / 2)
+    // towerRef.current.rotation.y = lookAngle
+    laserRef.current.position.x = betweenPos.x
+    laserRef.current.position.z = betweenPos.z
+    laserRef.current.rotation.y = lookAngle
+  })
 
   return (
     <>
-      <mesh position={towerVector} onUpdate={onUpdate}>
+      <mesh ref={laserRef} position={[null, 2, null]}>
         <boxGeometry args={[0.3, 0.3, distance]} />
+        <meshStandardMaterial color="#f60" />
       </mesh>
       <mesh position={[toX, 3, toZ]}>
-        {/* <planeGeometry args={[1, 1]} /> */}
-        <sphereGeometry args={[3, 3, 10, 10, 10]} />
+        <sphereGeometry args={[3, 10]} />
         <meshStandardMaterial color="#f60" />
       </mesh>
     </>

@@ -61,10 +61,10 @@ const GameLayout = ({ children }) => {
           makeDefault
           maxPolarAngle={Math.PI / 3}
           minPolarAngle={Math.PI / 3}
-          enableRotate={false}
+          // enableRotate={false}
           // enableZoom={false}
-          enableDamping={false}
-          enablePan={false}
+          // enableDamping={false}
+          // enablePan={false}
         />
         <OrthographicCamera makeDefault position={[100, 0, 100]} zoom={8} />
         {children}
