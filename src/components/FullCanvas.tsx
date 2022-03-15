@@ -3,8 +3,10 @@ import { VRCanvas, DefaultXRControllers } from '@codyjasonbennett/xr'
 
 const FullCanvas = ({ children }) => (
   <>
-    <VRCanvas>{children}</VRCanvas>
-    <DefaultXRControllers />
+    <VRCanvas>
+      <DefaultXRControllers />
+      {children}
+    </VRCanvas>
     <style global jsx>{`
       html,
       body,

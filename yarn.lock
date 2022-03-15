@@ -188,14 +188,6 @@
     utility-types "^3.10.0"
     zustand "^3.5.1"
 
-"@react-three/xr@^3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@react-three/xr/-/xr-3.4.0.tgz#d01de32ec6bee0013a4c0839952a5be12fdb1373"
-  integrity sha512-pKNi/xzY75syV9IU8OQoF+TdQ3k8a3+Qdq/AZO+iKxEa5TvLdp3UIH7Tjh1Wp1FcVB/fWKG3ykj/7HGWS0v/Og==
-  dependencies:
-    react-merge-refs "^1.1.0"
-    three-stdlib "^2.8.6"
-
 "@tweenjs/tween.js@^18.6.4":
   version "18.6.4"
   resolved "https://registry.yarnpkg.com/@tweenjs/tween.js/-/tween.js-18.6.4.tgz#40a3d0a93647124872dec8e0fd1bd5926695b6ca"
