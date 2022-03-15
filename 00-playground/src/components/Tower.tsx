@@ -6,6 +6,8 @@ import { Vector3 } from 'three'
 import { mapSize, towersConfig } from 'lib/config'
 import { useMemoryStore } from 'lib/store'
 
+// const gunshotAudio = typeof window !== 'undefined' && new Audio('/audio/gunshot.wav')
+
 const Tower = ({ id }) => {
   const getTower = useMemoryStore(s => s.getTower)
   const enemies = useMemoryStore(s => s.enemies)
@@ -33,6 +35,7 @@ const Tower = ({ id }) => {
             decreaseEnemyHp(e.id, towersConfig[type].damage)
           }
           createProjectile(id, e.id)
+          // gunshotAudio.cloneNode(true).play()
           setIsReadyToFire(false)
           setTimeout(() => setIsReadyToFire(true), towersConfig[type].reloadTime)
           break
