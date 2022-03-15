@@ -89,7 +89,6 @@ const GameLayout = ({ children }) => {
         {!isStarted && (
           <div>
             <button
-              disabled={money < towersConfig.strong.cost}
               onClick={() => {
                 start()
                 music.play()
