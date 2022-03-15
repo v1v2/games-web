@@ -11,7 +11,12 @@ import { towersConfig } from '01-tower/lib/config'
 const music = typeof window !== 'undefined' && new Audio('/audio/Quincas Moreira - Chtulthu.mp3')
 
 const GameLayout = ({ children }) => {
+  const selectedTower = useMemoryStore(s => s.selectedTower)
+  const getTower = useMemoryStore(s => s.getTower)
+  const addMoney = useMemoryStore(s => s.addMoney)
+  const removeTower = useMemoryStore(s => s.removeTower)
   const isStarted = useMemoryStore(s => s.isStarted)
+  const selectTower = useMemoryStore(s => s.selectTower)
   const start = useMemoryStore(s => s.start)
   const wave = useMemoryStore(s => s.wave)
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
@@ -33,6 +38,7 @@ const GameLayout = ({ children }) => {
 
   useHotkeys('esc', () => {
     clearCurrentConstruction()
+    selectTower(null)
   })
 
   return (
@@ -60,6 +66,21 @@ const GameLayout = ({ children }) => {
             >
               Strong Tower
             </button>
+          </>
+        )}
+        {selectedTower && (
+          <>
+            <button
+              onClick={() => {
+                const towerToSell = getTower(selectedTower)
+                addMoney(Math.round(towersConfig[towerToSell.type].cost / 2))
+                removeTower(selectedTower)
+                selectTower(null)
+              }}
+            >
+              Sell
+            </button>
+            <button onClick={() => selectTower(null)}>Cancel selection</button>
           </>
         )}
         <div style={{ color: 'white', fontSize: 24 }}>{livesLeft} lives left</div>

@@ -42,6 +42,8 @@ interface MemoryStore {
   isStarted: boolean
   start: () => void
   wave: number
+  selectedTower: string
+  selectTower: (id: string) => void
   enemiesKilled: number
   livesLeft: number
   money: number
@@ -63,12 +65,15 @@ interface MemoryStore {
   setCurrentConstruction: (construction: TowerType) => void
   clearCurrentConstruction: () => void
   addTower: (tower: { type: TowerType; i: number; j: number }) => void
+  removeTower: (id: string) => void
 }
 
 export const useMemoryStore = create<MemoryStore>((set, get) => ({
   isStarted: false,
   start: () => set({ isStarted: true }),
   wave: 1,
+  selectedTower: null,
+  selectTower: id => set({ selectedTower: id }),
   enemiesKilled: 0,
   livesLeft: 20,
   money: process.env.NODE_ENV === 'development' ? 100 : 20,
@@ -154,6 +159,9 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
       money: state.money - towersConfig[tower.type].cost,
       towers: [...state.towers, { ...tower, ...position, id: Math.random().toString() }],
     }))
+  },
+  removeTower: (id: string) => {
+    set(state => ({ towers: state.towers.filter(t => t.id !== id) }))
   },
   currentConstruction: null,
   setCurrentConstruction: (towerType: TowerType) => set({ currentConstruction: towerType }),

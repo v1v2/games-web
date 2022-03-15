@@ -37,7 +37,7 @@ const IndexPage = () => {
         spawnTimerRef.current = 0
         const typeIndex = Math.floor(Math.random() * 10) % 4
         // @ts-ignore
-        spawnEnemy(['basic', 'fast', 'tank', 'boss'][typeIndex], 50 + wave * 50)
+        spawnEnemy(['basic', 'fast', 'tank', 'boss'][typeIndex], 50 + wave * 70)
       }
     }
     // if (enemyisGoingPositive) {

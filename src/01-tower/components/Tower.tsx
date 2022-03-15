@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { useFrame } from '@react-three/fiber'
-import { Vector3 } from 'three'
+import { BackSide, Vector3 } from 'three'
 
 import { mapSize, towersConfig } from '01-tower/lib/config'
 import { useMemoryStore } from '01-tower/lib/store'
@@ -9,7 +9,10 @@ import { useMemoryStore } from '01-tower/lib/store'
 // const gunshotAudio = typeof window !== 'undefined' && new Audio('/audio/gunshot.wav')
 
 const Tower = ({ id }) => {
+  const currentConstruction = useMemoryStore(s => s.currentConstruction)
   const getTower = useMemoryStore(s => s.getTower)
+  const selectedTower = useMemoryStore(s => s.selectedTower)
+  const selectTower = useMemoryStore(s => s.selectTower)
   const enemies = useMemoryStore(s => s.enemies)
   const decreaseEnemyHp = useMemoryStore(s => s.decreaseEnemyHp)
   const createProjectile = useMemoryStore(s => s.createProjectile)
@@ -45,9 +48,12 @@ const Tower = ({ id }) => {
   })
 
   return (
-    <mesh position={new Vector3(mapSize / 2 - i * 10 - 5, 2, mapSize / 2 - j * 10 - 5)}>
+    <mesh
+      position={new Vector3(mapSize / 2 - i * 10 - 5, 2, mapSize / 2 - j * 10 - 5)}
+      onClick={() => !selectedTower && !currentConstruction && selectTower(id)}
+    >
       <sphereGeometry args={[3, 10]} />
-      <meshStandardMaterial color={towersConfig[type].color} />
+      <meshStandardMaterial color={towersConfig[type].color} wireframe={selectedTower === id} />
     </mesh>
   )
 }
