@@ -76,7 +76,7 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
   selectTower: id => set({ selectedTower: id }),
   enemiesKilled: 0,
   livesLeft: 20,
-  money: process.env.NODE_ENV === 'development' ? 100 : 20,
+  money: 100,
   addMoney: amount => set(state => ({ money: state.money + amount })),
   enemies: [],
   towers: [],

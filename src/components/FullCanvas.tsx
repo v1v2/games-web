@@ -1,8 +1,10 @@
-import { Canvas } from '@react-three/fiber'
+// import { Canvas } from '@react-three/fiber'
+import { VRCanvas, DefaultXRControllers } from '@codyjasonbennett/xr'
 
 const FullCanvas = ({ children }) => (
   <>
-    <Canvas>{children}</Canvas>
+    <VRCanvas>{children}</VRCanvas>
+    <DefaultXRControllers />
     <style global jsx>{`
       html,
       body,
