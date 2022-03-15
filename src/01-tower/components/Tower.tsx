@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Vector3 } from 'three'
 
-import { mapSize, towersConfig } from 'lib/config'
-import { useMemoryStore } from 'lib/store'
+import { mapSize, towersConfig } from '01-tower/lib/config'
+import { useMemoryStore } from '01-tower/lib/store'
 
 // const gunshotAudio = typeof window !== 'undefined' && new Audio('/audio/gunshot.wav')
 

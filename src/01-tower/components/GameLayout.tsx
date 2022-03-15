@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
 
-import { Canvas } from '@react-three/fiber'
 import { OrbitControls, OrthographicCamera } from '@react-three/drei'
 import { useHotkeys } from 'react-hotkeys-hook'
 
-import { useMemoryStore } from 'lib/store'
-import { towersConfig } from 'lib/config'
+import FullCanvas from 'components/FullCanvas'
+
+import { useMemoryStore } from '01-tower/lib/store'
+import { towersConfig } from '01-tower/lib/config'
 
 const GameLayout = ({ children }) => {
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
@@ -55,7 +56,7 @@ const GameLayout = ({ children }) => {
         <div style={{ color: 'white', fontSize: 24 }}>{livesLeft} lives left</div>
         <div style={{ color: 'white', fontSize: 24 }}>Money: ${money}</div>
       </div>
-      <Canvas>
+      <FullCanvas>
         <ambientLight intensity={1} />
         <OrbitControls
           makeDefault
@@ -68,27 +69,7 @@ const GameLayout = ({ children }) => {
         />
         <OrthographicCamera makeDefault position={[100, 0, 100]} zoom={8} />
         {children}
-      </Canvas>
-      <style global jsx>{`
-        html,
-        body,
-        #__next {
-          height: 100%;
-        }
-
-        body {
-          margin: 0;
-          background: #333;
-          font-family: sans-serif;
-        }
-
-        canvas {
-          width: 100%;
-          height: 100vh;
-          outline: none;
-          -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-        }
-      `}</style>
+      </FullCanvas>
     </>
   )
 }

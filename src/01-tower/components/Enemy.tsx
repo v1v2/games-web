@@ -4,8 +4,8 @@ import { useFrame } from '@react-three/fiber'
 import { Tween } from '@tweenjs/tween.js'
 import { Vector3 } from 'three'
 
-import { getCellPosition, waypoints } from 'lib/config'
-import { useMemoryStore } from 'lib/store'
+import { getCellPosition, waypoints } from '01-tower/lib/config'
+import { useMemoryStore } from '01-tower/lib/store'
 
 const speed = 0.012
 const distanceFromGround = 2

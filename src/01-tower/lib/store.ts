@@ -2,7 +2,7 @@ import create from 'zustand'
 import { persist } from 'zustand/middleware'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 
-import { getCellPosition, towersConfig } from 'lib/config'
+import { getCellPosition, towersConfig } from '01-tower/lib/config'
 
 type TowerType = 'simple' | 'splash' | 'strong'
 

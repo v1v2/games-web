@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { Vector3 } from 'three'
 
-import { useMemoryStore } from 'lib/store'
-import { cells, mapSize, towersConfig } from 'lib/config'
+import { useMemoryStore } from '01-tower/lib/store'
+import { cells, mapSize, towersConfig } from '01-tower/lib/config'
 
 const Cell = ({ i, j }) => {
   const [hovered, setHovered] = useState(false)

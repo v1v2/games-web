@@ -3,12 +3,12 @@ import { useEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Vector3, Quaternion, Euler } from 'three'
 
-import Enemy from 'components/Enemy'
-import GameLayout from 'components/GameLayout'
-import Ground from 'components/Ground'
-import { useMemoryStore } from 'lib/store'
-import Tower from 'components/Tower'
-import Projectile from 'components/Projectile'
+import Enemy from '01-tower/components/Enemy'
+import GameLayout from '01-tower/components/GameLayout'
+import Ground from '01-tower/components/Ground'
+import { useMemoryStore } from '01-tower/lib/store'
+import Tower from '01-tower/components/Tower'
+import Projectile from '01-tower/components/Projectile'
 
 // const distanceFromGround = 2
 

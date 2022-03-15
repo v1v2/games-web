@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
 
+import { useFrame } from '@react-three/fiber'
 import { Vector3 } from 'three'
 
-import { useMemoryStore } from 'lib/store'
-import { useFrame } from '@react-three/fiber'
+import { useMemoryStore } from '01-tower/lib/store'
 
 const Projectile = ({ id }) => {
   const getProjectile = useMemoryStore(s => s.getProjectile)
