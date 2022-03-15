@@ -33,8 +33,8 @@ const Cell = ({ i, j }) => {
       </mesh>
 
       {currentConstruction && hovered && (
-        <mesh position={new Vector3(mapSize / 2 - i * 10 - 5, 0.1, mapSize / 2 - j * 10 - 5)}>
-          <sphereGeometry args={[5, 5, 10, 10, 10]} />
+        <mesh position={new Vector3(mapSize / 2 - i * 10 - 5, 2, mapSize / 2 - j * 10 - 5)}>
+          <sphereGeometry args={[3, 10]} />
           <meshStandardMaterial color={towersConfig[currentConstruction].color} />
         </mesh>
       )}
