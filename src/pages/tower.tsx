@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
 
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
+import { VRCanvas, DefaultXRControllers } from '@codyjasonbennett/xr'
 import { Vector3, Quaternion, Euler } from 'three'
+import { useXR } from '@codyjasonbennett/xr'
 
 import Enemy from '01-tower/components/Enemy'
 import GameLayout from '01-tower/components/GameLayout'
@@ -26,9 +28,18 @@ const IndexPage = () => {
   const projectiles = useMemoryStore(s => s.projectiles)
   const spawnTimerRef = useRef(0)
 
+  const { camera } = useThree()
+  const { controllers } = useXR()
+
   const enemyRef = useRef(null)
   const towerRef = useRef(null)
   const laserRef = useRef(null)
+
+  useEffect(() => {
+    if ("gpu" in navigator) {
+      console.log('WebGPU supported')
+    }
+  }, [])
 
   useFrame((state, delta) => {
     if (isStarted) {
@@ -99,6 +110,11 @@ const IndexPage = () => {
       <mesh ref={laserRef}>
         <boxGeometry args={[0.3, 0.3, 5]} />
       </mesh> */}
+
+      <group position={[70, 70, 70]}>
+        <primitive object={camera}>
+        </primitive>
+      </group>
     </>
   )
 }

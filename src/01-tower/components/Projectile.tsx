@@ -21,13 +21,15 @@ const Projectile = ({ id }) => {
   const distance = towerPos.distanceTo(enemyPos)
 
   useFrame(() => {
-    const betweenPos = towerPos.clone().lerp(enemyPos, 0.5)
-    const angle = Math.atan2(enemyPos.z - towerPos.z, enemyPos.x - towerPos.x)
-    const lookAngle = -(angle - Math.PI / 2)
-    // towerRef.current.rotation.y = lookAngle
-    laserRef.current.position.x = betweenPos.x
-    laserRef.current.position.z = betweenPos.z
-    laserRef.current.rotation.y = lookAngle
+    if (laserRef.current) {
+      const betweenPos = towerPos.clone().lerp(enemyPos, 0.5)
+      const angle = Math.atan2(enemyPos.z - towerPos.z, enemyPos.x - towerPos.x)
+      const lookAngle = -(angle - Math.PI / 2)
+      // towerRef.current.rotation.y = lookAngle
+      laserRef.current.position.x = betweenPos.x
+      laserRef.current.position.z = betweenPos.z
+      laserRef.current.rotation.y = lookAngle
+    }
   })
 
   return (

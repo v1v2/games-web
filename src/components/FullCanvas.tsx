@@ -1,12 +1,14 @@
+import Head from 'next/head'
+
 // import { Canvas } from '@react-three/fiber'
-import { VRCanvas, DefaultXRControllers } from '@codyjasonbennett/xr'
+import { VRCanvas } from '@codyjasonbennett/xr'
 
 const FullCanvas = ({ children }) => (
   <>
-    <VRCanvas>
-      <DefaultXRControllers />
-      {children}
-    </VRCanvas>
+    <Head>
+      <meta httpEquiv="origin-trial" content={process.env.NEXT_PUBLIC_ORIGIN_TRIAL_KEY} />
+    </Head>
+    <VRCanvas>{children}</VRCanvas>
     <style global jsx>{`
       html,
       body,
