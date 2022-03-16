@@ -11,6 +11,7 @@ import { towersConfig } from '01-tower/lib/config'
 const music = typeof window !== 'undefined' && new Audio('/audio/Quincas Moreira - Chtulthu.mp3')
 
 const GameLayout = ({ children }) => {
+  const [isWebGPUEnabled, setIsWebGPUEnabled] = useState(false)
   const selectedTower = useMemoryStore(s => s.selectedTower)
   const getTower = useMemoryStore(s => s.getTower)
   const addMoney = useMemoryStore(s => s.addMoney)
@@ -26,7 +27,9 @@ const GameLayout = ({ children }) => {
   const money = useMemoryStore(s => s.money)
 
   useEffect(() => {
-    music.play()
+    if ('gpu' in navigator) {
+      setIsWebGPUEnabled(true)
+    }
   }, [])
 
   useEffect(() => {
@@ -86,6 +89,7 @@ const GameLayout = ({ children }) => {
         <div style={{ color: 'white', fontSize: 24 }}>{livesLeft} lives left</div>
         <div style={{ color: 'white', fontSize: 24 }}>Money: ${money}</div>
         <div style={{ color: 'white', fontSize: 24 }}>Wave {wave}</div>
+        {isWebGPUEnabled && <div style={{ color: 'white', fontSize: 24 }}>WebGPU!</div>}
         {!isStarted && (
           <div>
             <button
