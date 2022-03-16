@@ -30,11 +30,6 @@ const GameLayout = ({ children }) => {
     if ('gpu' in navigator) {
       setIsWebGPUEnabled(true)
     }
-    setTimeout(() => {
-      if ('gpu' in navigator) {
-        setIsWebGPUEnabled(true)
-      }
-    }, 2000)
   }, [])
 
   useEffect(() => {

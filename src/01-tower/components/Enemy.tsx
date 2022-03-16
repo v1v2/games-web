@@ -4,8 +4,10 @@ import { useFrame } from '@react-three/fiber'
 import { Tween } from '@tweenjs/tween.js'
 import { Vector3 } from 'three'
 
-import { getCellPosition, waypoints } from '01-tower/lib/config'
+import { enemiesConfig, getCellPosition, waypoints } from '01-tower/lib/config'
 import { useMemoryStore } from '01-tower/lib/store'
+import { greenMaterial } from '01-tower/lib/materials'
+import { cubeGeometry, hpBarGeometry } from '01-tower/lib/geometries'
 
 const distanceFromGround = 2
 
@@ -34,9 +36,9 @@ const Enemy = ({ id }) => {
   const totalHp = enemy?.totalHp
   const currentHp = enemy?.currentHp
   const speed = enemy?.speed
-  const color = enemy?.color
   const size = enemy?.size
   const value = enemy?.value
+  const type = enemy?.type
 
   useEffect(() => {
     if (currentHp <= 0) {
@@ -82,14 +84,17 @@ const Enemy = ({ id }) => {
       ref={ref}
       position={[initialWaypointPosition.x, distanceFromGround, initialWaypointPosition.z]}
     >
-      <mesh>
-        <boxGeometry args={[3 * size, 3 * size, 3 * size]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-      <mesh position={[0, distanceFromGround + size, 0]} scale={[currentHp / totalHp, 1, 1]}>
-        <planeGeometry args={[10, 1]} />
-        <meshStandardMaterial color="#0f0" />
-      </mesh>
+      <mesh
+        material={enemiesConfig[type].material}
+        scale={[3 * size, 3 * size, 3 * size]}
+        geometry={cubeGeometry}
+      />
+      <mesh
+        position={[0, distanceFromGround + size, 0]}
+        scale={[currentHp / totalHp, 1, 1]}
+        material={greenMaterial}
+        geometry={hpBarGeometry}
+      />
     </group>
   )
 }

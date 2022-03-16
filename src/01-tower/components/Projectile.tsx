@@ -4,6 +4,8 @@ import { useFrame } from '@react-three/fiber'
 import { Vector3 } from 'three'
 
 import { useMemoryStore } from '01-tower/lib/store'
+import { orangeMaterial } from '01-tower/lib/materials'
+import { cubeGeometry, sphereGeometry } from '01-tower/lib/geometries'
 
 const Projectile = ({ id }) => {
   const getProjectile = useMemoryStore(s => s.getProjectile)
@@ -14,6 +16,7 @@ const Projectile = ({ id }) => {
 
   useEffect(() => {
     setTimeout(() => removeProjectile(id), 100)
+    // TODO: Dispose
   }, [])
 
   const towerPos = new Vector3(fromX, 2, fromZ)
@@ -34,14 +37,14 @@ const Projectile = ({ id }) => {
 
   return (
     <>
-      <mesh ref={laserRef} position={[null, 2, null]}>
-        <boxGeometry args={[0.3, 0.3, distance]} />
-        <meshStandardMaterial color="#f60" />
-      </mesh>
-      <mesh position={[toX, 3, toZ]}>
-        <sphereGeometry args={[3, 10]} />
-        <meshStandardMaterial color="#f60" />
-      </mesh>
+      <mesh
+        ref={laserRef}
+        position={[null, 2, null]}
+        material={orangeMaterial}
+        scale={[0.3, 0.3, distance]}
+        geometry={cubeGeometry}
+      />
+      <mesh position={[toX, 3, toZ]} material={orangeMaterial} geometry={sphereGeometry} />
     </>
   )
 }

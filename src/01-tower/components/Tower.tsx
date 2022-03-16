@@ -1,10 +1,13 @@
 import { useState } from 'react'
 
 import { useFrame } from '@react-three/fiber'
-import { BackSide, Vector3 } from 'three'
+import { Interactive } from '@codyjasonbennett/xr'
+import { Vector3 } from 'three'
 
 import { mapSize, towersConfig } from '01-tower/lib/config'
 import { useMemoryStore } from '01-tower/lib/store'
+import { wireFrameMaterial } from '01-tower/lib/materials'
+import { sphereGeometry } from '01-tower/lib/geometries'
 
 // const gunshotAudio = typeof window !== 'undefined' && new Audio('/audio/gunshot.wav')
 
@@ -47,14 +50,17 @@ const Tower = ({ id }) => {
     }
   })
 
+  const onUniversalClick = () => !selectedTower && !currentConstruction && selectTower(id)
+
   return (
-    <mesh
-      position={new Vector3(mapSize / 2 - i * 10 - 5, 2, mapSize / 2 - j * 10 - 5)}
-      onClick={() => !selectedTower && !currentConstruction && selectTower(id)}
-    >
-      <sphereGeometry args={[3, 10]} />
-      <meshStandardMaterial color={towersConfig[type].color} wireframe={selectedTower === id} />
-    </mesh>
+    <Interactive onSelect={onUniversalClick}>
+      <mesh
+        position={new Vector3(mapSize / 2 - i * 10 - 5, 2, mapSize / 2 - j * 10 - 5)}
+        onClick={onUniversalClick}
+        material={selectedTower === id ? wireFrameMaterial : towersConfig[type].material}
+        geometry={sphereGeometry}
+      />
+    </Interactive>
   )
 }
 

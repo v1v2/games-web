@@ -4,6 +4,14 @@ import { Vector3 } from 'three'
 
 import { useMemoryStore } from '01-tower/lib/store'
 import { cells, mapSize, towersConfig } from '01-tower/lib/config'
+import {
+  grayMaterial,
+  greenMaterial,
+  redMaterial,
+  undergroundMaterial,
+} from '01-tower/lib/materials'
+import { squareGeometry, sphereGeometry, baseGeometry } from '01-tower/lib/geometries'
+import { Interactive } from '@codyjasonbennett/xr'
 
 const Cell = ({ i, j }) => {
   const [hovered, setHovered] = useState(false)
@@ -12,31 +20,36 @@ const Cell = ({ i, j }) => {
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
   const addTower = useMemoryStore(s => s.addTower)
 
-  const foundConstruction = towers.find(t => t.i === i && t.j === j)
+  const onUniversalHover = () => setHovered(true)
+  const onUniversalBlur = () => setHovered(false)
+
+  const onUniversalClick = () => {
+    if (currentConstruction && !towers.some(t => t.i === i && t.j === j)) {
+      addTower({ type: currentConstruction, i, j })
+      clearCurrentConstruction()
+    }
+  }
 
   return (
     <>
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={new Vector3(mapSize / 2 - i * 10 - 5, 0.5, mapSize / 2 - j * 10 - 5)}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-        onClick={() => {
-          if (currentConstruction && !towers.some(t => t.i === i && t.j === j)) {
-            addTower({ type: currentConstruction, i, j })
-            clearCurrentConstruction()
-          }
-        }}
-      >
-        <planeGeometry args={[9, 9, 1]} />
-        <meshStandardMaterial color="#777" />
-      </mesh>
-
+      <Interactive onSelect={onUniversalClick} onHover={onUniversalHover} onBlur={onUniversalBlur}>
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={new Vector3(mapSize / 2 - i * 10 - 5, 0.5, mapSize / 2 - j * 10 - 5)}
+          onPointerOver={onUniversalHover}
+          onPointerOut={onUniversalBlur}
+          onClick={onUniversalClick}
+          material={grayMaterial}
+          geometry={squareGeometry}
+          scale={[9, 9, 1]}
+        />
+      </Interactive>
       {currentConstruction && hovered && (
-        <mesh position={new Vector3(mapSize / 2 - i * 10 - 5, 2, mapSize / 2 - j * 10 - 5)}>
-          <sphereGeometry args={[3, 10]} />
-          <meshStandardMaterial color={towersConfig[currentConstruction].color} />
-        </mesh>
+        <mesh
+          position={new Vector3(mapSize / 2 - i * 10 - 5, 2, mapSize / 2 - j * 10 - 5)}
+          geometry={sphereGeometry}
+          material={towersConfig[currentConstruction].material}
+        />
       )}
     </>
   )
@@ -44,10 +57,12 @@ const Cell = ({ i, j }) => {
 
 const Ground = () => (
   <>
-    <mesh rotation={[-Math.PI / 2, 0, 0]}>
-      <planeGeometry args={[mapSize + 1, mapSize + 1, 1]} />
-      <meshStandardMaterial color="#333" />
-    </mesh>
+    <mesh
+      rotation={[-Math.PI / 2, 0, 0]}
+      material={undergroundMaterial}
+      scale={[mapSize + 1, mapSize + 1, 1]}
+      geometry={squareGeometry}
+    />
     {cells.map((row, i) =>
       row.map((c, j) =>
         c === 1 ? (
@@ -57,32 +72,20 @@ const Ground = () => (
             key={`cell-${i}-${j}`}
             rotation={[-Math.PI / 2, 0, 0]}
             position={new Vector3(mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5)}
-          >
-            <boxGeometry args={[9, 9, 5]} />
-            <meshStandardMaterial color="#3f3" />
-          </mesh>
+            material={greenMaterial}
+            geometry={baseGeometry}
+          />
         ) : c === 3 ? (
           <mesh
             key={`cell-${i}-${j}`}
             rotation={[-Math.PI / 2, 0, 0]}
             position={new Vector3(mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5)}
-          >
-            <boxGeometry args={[9, 9, 5]} />
-            <meshStandardMaterial color="#f33" />
-          </mesh>
+            material={redMaterial}
+            geometry={baseGeometry}
+          />
         ) : null
       )
     )}
-    {/* {waypoints.map(([i, j]) => (
-      <mesh
-        key={`waypoint-${i}-${j}`}
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={new Vector3(mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5)}
-      >
-        <boxGeometry args={[3, 3, 10]} />
-        <meshStandardMaterial color="#f33" />
-      </mesh>
-    ))} */}
   </>
 )
 

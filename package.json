@@ -9,6 +9,7 @@
     "@codyjasonbennett/xr": "3.4.1",
     "@react-three/drei": "^8.16.5",
     "@react-three/fiber": "^7.0.26",
+    "@react-three/flex": "^0.7.0",
     "@tweenjs/tween.js": "^18.6.4",
     "@v1v2/next": "^1.0.0",
     "next": "^12.1.0",

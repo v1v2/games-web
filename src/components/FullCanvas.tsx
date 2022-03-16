@@ -2,12 +2,18 @@ import Head from 'next/head'
 
 // import { Canvas } from '@react-three/fiber'
 import { VRCanvas } from '@codyjasonbennett/xr'
+import { Stats } from '@react-three/drei'
+
+import ClientOnly from 'components/ClientOnly'
 
 const FullCanvas = ({ children }) => (
   <>
     <Head>
       <meta httpEquiv="origin-trial" content={process.env.NEXT_PUBLIC_ORIGIN_TRIAL_KEY} />
     </Head>
+    <ClientOnly>
+      <Stats showPanel={0} className="stats" />
+    </ClientOnly>
     <VRCanvas>{children}</VRCanvas>
     <style global jsx>{`
       html,
@@ -27,6 +33,11 @@ const FullCanvas = ({ children }) => (
         height: 100vh;
         outline: none;
         -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+      }
+
+      .stats {
+        right: 0;
+        left: auto !important;
       }
     `}</style>
   </>
