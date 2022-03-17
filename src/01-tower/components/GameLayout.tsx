@@ -95,7 +95,9 @@ const GameLayout = ({ children }) => {
             <button
               onClick={() => {
                 start()
-                music.play()
+                if (!process.env.NEXT_PUBLIC_DISABLE_MUSIC) {
+                  music.play()
+                }
               }}
             >
               Start

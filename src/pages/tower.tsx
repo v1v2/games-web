@@ -24,7 +24,7 @@ const IndexPage = () => {
   const start = useMemoryStore(s => s.start)
   const spawnTimerRef = useRef(0)
 
-  const { camera } = useThree()
+  const { camera, gl } = useThree()
   const { isPresenting, player, controllers } = useXR()
 
   const cameraRigRef = useRef(null)
@@ -64,6 +64,14 @@ const IndexPage = () => {
         const typeIndex = Math.floor(Math.random() * 10) % 4
         // @ts-ignore
         spawnEnemy(['basic', 'fast', 'tank', 'boss'][typeIndex], 50 + wave * 70)
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log({
+            polys: gl.info.render.triangles,
+            calls: gl.info.render.calls,
+            geometries: gl.info.memory.geometries,
+          })
+        }
       }
     }
   })

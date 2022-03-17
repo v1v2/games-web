@@ -14,7 +14,7 @@ const FullCanvas = ({ children }) => (
     <ClientOnly>
       <Stats showPanel={0} className="stats" />
     </ClientOnly>
-    <VRCanvas>{children}</VRCanvas>
+    <VRCanvas mode="concurrent">{children}</VRCanvas>
     <style global jsx>{`
       html,
       body,
