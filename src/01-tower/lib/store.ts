@@ -3,40 +3,8 @@ import { persist } from 'zustand/middleware'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 
 import { getCellPosition, towersConfig, enemiesConfig } from '01-tower/lib/config'
-
-type TowerType = 'simple' | 'splash' | 'strong'
-
-type EnemyType = 'basic' | 'fast' | 'tank'
-
-type Enemy = {
-  id: string
-  type: EnemyType
-  speed: number
-  color: string
-  totalHp: number
-  currentHp: number
-  size: number
-  value: number
-  x: number
-  z: number
-}
-
-type Tower = {
-  id: string
-  type: TowerType
-  i: number
-  j: number
-  x: number
-  z: number
-}
-
-type Projectile = {
-  id: string
-  fromX: number
-  fromZ: number
-  toX: number
-  toZ: number
-}
+import { publishRemoveEnemy, publishCreateEnemy } from '01-tower/lib/pubsub'
+import { Enemy, EnemyType, Tower, TowerType, Projectile } from '01-tower/lib/types'
 
 interface MemoryStore {
   isStarted: boolean
@@ -86,24 +54,21 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
   spawnEnemy: (type: EnemyType, baseHp: number) => {
     const id = Math.random().toString()
     const hp = enemiesConfig[type].hpFactor * baseHp
-    set(state => ({
+    const enemy = {
+      id,
+      type,
+      totalHp: hp,
+      currentHp: hp,
+      speed: enemiesConfig[type].speed,
+      color: enemiesConfig[type].color,
+      size: enemiesConfig[type].size,
+      value: enemiesConfig[type].value,
       // To make them not spawn in the middle of the map
-      enemies: [
-        ...state.enemies,
-        {
-          id,
-          type,
-          totalHp: hp,
-          currentHp: hp,
-          speed: enemiesConfig[type].speed,
-          color: enemiesConfig[type].color,
-          size: enemiesConfig[type].size,
-          value: enemiesConfig[type].value,
-          x: 9999,
-          z: 9999,
-        },
-      ],
-    }))
+      x: 9999,
+      z: 9999,
+    }
+    set(state => ({ enemies: [...state.enemies, enemy] }))
+    // publishCreateEnemy(enemy)
   },
   createProjectile: (towerId: string, enemyId: string) => {
     const tower = get().getTower(towerId)
@@ -126,11 +91,13 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
   },
   getProjectile: (id: string) => get().projectiles.find(p => p.id === id),
   removeEnemy: (id: string) => {
+    const enemy = get().getEnemy(id)
     set(state => ({
       wave: 1 + Math.round((state.enemiesKilled + 1) / 20),
       enemiesKilled: state.enemiesKilled + 1,
       enemies: state.enemies.filter(enemy => enemy.id !== id),
     }))
+    // publishRemoveEnemy({ id, type: enemy.type })
   },
   decreaseEnemyHp: (id: string, value: number) => {
     set(state => ({

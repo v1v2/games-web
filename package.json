@@ -14,15 +14,18 @@
     "@v1v2/next": "^1.0.0",
     "lodash": "^4.17.21",
     "next": "^12.1.0",
+    "pubsub-js": "^1.9.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hotkeys-hook": "^3.4.4",
+    "react-use": "^17.3.2",
     "simple-zustand-devtools": "^1.0.1",
     "three": "^0.138.3",
     "zustand": "^3.7.1"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
+    "@types/pubsub-js": "^1.8.3",
     "@types/react": "^17.0.40",
     "@types/three": "^0.138.0",
     "next-transpile-modules": "^9.0.0",

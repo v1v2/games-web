@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { DefaultXRControllers, Interactive, useXR } from '@codyjasonbennett/xr'
 
-import Enemy from '01-tower/components/Enemy'
+import Enemies from '01-tower/components/Enemies'
 import GameLayout from '01-tower/components/GameLayout'
 import Ground from '01-tower/components/Ground'
 import { useMemoryStore } from '01-tower/lib/store'
@@ -15,7 +15,6 @@ import { blueMaterial, greenMaterial, redMaterial } from '01-tower/lib/materials
 const IndexPage = () => {
   const isStarted = useMemoryStore(s => s.isStarted)
   const wave = useMemoryStore(s => s.wave)
-  const enemies = useMemoryStore(s => s.enemies)
   const spawnEnemy = useMemoryStore(s => s.spawnEnemy)
   const towers = useMemoryStore(s => s.towers)
   const projectiles = useMemoryStore(s => s.projectiles)
@@ -65,13 +64,13 @@ const IndexPage = () => {
         // @ts-ignore
         spawnEnemy(['basic', 'fast', 'tank', 'boss'][typeIndex], 50 + wave * 70)
 
-        if (process.env.NODE_ENV === 'development') {
-          console.log({
-            polys: gl.info.render.triangles,
-            calls: gl.info.render.calls,
-            geometries: gl.info.memory.geometries,
-          })
-        }
+        // if (process.env.NODE_ENV === 'development') {
+        //   console.log({
+        //     polys: gl.info.render.triangles,
+        //     calls: gl.info.render.calls,
+        //     geometries: gl.info.memory.geometries,
+        //   })
+        // }
       }
     }
   })
@@ -79,9 +78,7 @@ const IndexPage = () => {
   return (
     <>
       <Ground />
-      {enemies.map(e => (
-        <Enemy key={e.id} id={e.id} />
-      ))}
+      <Enemies />
       {towers.map(t => (
         <Tower key={t.id} id={t.id} />
       ))}
