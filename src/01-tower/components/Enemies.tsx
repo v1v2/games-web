@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 
 import { useFrame } from '@react-three/fiber'
 import { Tween } from '@tweenjs/tween.js'
-import { Instance, Instances } from '@react-three/drei'
-import { InstancedMesh, Object3D, Vector3 } from 'three'
+import { Merged } from '@react-three/drei'
+import { InstancedMesh, Mesh, Object3D, Vector3 } from 'three'
 
 import { enemiesConfig, getCellPosition, waypoints } from '01-tower/lib/config'
 import { useMemoryStore } from '01-tower/lib/store'
@@ -14,7 +14,7 @@ import { Enemy as TEnemy } from '01-tower/lib/types'
 
 const distanceFromGround = 2
 
-const Enemy = ({ id }: TEnemy) => {
+const Enemy = ({ id, EnemyMesh, HpBarMesh }: TEnemy & { EnemyMesh: any; HpBarMesh: any }) => {
   const ref = useRef(null)
   const wave = useMemoryStore(s => s.wave)
   const tweenRef = useRef(null)
@@ -86,13 +86,16 @@ const Enemy = ({ id }: TEnemy) => {
       ref={ref}
       position={[initialWaypointPosition.x, distanceFromGround, initialWaypointPosition.z]}
     >
-      <Instance scale={[3 * size, 3 * size, 3 * size]} />
-      <mesh
+      <EnemyMesh scale={[3 * size, 3 * size, 3 * size]} />
+      <HpBarMesh
         position={[0, distanceFromGround + size, 0]}
         scale={[8 * (currentHp / totalHp), 1, 1]}
+      />
+      {/* <Instance scale={[3 * size, 3 * size, 3 * size]} /> */}
+      {/* <mesh
         material={greenMaterial}
         geometry={squareGeometry}
-      />
+      /> */}
     </group>
   )
 }
@@ -234,25 +237,51 @@ const ImperativeEnemies = () => {
   )
 }
 
+const hpBarMesh = new Mesh(squareGeometry, greenMaterial)
+
 const Enemies = () => {
   const enemies = useMemoryStore(s => s.enemies)
 
+  const fastEnemyMeshRef = useRef(new Mesh(cubeGeometry, purpleMaterial))
+  const basicEnemyMeshRef = useRef(new Mesh(cubeGeometry, greenMaterial))
+  const tankEnemyMeshRef = useRef(new Mesh(cubeGeometry, redMaterial))
+  const bossEnemyMeshRef = useRef(new Mesh(cubeGeometry, blackMaterial))
+
   const enemiesByType = [
-    { type: 'fast', limit: 30, material: purpleMaterial },
-    { type: 'basic', limit: 30, material: greenMaterial },
-    { type: 'tank', limit: 30, material: redMaterial },
-    { type: 'boss', limit: 30, material: blackMaterial },
+    { type: 'fast', limit: 30, material: purpleMaterial, mesh: fastEnemyMeshRef.current },
+    { type: 'basic', limit: 30, material: greenMaterial, mesh: basicEnemyMeshRef.current },
+    { type: 'tank', limit: 30, material: redMaterial, mesh: tankEnemyMeshRef.current },
+    { type: 'boss', limit: 30, material: blackMaterial, mesh: bossEnemyMeshRef.current },
   ].map(x => ({ ...x, enemies: enemies.filter(e => e.type === x.type) }))
 
   return (
     <>
-      {enemiesByType.map(({ type, material, enemies, limit }) => (
+      {/* {enemiesByType.map(({ type, material, enemies, limit }) => (
         <Instances key={type} limit={limit} geometry={cubeGeometry} material={material}>
           {enemies.map(e => (
             <Enemy key={e.id} {...e} />
           ))}
         </Instances>
+      ))} */}
+      {enemiesByType.map(({ type, enemies, mesh }) => (
+        <Merged key={type} meshes={[mesh, hpBarMesh]}>
+          {(EnemyMesh, HpBarMesh) =>
+            enemies.map(e => (
+              <Enemy key={e.id} {...e} EnemyMesh={EnemyMesh} HpBarMesh={HpBarMesh} />
+            ))
+          }
+        </Merged>
       ))}
+      {/* <Merged meshes={[boxMesh, sphereMesh]}>
+        {(Box, Sphere) => (
+          <>
+            <Box position={[0, 0, 0]} color="red" />
+            <Box position={[10, 0, 0]} color="tomato" />
+            <Sphere scale={0.7} position={[20, 0, 0]} color="green" />
+            <Sphere scale={0.7} position={[40, 0, 0]} color="teal" />
+          </>
+        )}
+      </Merged> */}
     </>
   )
 }
