@@ -22,6 +22,7 @@ interface MemoryStore {
   removeEnemy: (id: string) => void
   decreaseEnemyHp: (id: string, value: number) => void
   updateEnemyCoordinates: (id: string, x: number, z: number) => void
+  batchUpdateEnemyCoordinates: (enemies: { id: string; x: number; z: number }[]) => void
   getEnemy: (id: string) => Enemy
   getTower: (id: string) => Tower
   towers: Tower[]
@@ -117,6 +118,17 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
           return { ...enemy, x, z }
         }
         return enemy
+      }),
+    }))
+  },
+  batchUpdateEnemyCoordinates: (enemies: { id: string; x: number; z: number }[]) => {
+    set(state => ({
+      enemies: state.enemies.map(e => {
+        const foundNewEnemy = enemies.find(x => x.id === e.id)
+        if (foundNewEnemy) {
+          return { ...e, x: foundNewEnemy.x, z: foundNewEnemy.z }
+        }
+        return e
       }),
     }))
   },

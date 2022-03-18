@@ -1,16 +1,14 @@
-import { useRef, useEffect, memo } from 'react'
+import { useRef, useEffect, memo, useState, useCallback } from 'react'
 
 import { useFrame } from '@react-three/fiber'
-import { Tween } from '@tweenjs/tween.js'
 import { Merged } from '@react-three/drei'
 import { useSpring, a } from '@react-spring/three'
-import { Mesh, Vector3 } from 'three'
+import { Group, Mesh, Vector3 } from 'three'
 
 import { getCellPosition, waypoints } from '01-tower/lib/config'
 import { useMemoryStore } from '01-tower/lib/store'
 import { blackMaterial, greenMaterial, purpleMaterial, redMaterial } from '01-tower/lib/materials'
 import { cubeGeometry, squareGeometry } from '01-tower/lib/geometries'
-import { Enemy as TEnemy } from '01-tower/lib/types'
 
 const distanceFromGround = 2
 
@@ -28,7 +26,6 @@ const Enemy = (props: any & { EnemyMesh: any; HpBarMesh: any }) => {
   const addMoney = useMemoryStore(s => s.addMoney)
   const enemyReachedEnd = useMemoryStore(s => s.enemyReachedEnd)
   const removeEnemy = useMemoryStore(s => s.removeEnemy)
-  const updateEnemyCoordinates = useMemoryStore(s => s.updateEnemyCoordinates)
 
   const { x: initX, z: initZ } = getCellPosition(waypoints[0][0], waypoints[0][1])
   const { x: endX, z: endZ } = getCellPosition(
@@ -42,7 +39,8 @@ const Enemy = (props: any & { EnemyMesh: any; HpBarMesh: any }) => {
   }))
 
   const { position } = useSpring({
-    to: async next => {
+    // useCallback prevents re-rendering from causing the animation to reset
+    to: useCallback(async next => {
       await mapSeries(waypointTuples, async ({ currentWaypoint, nextWaypoint }) => {
         if (nextWaypoint) {
           const { x: curX, z: curZ } = getCellPosition(currentWaypoint[0], currentWaypoint[1])
@@ -56,15 +54,12 @@ const Enemy = (props: any & { EnemyMesh: any; HpBarMesh: any }) => {
           })
         }
       })
-    },
+    }, []),
     from: { position: [initX, distanceFromGround, initZ] },
   })
 
   useFrame(() => {
     const pos = ref.current.position
-    // TODO: THIS CAUSES A BIG SLOW DOWN, batch for all enemies in 1 call
-    // or skip some frames or do something else
-    updateEnemyCoordinates(id, pos.x, pos.z)
     if (Math.abs(pos.x - endX) < 0.1 && Math.abs(pos.z - endZ) < 0.1) {
       enemyReachedEnd(id)
     }
@@ -82,7 +77,7 @@ const Enemy = (props: any & { EnemyMesh: any; HpBarMesh: any }) => {
     }
   }, [currentHp])
 
-  // Maybe useless
+  // Maybe useless, to try to make them spawn in the right place
   // useLayoutEffect(() => {
   //   ref.current.position.set(
   //     initialWaypointPosition.x,
@@ -92,7 +87,7 @@ const Enemy = (props: any & { EnemyMesh: any; HpBarMesh: any }) => {
   // }, [])
 
   return (
-    <a.group ref={ref} position={position}>
+    <a.group ref={ref} position={position} userData={{ id }}>
       <EnemyMesh scale={[3 * size, 3 * size, 3 * size]} />
       <HpBarMesh
         position={[0, distanceFromGround + size, 0]}
@@ -239,65 +234,92 @@ const Enemy = (props: any & { EnemyMesh: any; HpBarMesh: any }) => {
 //   )
 // }
 
+// If not memo, they stop moving at the first waypoint
 const EnemyMemo = memo(Enemy)
 
 const hpBarMesh = new Mesh(squareGeometry, greenMaterial)
 
 const Enemies = () => {
   const enemies = useMemoryStore(s => s.enemies)
+  const batchUpdateEnemyCoordinates = useMemoryStore(s => s.batchUpdateEnemyCoordinates)
 
   const fastEnemyMeshRef = useRef(new Mesh(cubeGeometry, purpleMaterial))
   const basicEnemyMeshRef = useRef(new Mesh(cubeGeometry, greenMaterial))
   const tankEnemyMeshRef = useRef(new Mesh(cubeGeometry, redMaterial))
   const bossEnemyMeshRef = useRef(new Mesh(cubeGeometry, blackMaterial))
 
+  const fastEnemiesGroupRef = useRef<Group>(null)
+  const basicEnemiesGroupRef = useRef<Group>(null)
+  const tankEnemiesGroupRef = useRef<Group>(null)
+  const bossEnemiesGroupRef = useRef<Group>(null)
+
   const enemiesByType = [
-    { type: 'fast', limit: 30, material: purpleMaterial, mesh: fastEnemyMeshRef.current },
-    { type: 'basic', limit: 30, material: greenMaterial, mesh: basicEnemyMeshRef.current },
-    { type: 'tank', limit: 30, material: redMaterial, mesh: tankEnemyMeshRef.current },
-    { type: 'boss', limit: 30, material: blackMaterial, mesh: bossEnemyMeshRef.current },
+    {
+      type: 'fast',
+      limit: 30,
+      material: purpleMaterial,
+      mesh: fastEnemyMeshRef.current,
+      groupRef: fastEnemiesGroupRef,
+    },
+    {
+      type: 'basic',
+      limit: 30,
+      material: greenMaterial,
+      mesh: basicEnemyMeshRef.current,
+      groupRef: basicEnemiesGroupRef,
+    },
+    {
+      type: 'tank',
+      limit: 30,
+      material: redMaterial,
+      mesh: tankEnemyMeshRef.current,
+      groupRef: tankEnemiesGroupRef,
+    },
+    {
+      type: 'boss',
+      limit: 30,
+      material: blackMaterial,
+      mesh: bossEnemyMeshRef.current,
+      groupRef: bossEnemiesGroupRef,
+    },
   ].map(x => ({ ...x, enemies: enemies.filter(e => e.type === x.type) }))
 
-  return (
-    <>
-      {/* {enemiesByType.map(({ type, material, enemies, limit }) => (
-        <Instances key={type} limit={limit} geometry={cubeGeometry} material={material}>
+  useFrame(() => {
+    const allEnemies = enemiesByType.reduce(
+      (acc, curType) =>
+        acc.concat(
+          curType.groupRef.current.children?.map(c => ({
+            id: c.userData.id,
+            x: c.position.x,
+            z: c.position.z,
+          }))
+        ),
+      []
+    )
+    batchUpdateEnemyCoordinates(allEnemies)
+  })
+
+  return enemiesByType.map(({ type, enemies, mesh, limit, groupRef }) => (
+    <Merged key={type} meshes={[mesh, hpBarMesh]} limit={limit}>
+      {(EnemyMesh, HpBarMesh) => (
+        <group ref={groupRef}>
           {enemies.map(e => (
-            <Enemy key={e.id} {...e} />
+            <EnemyMemo
+              key={e.id}
+              id={e.id}
+              totalHp={e.totalHp}
+              currentHp={e.currentHp}
+              speed={e.speed}
+              size={e.size}
+              value={e.value}
+              EnemyMesh={EnemyMesh}
+              HpBarMesh={HpBarMesh}
+            />
           ))}
-        </Instances>
-      ))} */}
-      {enemiesByType.map(({ type, enemies, mesh, limit }) => (
-        <Merged key={type} meshes={[mesh, hpBarMesh]} limit={limit}>
-          {(EnemyMesh, HpBarMesh) =>
-            enemies.map(e => (
-              <EnemyMemo
-                key={e.id}
-                id={e.id}
-                totalHp={e.totalHp}
-                currentHp={e.currentHp}
-                speed={e.speed}
-                size={e.size}
-                value={e.value}
-                EnemyMesh={EnemyMesh}
-                HpBarMesh={HpBarMesh}
-              />
-            ))
-          }
-        </Merged>
-      ))}
-      {/* <Merged meshes={[boxMesh, sphereMesh]}>
-        {(Box, Sphere) => (
-          <>
-            <Box position={[0, 0, 0]} color="red" />
-            <Box position={[10, 0, 0]} color="tomato" />
-            <Sphere scale={0.7} position={[20, 0, 0]} color="green" />
-            <Sphere scale={0.7} position={[40, 0, 0]} color="teal" />
-          </>
-        )}
-      </Merged> */}
-    </>
-  )
+        </group>
+      )}
+    </Merged>
+  ))
 }
 
 export default Enemies
