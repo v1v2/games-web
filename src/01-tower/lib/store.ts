@@ -3,7 +3,6 @@ import { persist } from 'zustand/middleware'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 
 import { getCellPosition, towersConfig, enemiesConfig } from '01-tower/lib/config'
-import { publishRemoveEnemy, publishCreateEnemy } from '01-tower/lib/pubsub'
 import { Enemy, EnemyType, Tower, TowerType, Projectile } from '01-tower/lib/types'
 
 interface MemoryStore {
@@ -16,6 +15,7 @@ interface MemoryStore {
   livesLeft: number
   money: number
   addMoney: (amount: number) => void
+  enemyReachedEnd: (id: string) => void
   decrementLivesLeft: () => void
   enemies: Enemy[]
   spawnEnemy: (type: EnemyType, baseHp: number) => void
@@ -34,6 +34,7 @@ interface MemoryStore {
   clearCurrentConstruction: () => void
   addTower: (tower: { type: TowerType; i: number; j: number }) => void
   removeTower: (id: string) => void
+  clearEnemies: () => void
 }
 
 export const useMemoryStore = create<MemoryStore>((set, get) => ({
@@ -119,6 +120,12 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
       }),
     }))
   },
+  enemyReachedEnd: (id: string) => {
+    set(state => ({
+      enemies: state.enemies.filter(enemy => enemy.id !== id),
+      livesLeft: state.livesLeft - 1,
+    }))
+  },
   decrementLivesLeft: () => set(state => ({ livesLeft: state.livesLeft - 1 })),
   addTower: (tower: { type: TowerType; i: number; j: number }) => {
     const position = getCellPosition(tower.i, tower.j)
@@ -133,7 +140,10 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
   currentConstruction: null,
   setCurrentConstruction: (towerType: TowerType) => set({ currentConstruction: towerType }),
   clearCurrentConstruction: () => set({ currentConstruction: null }),
+  clearEnemies: () => set({ enemies: [] }),
 }))
+
+export const isAliveSelector = (state: MemoryStore) => state.livesLeft > 0
 
 interface LocalStore {}
 

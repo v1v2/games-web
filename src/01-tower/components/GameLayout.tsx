@@ -23,6 +23,7 @@ const GameLayout = ({ children }) => {
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
   const setCurrentConstruction = useMemoryStore(s => s.setCurrentConstruction)
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
+  const clearEnemies = useMemoryStore(s => s.clearEnemies)
   const livesLeft = useMemoryStore(s => s.livesLeft)
   const money = useMemoryStore(s => s.money)
 
@@ -33,9 +34,11 @@ const GameLayout = ({ children }) => {
   }, [])
 
   useEffect(() => {
+    console.log(livesLeft)
     if (livesLeft <= 0) {
-      alert(`You lost at wave ${wave}!`)
-      window.location.reload()
+      clearEnemies()
+      console.log(`You lost at wave ${wave}!`)
+      // window.location.reload()
     }
   }, [livesLeft])
 

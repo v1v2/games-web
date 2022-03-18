@@ -6,7 +6,7 @@ import { DefaultXRControllers, Interactive, useXR } from '@codyjasonbennett/xr'
 import Enemies from '01-tower/components/Enemies'
 import GameLayout from '01-tower/components/GameLayout'
 import Ground from '01-tower/components/Ground'
-import { useMemoryStore } from '01-tower/lib/store'
+import { isAliveSelector, useMemoryStore } from '01-tower/lib/store'
 import Tower from '01-tower/components/Tower'
 import Projectile from '01-tower/components/Projectile'
 import { cubeGeometry, sphereGeometry } from '01-tower/lib/geometries'
@@ -22,6 +22,7 @@ const IndexPage = () => {
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
   const start = useMemoryStore(s => s.start)
   const spawnTimerRef = useRef(0)
+  const isAlive = useMemoryStore(isAliveSelector)
 
   const { camera, gl } = useThree()
   const { isPresenting, player, controllers } = useXR()
@@ -56,7 +57,7 @@ const IndexPage = () => {
   }, [])
 
   useFrame((state, delta) => {
-    if (isStarted) {
+    if (isStarted && isAlive) {
       spawnTimerRef.current += delta
       if (spawnTimerRef.current > 1) {
         spawnTimerRef.current = 0
