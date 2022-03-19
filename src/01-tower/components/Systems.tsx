@@ -39,7 +39,7 @@ const KillSystem = () => {
         if (enemy.enemyDetails.currentHealth <= 0) {
           ecs.world.destroyEntity(enemy)
           killedEnemyUpdate()
-          addMoney(Math.floor(enemy.enemyDetails.value * (1 + wave * 0.06)))
+          addMoney(enemy.enemyDetails.value)
         }
       }
     }

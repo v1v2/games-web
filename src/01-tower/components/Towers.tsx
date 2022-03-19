@@ -10,6 +10,7 @@ import { blueMaterial, greenMaterial, redMaterial } from '01-tower/lib/materials
 import { sphereGeometry } from '01-tower/lib/geometries'
 import { useEnemyEntities, useTowerEntities } from '01-tower/lib/ecs'
 import { Instance, Instances } from '@react-three/drei'
+import { publishCreateProjectile } from '01-tower/lib/pubsub'
 
 // const gunshotAudio = typeof window !== 'undefined' && new Audio('/audio/gunshot.wav')
 
@@ -21,9 +22,7 @@ const Tower = ({ entity }) => {
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
   const selectedTower = useMemoryStore(s => s.selectedTower)
   const selectTower = useMemoryStore(s => s.selectTower)
-  // const createProjectile = useMemoryStore(s => s.createProjectile)
   const [isReadyToFire, setIsReadyToFire] = useState(true)
-  // const { type, i, j, x, z } = getTower(id)
 
   const towerConfig = towersConfig[entity.towerType]
 
@@ -46,8 +45,13 @@ const Tower = ({ entity }) => {
           } else {
             e.enemyDetails.currentHealth -= towerConfig.damage
           }
-          // createProjectile(id, e.id)
-          // gunshotAudio.cloneNode(true).play()
+          publishCreateProjectile({
+            id: Math.random().toString(),
+            fromX: position.x,
+            toX: e.position.x,
+            fromZ: position.z,
+            toZ: e.position.z,
+          })
           setIsReadyToFire(false)
           setTimeout(() => setIsReadyToFire(true), towerConfig.reloadTime)
           break

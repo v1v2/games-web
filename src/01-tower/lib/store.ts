@@ -2,8 +2,8 @@ import create from 'zustand'
 import { persist } from 'zustand/middleware'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 
-import { getCellPosition, towersConfig, enemiesConfig } from '01-tower/lib/config'
-import { Enemy, EnemyType, Tower, TowerType, Projectile } from '01-tower/lib/types'
+import { getCellPosition, towersConfig } from '01-tower/lib/config'
+import { Tower, TowerType } from '01-tower/lib/types'
 
 interface MemoryStore {
   isStarted: boolean
@@ -100,26 +100,6 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
       wave: 1 + Math.round((state.enemiesKilled + 1) / 20),
     }))
   },
-  // decreaseEnemyHp: (id: string, value: number) => {
-  //   set(state => ({
-  //     enemies: state.enemies.map(enemy => {
-  //       if (enemy.id === id) {
-  //         return { ...enemy, currentHp: enemy.currentHp - value }
-  //       }
-  //       return enemy
-  //     }),
-  //   }))
-  // },
-  // updateEnemyCoordinates: (id: string, x: number, z: number) => {
-  //   set(state => ({
-  //     enemies: state.enemies.map(enemy => {
-  //       if (enemy.id === id) {
-  //         return { ...enemy, x, z }
-  //       }
-  //       return enemy
-  //     }),
-  //   }))
-  // },
   // batchUpdateEnemyCoordinates: (enemies: { id: string; x: number; z: number }[]) => {
   //   set(state => ({
   //     enemies: state.enemies.map(e => {

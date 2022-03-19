@@ -15,19 +15,18 @@ import ecs from '01-tower/lib/ecs'
 import { detailedWaypoints, enemiesConfig, ENEMY_DISTANCE_TO_GROUND } from '01-tower/lib/config'
 import { EnemyType } from '01-tower/lib/types'
 import Systems from '01-tower/components/Systems'
+import Projectiles from '01-tower/components/Projectiles'
 
 const IndexPage = () => {
   const isStarted = useMemoryStore(s => s.isStarted)
   const wave = useMemoryStore(s => s.wave)
-  const towers = useMemoryStore(s => s.towers)
-  // const projectiles = useMemoryStore(s => s.projectiles)
   const setCurrentConstruction = useMemoryStore(s => s.setCurrentConstruction)
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
   const start = useMemoryStore(s => s.start)
   const spawnTimerRef = useRef(0)
   const isAlive = useMemoryStore(isAliveSelector)
 
-  const { camera, gl } = useThree()
+  const { camera } = useThree()
   const { isPresenting, player, controllers } = useXR()
 
   const cameraRigRef = useRef(null)
@@ -76,7 +75,7 @@ const IndexPage = () => {
             type,
             currentHealth: hp,
             maxHealth: hp,
-            value: Math.floor(value * (1 + wave * 0.06)),
+            value: Math.floor(value * (1 + wave * 0.3)),
           },
         })
       }
@@ -89,9 +88,7 @@ const IndexPage = () => {
       <Enemies />
       <Systems />
       <Towers />
-      {/* {projectiles.map(p => (
-        <Projectile key={p.id} id={p.id} />
-      ))} */}
+      <Projectiles />
 
       <group ref={cameraRigRef} position={[70, 70, 70]}>
         <primitive object={camera} />
