@@ -63,10 +63,9 @@ const Enemy = (props: any & { EnemyMesh: any; HpBarMesh: any }) => {
       entity.position.x = pos.x
       entity.position.z = pos.z
       if (Math.abs(pos.x - endX) < 0.1 && Math.abs(pos.z - endZ) < 0.1) {
-        // enemyReachedEnd(id)
         decrementLivesLeft()
         ecs.world.destroyEntity(entity)
-        // Should dispose of the instance in a useUnmount or something?
+        ref.current = null
       }
     }
   })
@@ -94,6 +93,7 @@ const hpBarMesh = new Mesh(squareGeometry, greenMaterial)
 
 const Enemies = () => {
   const enemies = useEnemyEntities()
+
   // const enemies = useMemoryStore(s => s.enemies)
   // const batchUpdateEnemyCoordinates = useMemoryStore(s => s.batchUpdateEnemyCoordinates)
 
@@ -157,30 +157,24 @@ const Enemies = () => {
     <>
       {enemiesByType.map(({ type, enemies, mesh, limit }) => (
         <Merged key={type} meshes={[mesh, hpBarMesh]} limit={limit}>
-          {
-            (EnemyMesh, HpBarMesh) =>
-              // <group ref={groupRef}>
-              //   {
-              enemies.map(e => {
-                const { size, speed } = enemiesConfig[e.enemyDetails.type]
-                const { currentHealth, maxHealth, type, value } = e.enemyDetails
-
-                return (
-                  <Enemy
-                    key={e.id}
-                    entity={e}
-                    totalHp={maxHealth}
-                    currentHp={currentHealth}
-                    speed={speed}
-                    size={size}
-                    value={value}
-                    EnemyMesh={EnemyMesh}
-                    HpBarMesh={HpBarMesh}
-                  />
-                )
-              })
-            // }
-            // </group>
+          {(EnemyMesh, HpBarMesh) =>
+            enemies.map(e => {
+              const { size, speed } = enemiesConfig[e.enemyDetails.type]
+              const { currentHealth, maxHealth, type, value } = e.enemyDetails
+              return (
+                <Enemy
+                  key={e.id}
+                  entity={e}
+                  totalHp={maxHealth}
+                  currentHp={currentHealth}
+                  speed={speed}
+                  size={size}
+                  value={value}
+                  EnemyMesh={EnemyMesh}
+                  HpBarMesh={HpBarMesh}
+                />
+              )
+            })
           }
         </Merged>
       ))}
@@ -188,4 +182,4 @@ const Enemies = () => {
   )
 }
 
-export default Enemies
+export default memo(Enemies)

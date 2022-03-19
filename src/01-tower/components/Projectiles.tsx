@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 
 import { Mesh, Vector3 } from 'three'
 
@@ -57,4 +57,4 @@ const Projectiles = () => {
   )
 }
 
-export default Projectiles
+export default memo(Projectiles)

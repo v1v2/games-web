@@ -32,6 +32,8 @@ const IndexPage = () => {
   const cameraRigRef = useRef(null)
   const uiRef = useRef(null)
 
+  console.log('tower re-rendered')
+
   // useEffect(() => {}, [])
 
   useEffect(() => {

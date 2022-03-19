@@ -37,7 +37,6 @@ const GameLayout = ({ children }) => {
   useEffect(() => {
     if (livesLeft <= 0) {
       enemies.forEach(e => ecs.world.destroyEntity(e))
-      ecs.world.clear
       console.log(`You lost at wave ${wave}!`)
       // window.location.reload()
     }
