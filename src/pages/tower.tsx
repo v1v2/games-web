@@ -19,6 +19,7 @@ import Projectiles from '01-tower/components/Projectiles'
 import { Object3D } from 'three'
 
 // This component is to contain useThree because it causes re-renders
+// Ideally, it should be only the camera in that component, but it's okay for now.
 const PlayerEnv = () => {
   const setCurrentConstruction = useMemoryStore(s => s.setCurrentConstruction)
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)

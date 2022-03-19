@@ -1,6 +1,5 @@
 import Head from 'next/head'
 
-// import { Canvas } from '@react-three/fiber'
 import { VRCanvas } from '@codyjasonbennett/xr'
 import { Stats } from '@react-three/drei'
 

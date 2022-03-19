@@ -1,6 +1,5 @@
-import { IEntity, Tag } from 'miniplex'
+import { IEntity } from 'miniplex'
 import { createECS } from 'miniplex/react'
-import { Object3D, Vector3 } from 'three'
 
 import { EnemyType, TowerType } from '01-tower/lib/types'
 

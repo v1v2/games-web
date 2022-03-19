@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import { Interactive } from '@codyjasonbennett/xr'
 import { Vector3 } from 'three'
 
-import { emptyCells, towersConfig, TOWER_DISANCE_TO_GROUND } from '01-tower/lib/config'
+import { emptyCells, towersConfig } from '01-tower/lib/config'
 import { useMemoryStore } from '01-tower/lib/store'
 import { blueMaterial, greenMaterial, redMaterial } from '01-tower/lib/materials'
 import { sphereGeometry } from '01-tower/lib/geometries'
@@ -76,18 +76,9 @@ const Towers = () => {
   const towers = useTowerEntities()
 
   const towersByType = [
-    {
-      type: 'simple',
-      material: greenMaterial,
-    },
-    {
-      type: 'splash',
-      material: redMaterial,
-    },
-    {
-      type: 'strong',
-      material: blueMaterial,
-    },
+    { type: 'simple', material: greenMaterial },
+    { type: 'splash', material: redMaterial },
+    { type: 'strong', material: blueMaterial },
   ].map(x => ({ ...x, towers: towers.filter(e => e.towerType === x.type) }))
 
   return (
