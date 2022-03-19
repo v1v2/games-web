@@ -1,4 +1,4 @@
-import { memo, useState } from 'react'
+import { useState } from 'react'
 
 import { Interactive } from '@codyjasonbennett/xr'
 import { Instance, Instances } from '@react-three/drei'
@@ -170,4 +170,4 @@ const Ground = () => (
   </>
 )
 
-export default memo(Ground)
+export default Ground

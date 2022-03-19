@@ -28,6 +28,8 @@ const GameLayout = ({ children }) => {
   const money = useMemoryStore(s => s.money)
   const enemies = useEnemyEntities()
 
+  console.log('GameLayout re-rendered')
+
   useEffect(() => {
     if ('gpu' in navigator) {
       setIsWebGPUEnabled(true)

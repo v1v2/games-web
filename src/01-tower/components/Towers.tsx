@@ -1,4 +1,4 @@
-import { memo, useState } from 'react'
+import { useState } from 'react'
 
 import { useFrame } from '@react-three/fiber'
 import { Interactive } from '@codyjasonbennett/xr'
@@ -108,4 +108,4 @@ const Towers = () => {
   )
 }
 
-export default memo(Towers)
+export default Towers

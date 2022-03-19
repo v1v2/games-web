@@ -16,83 +16,41 @@ import { detailedWaypoints, enemiesConfig, ENEMY_DISTANCE_TO_GROUND } from '01-t
 import { EnemyType } from '01-tower/lib/types'
 import Systems from '01-tower/components/Systems'
 import Projectiles from '01-tower/components/Projectiles'
+import { Object3D } from 'three'
 
-const IndexPage = () => {
-  const isStarted = useMemoryStore(s => s.isStarted)
-  const wave = useMemoryStore(s => s.wave)
+// This component is to contain useThree because it causes re-renders
+const PlayerEnv = () => {
   const setCurrentConstruction = useMemoryStore(s => s.setCurrentConstruction)
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
   const start = useMemoryStore(s => s.start)
-  const spawnTimerRef = useRef(0)
-  const isAlive = useMemoryStore(isAliveSelector)
 
-  const { camera } = useThree()
   const { isPresenting, player, controllers } = useXR()
+  const { camera } = useThree()
 
-  const cameraRigRef = useRef(null)
-  const uiRef = useRef(null)
-
-  console.log('tower re-rendered')
-
-  // useEffect(() => {}, [])
+  const uiRef = useRef<Object3D>(null)
+  const cameraRigRef = useRef<Object3D>(null)
 
   useEffect(() => {
     if (isPresenting) {
       player.removeFromParent()
       cameraRigRef.current.add(player)
-
-      // player.add(uiRef.current)
-      // console.log(controllers?.[0]?.controller)
-      if (controllers?.[0]?.controller) {
-        // console.log('ADD')
-        // uiRef.current.removeFromParent()
-        // controllers[0].controller.add(uiRef.current)
-      }
+      cameraRigRef.current.position.x = 60
+      cameraRigRef.current.position.y = 50
+      cameraRigRef.current.position.z = 60
+      cameraRigRef.current.rotation.y = Math.PI / 4
       uiRef.current.visible = true
     } else {
+      cameraRigRef.current.position.x = 50
+      cameraRigRef.current.position.y = 50
+      cameraRigRef.current.position.z = 50
+      cameraRigRef.current.rotation.y = 0
       uiRef.current.visible = false
     }
   }, [isPresenting, JSON.stringify(controllers?.[0]?.controller)])
 
-  useEffect(() => {
-    if ('gpu' in navigator) {
-      console.log('WebGPU supported')
-    }
-  }, [])
-
-  useFrame((state, delta) => {
-    if (isStarted && isAlive) {
-      spawnTimerRef.current += delta
-      if (spawnTimerRef.current > 1) {
-        spawnTimerRef.current = 0
-        const typeIndex = Math.floor(Math.random() * 10) % 4
-        const type = ['basic', 'fast', 'tank', 'boss'][typeIndex] as EnemyType
-        const { hpFactor, value } = enemiesConfig[type]
-        const baseHp = 50 + wave * 70
-        const hp = hpFactor * baseHp
-        const firstWaypoint = detailedWaypoints[0]
-        ecs.world.createEntity({
-          position: { x: firstWaypoint.x, y: ENEMY_DISTANCE_TO_GROUND, z: firstWaypoint.z },
-          enemyDetails: {
-            type,
-            currentHealth: hp,
-            maxHealth: hp,
-            value: Math.floor(value * (1 + wave * 0.3)),
-          },
-        })
-      }
-    }
-  })
-
   return (
     <>
-      <Ground />
-      <Enemies />
-      <Systems />
-      <Towers />
-      <Projectiles />
-
-      <group ref={cameraRigRef} position={[70, 70, 70]}>
+      <group ref={cameraRigRef}>
         <primitive object={camera} />
       </group>
       <group ref={uiRef} visible={false} position={[-100, 0, 0]}>
@@ -133,6 +91,56 @@ const IndexPage = () => {
         </Interactive>
       </group>
       <DefaultXRControllers />
+    </>
+  )
+}
+
+const IndexPage = () => {
+  const isStarted = useMemoryStore(s => s.isStarted)
+  const wave = useMemoryStore(s => s.wave)
+  const spawnTimerRef = useRef(0)
+  const isAlive = useMemoryStore(isAliveSelector)
+
+  console.log('tower re-rendered')
+
+  useEffect(() => {
+    if ('gpu' in navigator) {
+      console.log('WebGPU supported')
+    }
+  }, [])
+
+  useFrame((state, delta) => {
+    if (isStarted && isAlive) {
+      spawnTimerRef.current += delta
+      if (spawnTimerRef.current > 1) {
+        spawnTimerRef.current = 0
+        const typeIndex = Math.floor(Math.random() * 10) % 4
+        const type = ['basic', 'fast', 'tank', 'boss'][typeIndex] as EnemyType
+        const { hpFactor, value } = enemiesConfig[type]
+        const baseHp = 50 + wave * 70
+        const hp = hpFactor * baseHp
+        const firstWaypoint = detailedWaypoints[0]
+        ecs.world.createEntity({
+          position: { x: firstWaypoint.x, y: ENEMY_DISTANCE_TO_GROUND, z: firstWaypoint.z },
+          enemyDetails: {
+            type,
+            currentHealth: hp,
+            maxHealth: hp,
+            value: Math.floor(value * (1 + wave * 0.3)),
+          },
+        })
+      }
+    }
+  })
+
+  return (
+    <>
+      <Ground />
+      <Enemies />
+      <Systems />
+      <Towers />
+      <Projectiles />
+      <PlayerEnv />
     </>
   )
 }
