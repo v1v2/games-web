@@ -7,6 +7,7 @@ import FullCanvas from 'components/FullCanvas'
 
 import { useMemoryStore } from '01-tower/lib/store'
 import { towersConfig } from '01-tower/lib/config'
+import ecs, { useEnemyEntities } from '01-tower/lib/ecs'
 
 const music = typeof window !== 'undefined' && new Audio('/audio/Quincas Moreira - Chtulthu.mp3')
 
@@ -23,9 +24,9 @@ const GameLayout = ({ children }) => {
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
   const setCurrentConstruction = useMemoryStore(s => s.setCurrentConstruction)
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
-  const clearEnemies = useMemoryStore(s => s.clearEnemies)
   const livesLeft = useMemoryStore(s => s.livesLeft)
   const money = useMemoryStore(s => s.money)
+  const enemies = useEnemyEntities()
 
   useEffect(() => {
     if ('gpu' in navigator) {
@@ -35,7 +36,8 @@ const GameLayout = ({ children }) => {
 
   useEffect(() => {
     if (livesLeft <= 0) {
-      clearEnemies()
+      enemies.forEach(e => ecs.world.destroyEntity(e))
+      ecs.world.clear
       console.log(`You lost at wave ${wave}!`)
       // window.location.reload()
     }

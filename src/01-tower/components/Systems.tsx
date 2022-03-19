@@ -30,6 +30,7 @@ const KillSystem = () => {
   const enemies = useEnemyEntities()
   const wave = useMemoryStore(s => s.wave)
   const addMoney = useMemoryStore(s => s.addMoney)
+  const killedEnemyUpdate = useMemoryStore(s => s.killedEnemyUpdate)
 
   useFrame(() => {
     for (let i = enemies.length; i >= 0; i--) {
@@ -37,6 +38,7 @@ const KillSystem = () => {
       if (enemy) {
         if (enemy.enemyDetails.currentHealth <= 0) {
           ecs.world.destroyEntity(enemy)
+          killedEnemyUpdate()
           addMoney(Math.floor(enemy.enemyDetails.value * (1 + wave * 0.06)))
         }
       }

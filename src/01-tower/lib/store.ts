@@ -29,6 +29,7 @@ interface MemoryStore {
   clearCurrentConstruction: () => void
   addTower: (tower: { type: TowerType; i: number; j: number }) => void
   removeTower: (id: string) => void
+  killedEnemyUpdate: () => void
 }
 
 export const useMemoryStore = create<MemoryStore>((set, get) => ({
@@ -84,15 +85,21 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
   //   }))
   // },
   // getProjectile: (id: string) => get().projectiles.find(p => p.id === id),
-  // removeEnemy: (id: string) => {
+  // killEnemy: (id: string) => {
   //   const enemy = get().getEnemy(id)
   //   set(state => ({
   //     wave: 1 + Math.round((state.enemiesKilled + 1) / 20),
   //     enemiesKilled: state.enemiesKilled + 1,
   //     enemies: state.enemies.filter(enemy => enemy.id !== id),
   //   }))
-  //   // publishRemoveEnemy({ id, type: enemy.type })
+  //   publishRemoveEnemy({ id, type: enemy.type })
   // },
+  killedEnemyUpdate: () => {
+    set(state => ({
+      enemiesKilled: state.enemiesKilled + 1,
+      wave: 1 + Math.round((state.enemiesKilled + 1) / 20),
+    }))
+  },
   // decreaseEnemyHp: (id: string, value: number) => {
   //   set(state => ({
   //     enemies: state.enemies.map(enemy => {
