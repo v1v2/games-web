@@ -1,3 +1,10 @@
+export type Cell = {
+  rowIndex: number
+  colIndex: number
+  x: number
+  z: number
+}
+
 export type TowerType = 'simple' | 'splash' | 'strong'
 
 export type EnemyType = 'basic' | 'fast' | 'tank' | 'boss'

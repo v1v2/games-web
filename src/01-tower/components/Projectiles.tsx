@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react'
 
 import { useFrame } from '@react-three/fiber'
-import { Vector3 } from 'three'
+import { Mesh, Vector3 } from 'three'
 
 import { useMemoryStore } from '01-tower/lib/store'
 import { orangeMaterial } from '01-tower/lib/materials'
 import { cubeGeometry, sphereGeometry } from '01-tower/lib/geometries'
+import { Merged } from '@react-three/drei'
 
 const Projectile = ({ id }) => {
   const getProjectile = useMemoryStore(s => s.getProjectile)
@@ -49,4 +50,17 @@ const Projectile = ({ id }) => {
   )
 }
 
-export default Projectile
+const laserMesh = new Mesh(cubeGeometry, orangeMaterial)
+const impactMesh = new Mesh(sphereGeometry, orangeMaterial)
+
+const Projectiles = () => {
+  const projectiles = []
+
+  return (
+    <Merged meshes={[laserMesh, impactMesh]} limit={30}>
+      {(EnemyMesh, HpBarMesh) => null}
+    </Merged>
+  )
+}
+
+export default Projectiles

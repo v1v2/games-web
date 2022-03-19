@@ -461,6 +461,11 @@ mdn-data@2.0.14:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.14.tgz#7113fc4281917d63ce29b43446f701e68c25ba50"
   integrity sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==
 
+miniplex@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/miniplex/-/miniplex-0.7.1.tgz#0cb9bb334af9f3c999af0879ae16872ea0aff0ae"
+  integrity sha512-kHYlII9qsiOiMTgSGSWLuReKWmAI5ZAnK/ehpax8jefmtcPSCvFl0TfKTj1IZXBgL/eTlNYHd+r6gNtfHRITPA==
+
 mmd-parser@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/mmd-parser/-/mmd-parser-1.0.4.tgz#87cc05782cb5974ca854f0303fc5147bc9d690e7"

@@ -7,6 +7,7 @@ import {
   purpleMaterial,
   redMaterial,
 } from '01-tower/lib/materials'
+import { Cell } from '01-tower/lib/types'
 
 type TowerConfigs = {
   simple: TowerConfig
@@ -41,6 +42,9 @@ type EnemyConfigs = {
   tank: EnemyConfig
   boss: EnemyConfig
 }
+
+export const ENEMY_DISTANCE_TO_GROUND = 2
+export const TOWER_DISANCE_TO_GROUND = 2
 
 export const towersConfig: TowerConfigs = {
   simple: {
@@ -153,4 +157,28 @@ export const waypoints = [
 export const getCellPosition = (i: number, j: number) => ({
   x: -i * cellSize - cellSize / 2 + mapSize / 2,
   z: -j * cellSize - cellSize / 2 + mapSize / 2,
+})
+
+// @ts-ignore
+export const emptyCells: Cell[] = cells.reduce(
+  (rowAcc, rowCur, rowIndex) =>
+    rowAcc.concat(
+      rowCur.reduce((colAcc, colCur, colIndex) => {
+        const { x, z } = getCellPosition(rowIndex, colIndex)
+        return colAcc.concat(colCur === 1 ? { rowIndex, colIndex, x, z } : [])
+      }, [])
+    ),
+  []
+)
+
+export const detailedMap = cells.map((row, rowIndex) =>
+  row.map((col, colIndex) => {
+    const { x, z } = getCellPosition(rowIndex, colIndex)
+    return { rowIndex, colIndex, x, z, content: col }
+  })
+)
+
+export const detailedWaypoints = waypoints.map(([rowIndex, colIndex]) => {
+  const { x, z } = getCellPosition(rowIndex, colIndex)
+  return { rowIndex, colIndex, x, z }
 })

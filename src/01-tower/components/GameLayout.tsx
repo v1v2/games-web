@@ -34,7 +34,6 @@ const GameLayout = ({ children }) => {
   }, [])
 
   useEffect(() => {
-    console.log(livesLeft)
     if (livesLeft <= 0) {
       clearEnemies()
       console.log(`You lost at wave ${wave}!`)

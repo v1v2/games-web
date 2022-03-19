@@ -7,17 +7,20 @@ import Enemies from '01-tower/components/Enemies'
 import GameLayout from '01-tower/components/GameLayout'
 import Ground from '01-tower/components/Ground'
 import { isAliveSelector, useMemoryStore } from '01-tower/lib/store'
-import Tower from '01-tower/components/Tower'
-import Projectile from '01-tower/components/Projectile'
+import Towers from '01-tower/components/Towers'
+// import Projectile from '01-tower/components/Projectile'
 import { cubeGeometry, sphereGeometry } from '01-tower/lib/geometries'
 import { blueMaterial, greenMaterial, redMaterial } from '01-tower/lib/materials'
+import ecs from '01-tower/lib/ecs'
+import { detailedWaypoints, enemiesConfig, ENEMY_DISTANCE_TO_GROUND } from '01-tower/lib/config'
+import { EnemyType } from '01-tower/lib/types'
+import Systems from '01-tower/components/Systems'
 
 const IndexPage = () => {
   const isStarted = useMemoryStore(s => s.isStarted)
   const wave = useMemoryStore(s => s.wave)
-  const spawnEnemy = useMemoryStore(s => s.spawnEnemy)
   const towers = useMemoryStore(s => s.towers)
-  const projectiles = useMemoryStore(s => s.projectiles)
+  // const projectiles = useMemoryStore(s => s.projectiles)
   const setCurrentConstruction = useMemoryStore(s => s.setCurrentConstruction)
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
   const start = useMemoryStore(s => s.start)
@@ -38,7 +41,7 @@ const IndexPage = () => {
       cameraRigRef.current.add(player)
 
       // player.add(uiRef.current)
-      console.log(controllers?.[0]?.controller)
+      // console.log(controllers?.[0]?.controller)
       if (controllers?.[0]?.controller) {
         // console.log('ADD')
         // uiRef.current.removeFromParent()
@@ -62,16 +65,20 @@ const IndexPage = () => {
       if (spawnTimerRef.current > 1) {
         spawnTimerRef.current = 0
         const typeIndex = Math.floor(Math.random() * 10) % 4
-        // @ts-ignore
-        spawnEnemy(['basic', 'fast', 'tank', 'boss'][typeIndex], 50 + wave * 70)
-
-        // if (process.env.NODE_ENV === 'development') {
-        //   console.log({
-        //     polys: gl.info.render.triangles,
-        //     calls: gl.info.render.calls,
-        //     geometries: gl.info.memory.geometries,
-        //   })
-        // }
+        const type = ['basic', 'fast', 'tank', 'boss'][typeIndex] as EnemyType
+        const { hpFactor, value } = enemiesConfig[type]
+        const baseHp = 50 + wave * 70
+        const hp = hpFactor * baseHp
+        const firstWaypoint = detailedWaypoints[0]
+        ecs.world.createEntity({
+          position: { x: firstWaypoint.x, y: ENEMY_DISTANCE_TO_GROUND, z: firstWaypoint.z },
+          enemyDetails: {
+            type,
+            currentHealth: hp,
+            maxHealth: hp,
+            value: Math.floor(value * (1 + wave * 0.06)),
+          },
+        })
       }
     }
   })
@@ -80,12 +87,11 @@ const IndexPage = () => {
     <>
       <Ground />
       <Enemies />
-      {towers.map(t => (
-        <Tower key={t.id} id={t.id} />
-      ))}
-      {projectiles.map(p => (
+      <Systems />
+      <Towers />
+      {/* {projectiles.map(p => (
         <Projectile key={p.id} id={p.id} />
-      ))}
+      ))} */}
 
       <group ref={cameraRigRef} position={[70, 70, 70]}>
         <primitive object={camera} />

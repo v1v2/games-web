@@ -5,7 +5,14 @@ import { Instance, Instances } from '@react-three/drei'
 import { Vector3 } from 'three'
 
 import { useMemoryStore } from '01-tower/lib/store'
-import { cells, getCellPosition, mapSize, towersConfig } from '01-tower/lib/config'
+import {
+  cells,
+  emptyCells,
+  getCellPosition,
+  mapSize,
+  towersConfig,
+  TOWER_DISANCE_TO_GROUND,
+} from '01-tower/lib/config'
 import {
   grayMaterial,
   greenMaterial,
@@ -13,25 +20,7 @@ import {
   undergroundMaterial,
 } from '01-tower/lib/materials'
 import { squareGeometry, sphereGeometry, baseGeometry } from '01-tower/lib/geometries'
-
-type Cell = {
-  rowIndex: number
-  colIndex: number
-  x: number
-  z: number
-}
-
-// @ts-ignore
-const emptyCells: Cell[] = cells.reduce(
-  (rowAcc, rowCur, rowIndex) =>
-    rowAcc.concat(
-      rowCur.reduce((colAcc, colCur, colIndex) => {
-        const { x, z } = getCellPosition(rowIndex, colIndex)
-        return colAcc.concat(colCur === 1 ? { rowIndex, colIndex, x, z } : [])
-      }, [])
-    ),
-  []
-)
+import ecs from '01-tower/lib/ecs'
 
 // const ImperativeTiles = () => {
 //   const towers = useMemoryStore(s => s.towers)
@@ -108,6 +97,11 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
   const onUniversalClick = (i, j) => {
     if (currentConstruction && !towers.some(t => t.i === i && t.j === j)) {
       addTower({ type: currentConstruction, i, j })
+      const { x, z } = getCellPosition(i, j)
+      ecs.world.createEntity({
+        position: { x, y: TOWER_DISANCE_TO_GROUND, z },
+        towerType: currentConstruction,
+      })
       clearCurrentConstruction()
     }
   }
@@ -130,7 +124,7 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
       </Interactive>
       {currentConstruction && hovered && (
         <mesh
-          position={[x, 2, z]}
+          position={[x, TOWER_DISANCE_TO_GROUND, z]}
           geometry={sphereGeometry}
           material={towersConfig[currentConstruction].material}
         />
