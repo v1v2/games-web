@@ -3,7 +3,7 @@ import { createECS } from 'miniplex/react'
 
 import { EnemyType, TowerType } from '01-tower/lib/types'
 
-type Entity = {
+export type Entity = {
   id?: number // Importing IEntity doesn't work well
   position?: { x: number; y: number; z: number }
   rotation?: { x: number; y: number; z: number }

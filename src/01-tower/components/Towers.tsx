@@ -15,7 +15,7 @@ import { publishCreateProjectile } from '01-tower/lib/pubsub'
 // const gunshotAudio = typeof window !== 'undefined' && new Audio('/audio/gunshot.wav')
 
 const Tower = ({ entity }) => {
-  const { id, position } = entity
+  const { position } = entity
 
   const enemies = useEnemyEntities()
 
@@ -60,7 +60,7 @@ const Tower = ({ entity }) => {
     }
   })
 
-  const onUniversalClick = () => !selectedTower && !currentConstruction && selectTower(id)
+  const onUniversalClick = () => !selectedTower && !currentConstruction && selectTower(entity)
 
   return (
     <Interactive onSelect={onUniversalClick}>
@@ -89,6 +89,7 @@ const Towers = () => {
           limit={emptyCells.length}
           material={material}
           geometry={sphereGeometry}
+          castShadow
         >
           {towers.map(t => (
             <Tower key={t.id} entity={t} />

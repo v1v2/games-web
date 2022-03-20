@@ -56,6 +56,7 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
           onClick={() => onUniversalClick(rowIndex, colIndex)}
           onPointerEnter={() => setHovered(true)}
           onPointerLeave={() => setHovered(false)}
+          receiveShadow
         />
       </Interactive>
       {currentConstruction && hovered && (
@@ -76,8 +77,14 @@ const Ground = () => (
       material={undergroundMaterial}
       scale={[mapSize + 1, mapSize + 1, 1]}
       geometry={squareGeometry}
+      receiveShadow
     />
-    <Instances limit={emptyCells.length} geometry={squareGeometry} material={grayMaterial}>
+    <Instances
+      limit={emptyCells.length}
+      geometry={squareGeometry}
+      material={grayMaterial}
+      receiveShadow
+    >
       {emptyCells.map(ec => (
         <Tile key={`${ec.rowIndex}-${ec.colIndex}`} {...ec} />
       ))}
@@ -91,6 +98,7 @@ const Ground = () => (
             position={new Vector3(mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5)}
             material={greenMaterial}
             geometry={baseGeometry}
+            castShadow
           />
         ) : c === 3 ? (
           <mesh
@@ -99,6 +107,7 @@ const Ground = () => (
             position={new Vector3(mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5)}
             material={redMaterial}
             geometry={baseGeometry}
+            castShadow
           />
         ) : null
       )

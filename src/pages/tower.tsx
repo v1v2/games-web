@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 
 import { useFrame, useThree } from '@react-three/fiber'
 import { DefaultXRControllers, Interactive, useXR } from '@codyjasonbennett/xr'
+import { Object3D } from 'three'
 
 import Enemies from '01-tower/components/Enemies'
 import GameLayout from '01-tower/components/GameLayout'
@@ -16,7 +17,7 @@ import { detailedWaypoints, enemiesConfig, ENEMY_DISTANCE_TO_GROUND } from '01-t
 import { EnemyType } from '01-tower/lib/types'
 import Systems from '01-tower/components/Systems'
 import Projectiles from '01-tower/components/Projectiles'
-import { Object3D } from 'three'
+// import { Bloom, DepthOfField, EffectComposer, Noise, Vignette } from '@react-three/postprocessing'
 
 // This component is to contain useThree because it causes re-renders
 // Ideally, it should be only the camera in that component, but it's okay for now.
@@ -133,6 +134,7 @@ const IndexPage = () => {
       }
     }
   })
+  // useHelper(ref, DirectionalLightHelper, 1)
 
   return (
     <>
@@ -142,6 +144,24 @@ const IndexPage = () => {
       <Towers />
       <Projectiles />
       <PlayerEnv />
+      <directionalLight
+        position={[10, 40, -20]}
+        intensity={0.7}
+        castShadow
+        shadow-bias={-0.001}
+        shadow-mapSize={[4096, 4096]}
+        shadow-camera-left={-150}
+        shadow-camera-right={150}
+        shadow-camera-top={150}
+        shadow-camera-bottom={-150}
+      />
+
+      {/* 
+      
+      // This completely breaks VR
+      <EffectComposer>
+        <Bloom luminanceThreshold={0} luminanceSmoothing={1} height={500} intensity={0.05} />
+      </EffectComposer> */}
     </>
   )
 }

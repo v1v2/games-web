@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Mesh, Vector3 } from 'three'
 
-import { orangeMaterial } from '01-tower/lib/materials'
+import { basicOrangeMaterial } from '01-tower/lib/materials'
 import { cubeGeometry, sphereGeometry } from '01-tower/lib/geometries'
 import { Merged } from '@react-three/drei'
 import { subscribeCreateProjectile } from '01-tower/lib/pubsub'
@@ -29,8 +29,8 @@ const Projectile = ({ fromX, toX, fromZ, toZ, LaserMesh, ImpactMesh }) => {
   )
 }
 
-const laserMesh = new Mesh(cubeGeometry, orangeMaterial)
-const impactMesh = new Mesh(sphereGeometry, orangeMaterial)
+const laserMesh = new Mesh(cubeGeometry, basicOrangeMaterial)
+const impactMesh = new Mesh(sphereGeometry, basicOrangeMaterial)
 
 const Projectiles = () => {
   const [projectiles, setProjectiles] = useState([])
@@ -47,7 +47,7 @@ const Projectiles = () => {
   }, [])
 
   return (
-    <Merged meshes={[laserMesh, impactMesh]} limit={30}>
+    <Merged meshes={[laserMesh, impactMesh]} limit={60}>
       {(LaserMesh, ImpactMesh) =>
         projectiles.map(p => (
           <Projectile key={p.id} LaserMesh={LaserMesh} ImpactMesh={ImpactMesh} {...p} />

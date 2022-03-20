@@ -9,8 +9,8 @@ interface MemoryStore {
   isStarted: boolean
   start: () => void
   wave: number
-  selectedTower: string
-  selectTower: (id: string) => void
+  selectedTower: any
+  selectTower: (entity: any) => void
   enemiesKilled: number
   livesLeft: number
   money: number
@@ -31,7 +31,7 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
   start: () => set({ isStarted: true }),
   wave: 1,
   selectedTower: null,
-  selectTower: id => set({ selectedTower: id }),
+  selectTower: entity => set({ selectedTower: entity }),
   enemiesKilled: 0,
   livesLeft: 20,
   money: 100,

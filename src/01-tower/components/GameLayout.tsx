@@ -80,9 +80,8 @@ const GameLayout = ({ children }) => {
           <>
             <button
               onClick={() => {
-                const towerToSell = getTower(selectedTower)
-                addMoney(Math.round(towersConfig[towerToSell.type].cost / 2))
-                removeTower(selectedTower)
+                addMoney(Math.round(towersConfig[selectedTower.towerType].cost / 2))
+                ecs.world.destroyEntity(selectedTower)
                 selectTower(null)
               }}
             >
@@ -111,13 +110,8 @@ const GameLayout = ({ children }) => {
         )}
       </div>
       <FullCanvas>
-        <ambientLight intensity={1} />
-        <OrbitControls
-          makeDefault
-          maxPolarAngle={Math.PI / 3}
-          minPolarAngle={Math.PI / 3}
-          enableRotate={false}
-        />
+        <ambientLight intensity={0.7} />
+        <OrbitControls makeDefault maxPolarAngle={Math.PI / 3} minPolarAngle={Math.PI / 3} />
         <OrthographicCamera makeDefault position={[100, 0, 100]} zoom={8} />
         {children}
       </FullCanvas>

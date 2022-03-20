@@ -13,7 +13,9 @@ const FullCanvas = ({ children }) => (
     <ClientOnly>
       <Stats showPanel={0} className="stats" />
     </ClientOnly>
-    <VRCanvas mode="concurrent">{children}</VRCanvas>
+    <VRCanvas mode="concurrent" shadows={true}>
+      {children}
+    </VRCanvas>
     <style global jsx>{`
       html,
       body,
@@ -23,7 +25,7 @@ const FullCanvas = ({ children }) => (
 
       body {
         margin: 0;
-        background: #333;
+        background: #222;
         font-family: sans-serif;
       }
 
