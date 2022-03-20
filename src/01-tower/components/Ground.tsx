@@ -36,7 +36,7 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
       const { x, z } = getCellPosition(i, j)
       ecs.world.createEntity({
         position: { x, y: TOWER_DISANCE_TO_GROUND, z },
-        towerType: currentConstruction,
+        towerDetails: { type: currentConstruction, isReadyToShoot: true },
       })
       clearCurrentConstruction()
     }

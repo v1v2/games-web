@@ -2,6 +2,7 @@ import { useCallback, memo } from 'react'
 
 import { Billboard, Instance, Instances } from '@react-three/drei'
 import { useSpring, a } from '@react-spring/three'
+import { useFrame } from '@react-three/fiber'
 import { Vector3 } from 'three'
 
 import {
@@ -29,8 +30,11 @@ const mapSeries = async (iterable, action) => {
 
 const HealthBar = ({ entity }) => {
   const { size } = enemiesConfig[entity.enemyDetails.type]
-  console.log('render health bar')
   const ref = useUpdatePosition({ entity, modify: () => ({ y: size + 2.5 }) })
+
+  useFrame(() => {
+    ref.current.scale.x = 5 * (entity.enemyDetails.currentHealth / entity.enemyDetails.maxHealth)
+  })
 
   return (
     <Billboard ref={ref} scale={[5, 0.6, 1]}>

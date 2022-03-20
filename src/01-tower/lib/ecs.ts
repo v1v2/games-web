@@ -9,13 +9,13 @@ export type Entity = {
   rotation?: { x: number; y: number; z: number }
   scale?: { x: number; y: number; z: number }
   enemyDetails?: { type: EnemyType; currentHealth: number; maxHealth: number; value: number }
-  towerType?: TowerType
+  towerDetails?: { type: TowerType; isReadyToShoot: boolean }
 } & IEntity
 
 const ecs = createECS<Entity>()
 
 export const enemyEntities = ecs.world.archetype('enemyDetails')
-export const towerEntities = ecs.world.archetype('towerType')
+export const towerEntities = ecs.world.archetype('towerDetails')
 
 // Seems like useArchetype is not filtering correctly
 export const useEnemyEntities = () =>
@@ -24,6 +24,6 @@ export const useEnemyEntities = () =>
 
 export const useTowerEntities = () =>
   // @ts-ignore
-  ecs.useArchetype(towerEntities).entities.filter(e => e.towerType)
+  ecs.useArchetype(towerEntities).entities.filter(e => e.towerDetails)
 
 export default ecs
