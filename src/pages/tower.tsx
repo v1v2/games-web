@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 
 import { useFrame, useThree } from '@react-three/fiber'
 import { DefaultXRControllers, Interactive, useXR } from '@codyjasonbennett/xr'
+import { Billboard, Text } from '@react-three/drei'
 import { Object3D } from 'three'
 
 import Enemies from '01-tower/components/Enemies'
@@ -25,6 +26,7 @@ const PlayerEnv = () => {
   const setCurrentConstruction = useMemoryStore(s => s.setCurrentConstruction)
   const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
   const start = useMemoryStore(s => s.start)
+  const wave = useMemoryStore(s => s.wave)
 
   const { isPresenting, player, controllers } = useXR()
   const { camera } = useThree()
@@ -56,6 +58,11 @@ const PlayerEnv = () => {
         <primitive object={camera} />
       </group>
       <group ref={uiRef} visible={false} position={[-100, 0, 0]}>
+        <Billboard position={[0, 50, 0]} scale={[10, 10, 1]}>
+          <Suspense fallback={null}>
+            <Text fontSize={1}>Wave {wave}</Text>
+          </Suspense>
+        </Billboard>
         <Interactive onSelect={() => setCurrentConstruction('simple')}>
           <mesh scale={[3, 3, 3]} geometry={sphereGeometry} material={greenMaterial} />
         </Interactive>

@@ -14,9 +14,7 @@ const music = typeof window !== 'undefined' && new Audio('/audio/Quincas Moreira
 const GameLayout = ({ children }) => {
   const [isWebGPUEnabled, setIsWebGPUEnabled] = useState(false)
   const selectedTower = useMemoryStore(s => s.selectedTower)
-  const getTower = useMemoryStore(s => s.getTower)
   const addMoney = useMemoryStore(s => s.addMoney)
-  const removeTower = useMemoryStore(s => s.removeTower)
   const isStarted = useMemoryStore(s => s.isStarted)
   const selectTower = useMemoryStore(s => s.selectTower)
   const start = useMemoryStore(s => s.start)
