@@ -1,13 +1,15 @@
 import { memo } from 'react'
 
 import { Interactive } from '@codyjasonbennett/xr'
+import { Instance } from '@react-three/drei'
+
+import PatchedInstances from 'components/PatchedInstances'
 
 import { emptyCells } from '01-tower/lib/config'
 import { useMemoryStore } from '01-tower/lib/store'
 import { blueMaterial, greenMaterial, redMaterial } from '01-tower/lib/materials'
 import { sphereGeometry } from '01-tower/lib/geometries'
 import { useTowerEntities } from '01-tower/lib/ecs'
-import { Instance, Instances } from '@react-three/drei'
 
 const Tower = ({ entity }) => {
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
@@ -40,7 +42,7 @@ const Towers = () => {
   return (
     <>
       {towersByType.map(({ material, towers, type }) => (
-        <Instances
+        <PatchedInstances
           key={type}
           limit={emptyCells.length}
           material={material}
@@ -50,7 +52,7 @@ const Towers = () => {
           {towers.map(t => (
             <TowerMemo key={t.id} entity={t} />
           ))}
-        </Instances>
+        </PatchedInstances>
       ))}
     </>
   )

@@ -1,9 +1,11 @@
 import { useCallback, memo } from 'react'
 
-import { Billboard, Instance, Instances } from '@react-three/drei'
+import { Billboard, Instance } from '@react-three/drei'
 import { useSpring, a } from '@react-spring/three'
 import { useFrame } from '@react-three/fiber'
 import { Vector3 } from 'three'
+
+import PatchedInstances from 'components/PatchedInstances'
 
 import {
   enemiesConfig,
@@ -107,17 +109,23 @@ const Enemies = () => {
   return (
     <>
       {enemiesByType.map(({ type, enemies, limit, material }) => (
-        <Instances key={type} limit={limit} geometry={cubeGeometry} material={material} castShadow>
+        <PatchedInstances
+          key={type}
+          limit={limit}
+          geometry={cubeGeometry}
+          material={material}
+          castShadow
+        >
           {enemies.map(e => (
             <EnemyMemo key={e.id} entity={e} />
           ))}
-        </Instances>
+        </PatchedInstances>
       ))}
-      <Instances limit={150} material={basicGreenMaterial} geometry={squareGeometry}>
+      <PatchedInstances limit={150} material={basicGreenMaterial} geometry={squareGeometry}>
         {enemies.map(e => (
           <HealthBarMemo key={e.id} entity={e} />
         ))}
-      </Instances>
+      </PatchedInstances>
     </>
   )
 }
