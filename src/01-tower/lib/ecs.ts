@@ -37,12 +37,6 @@ type TowerCreationData = {
   cell: { rowIndex: number; colIndex: number }
 }
 
-type EnemyCreationData = {
-  type: EnemyType
-  maxHealth: number
-  killReward: number
-}
-
 export const createTower = ({ type, cell }: TowerCreationData) =>
   ecs.world.createEntity({
     tower: true,
@@ -56,6 +50,12 @@ export const createTower = ({ type, cell }: TowerCreationData) =>
 
 // Note: To update x and z based on cell position, I could have an updateTower
 // functon here that keeps the rowIndex and colIndex in sync with x and z
+
+type EnemyCreationData = {
+  type: EnemyType
+  maxHealth: number
+  killReward: number
+}
 
 export const createEnemy = ({ type, maxHealth, killReward }: EnemyCreationData) => {
   const firstWaypoint = detailedWaypoints[0]

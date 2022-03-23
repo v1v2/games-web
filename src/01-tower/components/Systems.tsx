@@ -2,41 +2,27 @@ import { useFrame } from '@react-three/fiber'
 
 import { destroyEntity, useEnemyEntities, useTowerEntities } from '01-tower/lib/ecs'
 import { useMemoryStore } from '01-tower/lib/store'
-import { getCellPosition, towersConfig, waypoints } from '01-tower/lib/config'
+import { detailedWaypoints, towersConfig } from '01-tower/lib/config'
 import { publishCreateProjectile } from '01-tower/lib/pubsub'
 import { Vector3 } from 'three'
 
-const { x: endX, z: endZ } = getCellPosition(
-  waypoints[waypoints.length - 1][0],
-  waypoints[waypoints.length - 1][1]
-)
+const { x: endX, z: endZ } = detailedWaypoints[detailedWaypoints.length - 1]
 
-const KillSystem = () => {
+const EndSystem = () => {
   const enemies = useEnemyEntities()
-  const addMoney = useMemoryStore(s => s.addMoney)
-  const killedEnemyUpdate = useMemoryStore(s => s.killedEnemyUpdate)
   const decrementLivesLeft = useMemoryStore(s => s.decrementLivesLeft)
 
   useFrame(() => {
-    for (let i = enemies.length; i >= 0; i--) {
-      const enemy = enemies[i]
-      if (enemy) {
-        if (enemy.health.current <= 0) {
-          enemy.transform.position.x = 9999
-          enemy.transform.position.z = 9999
-          destroyEntity(enemy)
-          killedEnemyUpdate()
-          addMoney(enemy.killReward)
-        }
-        const pos = enemy.transform.position
-        if (Math.abs(pos.x - endX) < 0.1 && Math.abs(pos.z - endZ) < 0.1) {
-          // There must be a better way to do this
-          // To prevent the next frames from triggering more life losses
-          enemy.transform.position.x = 0
-          enemy.transform.position.z = 0
-          decrementLivesLeft()
-          destroyEntity(enemy)
-        }
+    for (const enemy of enemies) {
+      const pos = enemy.transform.position
+      if (Math.abs(pos.x - endX) < 0.1 && Math.abs(pos.z - endZ) < 0.1) {
+        // There must be a better way to do this
+        // To prevent the next frames from triggering more life losses
+        enemy.transform.position.x = 9999
+        enemy.transform.position.y = 9999
+        enemy.transform.position.z = 9999
+        decrementLivesLeft()
+        destroyEntity(enemy)
       }
     }
   })
@@ -88,9 +74,30 @@ const ShootSystem = () => {
   return null
 }
 
-const Systems = () => (
+const HealthSystem = () => {
+  const enemies = useEnemyEntities()
+  const addMoney = useMemoryStore(s => s.addMoney)
+  const killedEnemyUpdate = useMemoryStore(s => s.killedEnemyUpdate)
+
+  useFrame(() => {
+    for (const enemy of enemies) {
+      if (enemy.health.current <= 0) {
+        enemy.transform.position.x = 9999
+        enemy.transform.position.z = 9999
+        addMoney(enemy.killReward)
+        killedEnemyUpdate()
+        destroyEntity(enemy)
+      }
+    }
+  })
+
+  return null
+}
+
+export const Systems = () => (
   <>
-    <KillSystem />
+    <HealthSystem />
+    <EndSystem />
     <ShootSystem />
   </>
 )
