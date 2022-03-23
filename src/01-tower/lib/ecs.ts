@@ -39,7 +39,7 @@ type TowerCreationData = {
 
 export const createTower = ({ type, cell }: TowerCreationData) =>
   ecs.world.createEntity({
-    tower: true,
+    tower: Tag,
     isReadyToShoot: true,
     towerType: type,
     cell,
@@ -60,7 +60,7 @@ type EnemyCreationData = {
 export const createEnemy = ({ type, maxHealth, killReward }: EnemyCreationData) => {
   const firstWaypoint = detailedWaypoints[0]
   ecs.world.createEntity({
-    enemy: true,
+    enemy: Tag,
     health: { current: maxHealth, max: maxHealth },
     transform: {
       position: { x: firstWaypoint.x, y: ENEMY_DISTANCE_TO_GROUND, z: firstWaypoint.z },
