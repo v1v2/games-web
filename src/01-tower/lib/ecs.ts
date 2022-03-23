@@ -1,11 +1,13 @@
-import { IEntity } from 'miniplex'
+import { IEntity, Tag } from 'miniplex'
 import { createECS } from 'miniplex/react'
 
 import { EnemyType, TowerType } from '01-tower/lib/types'
 
 export type Entity = {
-  id?: number // Importing IEntity doesn't work well
+  enemy?: Tag
+  tower?: Tag
   position?: { x: number; y: number; z: number }
+  cell?: { rowIndex: number; colIndex: number }
   rotation?: { x: number; y: number; z: number }
   scale?: { x: number; y: number; z: number }
   enemyDetails?: { type: EnemyType; currentHealth: number; maxHealth: number; value: number }
@@ -14,16 +16,10 @@ export type Entity = {
 
 const ecs = createECS<Entity>()
 
-export const enemyEntities = ecs.world.archetype('enemyDetails')
-export const towerEntities = ecs.world.archetype('towerDetails')
+export const useEnemyEntities = () => ecs.useArchetype('enemy').entities
+export const useTowerEntities = () => ecs.useArchetype('tower').entities
 
-// Seems like useArchetype is not filtering correctly
-export const useEnemyEntities = () =>
-  // @ts-ignore
-  ecs.useArchetype(enemyEntities).entities.filter(e => e.enemyDetails)
+export const createTower = data => ecs.world.createEntity({ tag: 'tower', ...data })
+export const createEnemy = data => ecs.world.createEntity({ tag: 'enemy', ...data })
 
-export const useTowerEntities = () =>
-  // @ts-ignore
-  ecs.useArchetype(towerEntities).entities.filter(e => e.towerDetails)
-
-export default ecs
+export const destroyEntity = ecs.world.destroyEntity

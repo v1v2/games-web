@@ -10,15 +10,13 @@ import GameLayout from '01-tower/components/GameLayout'
 import Ground from '01-tower/components/Ground'
 import { isAliveSelector, useMemoryStore } from '01-tower/lib/store'
 import Towers from '01-tower/components/Towers'
-// import Projectile from '01-tower/components/Projectile'
 import { cubeGeometry, sphereGeometry } from '01-tower/lib/geometries'
 import { blueMaterial, greenMaterial, redMaterial } from '01-tower/lib/materials'
-import ecs from '01-tower/lib/ecs'
+import { createTower } from '01-tower/lib/ecs'
 import { detailedWaypoints, enemiesConfig, ENEMY_DISTANCE_TO_GROUND } from '01-tower/lib/config'
 import { EnemyType } from '01-tower/lib/types'
 import Systems from '01-tower/components/Systems'
 import Projectiles from '01-tower/components/Projectiles'
-// import { Bloom, DepthOfField, EffectComposer, Noise, Vignette } from '@react-three/postprocessing'
 
 // This component is to contain useThree because it causes re-renders
 // Ideally, it should be only the camera in that component, but it's okay for now.
@@ -129,7 +127,7 @@ const IndexPage = () => {
         const baseHp = 50 + wave * 70
         const hp = hpFactor * baseHp
         const firstWaypoint = detailedWaypoints[0]
-        ecs.world.createEntity({
+        createTower({
           position: { x: firstWaypoint.x, y: ENEMY_DISTANCE_TO_GROUND, z: firstWaypoint.z },
           enemyDetails: {
             type,

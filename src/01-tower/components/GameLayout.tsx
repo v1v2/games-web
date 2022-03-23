@@ -5,13 +5,15 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 import FullCanvas from 'components/FullCanvas'
 
-import { useMemoryStore } from '01-tower/lib/store'
+import { useCurrentConstruction, useMemoryStore } from '01-tower/lib/store'
 import { towersConfig } from '01-tower/lib/config'
-import ecs, { useEnemyEntities } from '01-tower/lib/ecs'
+import { destroyEntity, useEnemyEntities } from '01-tower/lib/ecs'
 
 const music = typeof window !== 'undefined' && new Audio('/audio/Quincas Moreira - Chtulthu.mp3')
 
 const GameLayout = ({ children }) => {
+  const { currentConstruction, setCurrentConstruction, clearCurrentConstruction } =
+    useCurrentConstruction()
   const [isWebGPUEnabled, setIsWebGPUEnabled] = useState(false)
   const selectedTower = useMemoryStore(s => s.selectedTower)
   const addMoney = useMemoryStore(s => s.addMoney)
@@ -19,9 +21,6 @@ const GameLayout = ({ children }) => {
   const selectTower = useMemoryStore(s => s.selectTower)
   const start = useMemoryStore(s => s.start)
   const wave = useMemoryStore(s => s.wave)
-  const currentConstruction = useMemoryStore(s => s.currentConstruction)
-  const setCurrentConstruction = useMemoryStore(s => s.setCurrentConstruction)
-  const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
   const livesLeft = useMemoryStore(s => s.livesLeft)
   const money = useMemoryStore(s => s.money)
   const enemies = useEnemyEntities()
@@ -36,7 +35,7 @@ const GameLayout = ({ children }) => {
 
   useEffect(() => {
     if (livesLeft <= 0) {
-      enemies.forEach(e => ecs.world.destroyEntity(e))
+      enemies.forEach(e => destroyEntity(e))
       console.log(`You lost at wave ${wave}!`)
       // window.location.reload()
     }
@@ -78,8 +77,8 @@ const GameLayout = ({ children }) => {
           <>
             <button
               onClick={() => {
-                addMoney(Math.round(towersConfig[selectedTower.towerType].cost / 2))
-                ecs.world.destroyEntity(selectedTower)
+                addMoney(Math.round(towersConfig[selectedTower.towerDetails.type].cost / 2))
+                destroyEntity(selectedTower)
                 selectTower(null)
               }}
             >

@@ -1,6 +1,6 @@
 import { useFrame } from '@react-three/fiber'
 
-import ecs, { useEnemyEntities, useTowerEntities } from '01-tower/lib/ecs'
+import { destroyEntity, useEnemyEntities, useTowerEntities } from '01-tower/lib/ecs'
 import { useMemoryStore } from '01-tower/lib/store'
 import { getCellPosition, towersConfig, waypoints } from '01-tower/lib/config'
 import { publishCreateProjectile } from '01-tower/lib/pubsub'
@@ -24,7 +24,7 @@ const KillSystem = () => {
         if (enemy.enemyDetails.currentHealth <= 0) {
           enemy.position.x = 9999
           enemy.position.z = 9999
-          ecs.world.destroyEntity(enemy)
+          destroyEntity(enemy)
           killedEnemyUpdate()
           addMoney(enemy.enemyDetails.value)
         }
@@ -35,7 +35,7 @@ const KillSystem = () => {
           enemy.position.x = 0
           enemy.position.z = 0
           decrementLivesLeft()
-          ecs.world.destroyEntity(enemy)
+          destroyEntity(enemy)
         }
       }
     }

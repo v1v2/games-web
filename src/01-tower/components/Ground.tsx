@@ -4,7 +4,7 @@ import { Interactive } from '@codyjasonbennett/xr'
 import { Instance, Instances } from '@react-three/drei'
 import { Vector3 } from 'three'
 
-import { useMemoryStore } from '01-tower/lib/store'
+import { useCurrentConstruction, useMemoryStore } from '01-tower/lib/store'
 import {
   cells,
   emptyCells,
@@ -20,22 +20,22 @@ import {
   undergroundMaterial,
 } from '01-tower/lib/materials'
 import { squareGeometry, sphereGeometry, baseGeometry } from '01-tower/lib/geometries'
-import ecs from '01-tower/lib/ecs'
+import { createTower, useTowerEntities } from '01-tower/lib/ecs'
 
 const Tile = ({ rowIndex, colIndex, x, z }) => {
-  const towers = useMemoryStore(s => s.towers)
-  const currentConstruction = useMemoryStore(s => s.currentConstruction)
-  const clearCurrentConstruction = useMemoryStore(s => s.clearCurrentConstruction)
-  const addTower = useMemoryStore(s => s.addTower)
+  const { currentConstruction, clearCurrentConstruction } = useCurrentConstruction()
+  const addMoney = useMemoryStore(s => s.addMoney)
+  const towers = useTowerEntities()
 
   const [hovered, setHovered] = useState(false)
 
   const onUniversalClick = (i, j) => {
-    if (currentConstruction && !towers.some(t => t.i === i && t.j === j)) {
-      addTower({ type: currentConstruction, i, j })
+    if (currentConstruction && !towers.some(t => t.cell.rowIndex === i && t.cell.colIndex === j)) {
+      addMoney(-towersConfig[currentConstruction].cost)
       const { x, z } = getCellPosition(i, j)
-      ecs.world.createEntity({
+      createTower({
         position: { x, y: TOWER_DISANCE_TO_GROUND, z },
+        cell: { rowIndex: i, colIndex: j },
         towerDetails: { type: currentConstruction, isReadyToShoot: true },
       })
       clearCurrentConstruction()
