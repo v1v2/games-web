@@ -8,33 +8,16 @@ import { Vector3 } from 'three'
 
 const { x: endX, z: endZ } = detailedWaypoints[detailedWaypoints.length - 1]
 
-const EndSystem = () => {
-  const enemies = useEnemyEntities()
-  const decrementLivesLeft = useMemoryStore(s => s.decrementLivesLeft)
-
-  useFrame(() => {
-    for (const enemy of enemies) {
-      const pos = enemy.transform.position
-      if (Math.abs(pos.x - endX) < 0.1 && Math.abs(pos.z - endZ) < 0.1) {
-        // There must be a better way to do this
-        // To prevent the next frames from triggering more life losses
-        enemy.transform.position.x = 9999
-        enemy.transform.position.y = 9999
-        enemy.transform.position.z = 9999
-        decrementLivesLeft()
-        destroyEntity(enemy)
-      }
-    }
-  })
-
-  return null
-}
-
-const ShootSystem = () => {
+const Systems = () => {
   const enemies = useEnemyEntities()
   const towers = useTowerEntities()
 
+  const killedEnemyUpdate = useMemoryStore(s => s.killedEnemyUpdate)
+  const addMoney = useMemoryStore(s => s.addMoney)
+  const decrementLivesLeft = useMemoryStore(s => s.decrementLivesLeft)
+
   useFrame(() => {
+    // Shooting system
     for (const tower of towers) {
       const { reloadTime, range, splashRange, damage } = towersConfig[tower.towerType]
       if (tower.isReadyToShoot) {
@@ -69,23 +52,21 @@ const ShootSystem = () => {
         }
       }
     }
-  })
 
-  return null
-}
-
-const HealthSystem = () => {
-  const enemies = useEnemyEntities()
-  const addMoney = useMemoryStore(s => s.addMoney)
-  const killedEnemyUpdate = useMemoryStore(s => s.killedEnemyUpdate)
-
-  useFrame(() => {
+    // Kill system
     for (const enemy of enemies) {
       if (enemy.health.current <= 0) {
-        enemy.transform.position.x = 9999
-        enemy.transform.position.z = 9999
         addMoney(enemy.killReward)
         killedEnemyUpdate()
+        destroyEntity(enemy)
+      }
+    }
+
+    // Reached-the-end system
+    for (const enemy of enemies) {
+      const pos = enemy.transform.position
+      if (Math.abs(pos.x - endX) < 0.1 && Math.abs(pos.z - endZ) < 0.1) {
+        decrementLivesLeft()
         destroyEntity(enemy)
       }
     }
@@ -93,13 +74,5 @@ const HealthSystem = () => {
 
   return null
 }
-
-export const Systems = () => (
-  <>
-    <HealthSystem />
-    <EndSystem />
-    <ShootSystem />
-  </>
-)
 
 export default Systems
