@@ -8,7 +8,6 @@ import { useCurrentConstruction, useMemoryStore } from '01-tower/lib/store'
 import {
   cells,
   emptyCells,
-  getCellPosition,
   mapSize,
   towersConfig,
   TOWER_DISANCE_TO_GROUND,
@@ -32,12 +31,7 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
   const onUniversalClick = (i, j) => {
     if (currentConstruction && !towers.some(t => t.cell.rowIndex === i && t.cell.colIndex === j)) {
       addMoney(-towersConfig[currentConstruction].cost)
-      const { x, z } = getCellPosition(i, j)
-      createTower({
-        position: { x, y: TOWER_DISANCE_TO_GROUND, z },
-        cell: { rowIndex: i, colIndex: j },
-        towerDetails: { type: currentConstruction, isReadyToShoot: true },
-      })
+      createTower({ cell: { rowIndex: i, colIndex: j }, type: currentConstruction })
       clearCurrentConstruction()
     }
   }

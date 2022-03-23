@@ -9,9 +9,9 @@ import { emptyCells } from '01-tower/lib/config'
 import { useMemoryStore } from '01-tower/lib/store'
 import { blueMaterial, greenMaterial, redMaterial } from '01-tower/lib/materials'
 import { sphereGeometry } from '01-tower/lib/geometries'
-import { useTowerEntities } from '01-tower/lib/ecs'
+import { Entity, useTowerEntities } from '01-tower/lib/ecs'
 
-const Tower = ({ entity }) => {
+const Tower = ({ entity }: { entity: Entity }) => {
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
   const selectedTower = useMemoryStore(s => s.selectedTower)
   const selectTower = useMemoryStore(s => s.selectTower)
@@ -21,7 +21,11 @@ const Tower = ({ entity }) => {
   return (
     <Interactive onSelect={onUniversalClick}>
       <Instance
-        position={[entity.position.x, entity.position.y, entity.position.z]}
+        position={[
+          entity.transform.position.x,
+          entity.transform.position.y,
+          entity.transform.position.z,
+        ]}
         onClick={onUniversalClick}
       />
     </Interactive>
@@ -37,7 +41,7 @@ const Towers = () => {
     { type: 'simple', material: greenMaterial },
     { type: 'splash', material: redMaterial },
     { type: 'strong', material: blueMaterial },
-  ].map(x => ({ ...x, towers: towers.filter(e => e.towerDetails.type === x.type) }))
+  ].map(x => ({ ...x, towers: towers.filter(t => t.towerType === x.type) }))
 
   return (
     <>

@@ -21,8 +21,8 @@ import {
   redMaterial,
 } from '01-tower/lib/materials'
 import { cubeGeometry, squareGeometry } from '01-tower/lib/geometries'
-import { useEnemyEntities } from '01-tower/lib/ecs'
-import { useUpdatePosition } from '01-tower/lib/hooks'
+import { Entity, useEnemyEntities } from '01-tower/lib/ecs'
+import { useUpdateTransform } from '01-tower/lib/hooks'
 
 const mapSeries = async (iterable, action) => {
   for (const x of iterable) {
@@ -30,12 +30,15 @@ const mapSeries = async (iterable, action) => {
   }
 }
 
-const HealthBar = ({ entity }) => {
-  const { size } = enemiesConfig[entity.enemyDetails.type]
-  const ref = useUpdatePosition({ entity, modify: () => ({ y: size + 2.5 }) })
+const HealthBar = ({ entity }: { entity: Entity }) => {
+  const { size } = enemiesConfig[entity.enemyType]
+  const ref = useUpdateTransform({
+    entity,
+    modify: ({ position }) => ({ position: { y: position.y + size + 2.5 } }),
+  })
 
   useFrame(() => {
-    ref.current.scale.x = 5 * (entity.enemyDetails.currentHealth / entity.enemyDetails.maxHealth)
+    ref.current.scale.x = 5 * (entity.health.current / entity.health.max)
   })
 
   return (
@@ -54,8 +57,8 @@ const waypointTuples = waypoints.map((w, i) => ({
   nextWaypoint: waypoints[i + 1],
 }))
 
-const Enemy = ({ entity }) => {
-  const { size, speed } = enemiesConfig[entity.enemyDetails.type]
+const Enemy = ({ entity }: { entity: Entity }) => {
+  const { size, speed } = enemiesConfig[entity.enemyType]
 
   useSpring({
     // useCallback prevents re-rendering from causing the animation to reset
@@ -77,14 +80,14 @@ const Enemy = ({ entity }) => {
     from: { position: [initX, ENEMY_DISTANCE_TO_GROUND, initZ] },
     onChange: ({ value }) => {
       if (value?.position) {
-        entity.position.x = value.position[0]
-        entity.position.y = value.position[1]
-        entity.position.z = value.position[2]
+        entity.transform.position.x = value.position[0]
+        entity.transform.position.y = value.position[1]
+        entity.transform.position.z = value.position[2]
       }
     },
   })
 
-  const ref = useUpdatePosition({ entity })
+  const ref = useUpdateTransform({ entity })
 
   return (
     // @ts-ignore
@@ -104,7 +107,7 @@ const Enemies = () => {
     { type: 'basic', limit: 30, material: greenMaterial },
     { type: 'tank', limit: 30, material: redMaterial },
     { type: 'boss', limit: 30, material: blackMaterial },
-  ].map(x => ({ ...x, enemies: enemies.filter(e => e.enemyDetails.type === x.type) }))
+  ].map(x => ({ ...x, enemies: enemies.filter(e => e.enemyType === x.type) }))
 
   return (
     <>

@@ -5,24 +5,41 @@ import { Object3D } from 'three'
 
 import { Entity } from '01-tower/lib/ecs'
 
-export const useUpdatePosition = ({
+export const useUpdateTransform = ({
   entity,
   ref,
   modify,
 }: {
   entity: Entity
   ref?: MutableRefObject<Object3D>
-  modify?: (position: { x: number; y: number; z: number }) => { x?: number; y?: number; z?: number }
+  modify?: (transform: {
+    position?: { x?: number; y?: number; z?: number }
+    rotation?: { x?: number; y?: number; z?: number }
+    scale?: { x?: number; y?: number; z?: number }
+  }) => {
+    position?: { x?: number; y?: number; z?: number }
+    rotation?: { x?: number; y?: number; z?: number }
+    scale?: { x?: number; y?: number; z?: number }
+  }
 }) => {
   const newRef = useRef<Object3D>(null)
   const refToUse = ref ?? newRef
 
   useFrame(() => {
-    const { x = 0, y = 0, z = 0 } = modify ? modify({ ...entity.position }) : { x: 0, y: 0, z: 0 }
-    if (refToUse?.current?.position) {
-      refToUse.current.position.x = entity.position.x + x
-      refToUse.current.position.y = entity.position.y + y
-      refToUse.current.position.z = entity.position.z + z
+    const userTransform = modify
+      ? modify(entity.transform)
+      : { position: {}, rotation: {}, scale: {} }
+
+    if (refToUse?.current) {
+      refToUse.current.position.x = userTransform.position?.x ?? entity.transform?.position?.x ?? 0
+      refToUse.current.position.y = userTransform.position?.y ?? entity.transform?.position?.y ?? 0
+      refToUse.current.position.z = userTransform.position?.z ?? entity.transform?.position?.z ?? 0
+      refToUse.current.rotation.x = userTransform.rotation?.x ?? entity.transform?.rotation?.x ?? 0
+      refToUse.current.rotation.y = userTransform.rotation?.y ?? entity.transform?.rotation?.y ?? 0
+      refToUse.current.rotation.z = userTransform.rotation?.z ?? entity.transform?.rotation?.z ?? 0
+      refToUse.current.scale.x = userTransform.scale?.x ?? entity.transform?.scale?.x ?? 1
+      refToUse.current.scale.y = userTransform.scale?.y ?? entity.transform?.scale?.y ?? 1
+      refToUse.current.scale.z = userTransform.scale?.z ?? entity.transform?.scale?.z ?? 1
     }
   })
 

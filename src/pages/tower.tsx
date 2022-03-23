@@ -12,8 +12,8 @@ import { isAliveSelector, useMemoryStore } from '01-tower/lib/store'
 import Towers from '01-tower/components/Towers'
 import { cubeGeometry, sphereGeometry } from '01-tower/lib/geometries'
 import { blueMaterial, greenMaterial, redMaterial } from '01-tower/lib/materials'
-import { createTower } from '01-tower/lib/ecs'
-import { detailedWaypoints, enemiesConfig, ENEMY_DISTANCE_TO_GROUND } from '01-tower/lib/config'
+import { createEnemy } from '01-tower/lib/ecs'
+import { enemiesConfig } from '01-tower/lib/config'
 import { EnemyType } from '01-tower/lib/types'
 import Systems from '01-tower/components/Systems'
 import Projectiles from '01-tower/components/Projectiles'
@@ -123,18 +123,13 @@ const IndexPage = () => {
         spawnTimerRef.current = 0
         const typeIndex = Math.floor(Math.random() * 10) % 4
         const type = ['basic', 'fast', 'tank', 'boss'][typeIndex] as EnemyType
-        const { hpFactor, value } = enemiesConfig[type]
+        const { hpFactor, killRewardFactor } = enemiesConfig[type]
         const baseHp = 50 + wave * 70
-        const hp = hpFactor * baseHp
-        const firstWaypoint = detailedWaypoints[0]
-        createTower({
-          position: { x: firstWaypoint.x, y: ENEMY_DISTANCE_TO_GROUND, z: firstWaypoint.z },
-          enemyDetails: {
-            type,
-            currentHealth: hp,
-            maxHealth: hp,
-            value: Math.floor(value * (1 + wave * 0.3)),
-          },
+        const maxHealth = hpFactor * baseHp
+        createEnemy({
+          type,
+          maxHealth,
+          killReward: Math.floor(killRewardFactor * (1 + wave * 0.3)),
         })
       }
     }

@@ -32,7 +32,7 @@ type EnemyConfig = {
   geometry: BoxGeometry
   hpFactor: number
   speed: number
-  value: number
+  killRewardFactor: number
   size: number
 }
 
@@ -84,7 +84,7 @@ export const enemiesConfig: EnemyConfigs = {
     geometry: cubeGeometry,
     hpFactor: 1,
     speed: 0.012,
-    value: 1,
+    killRewardFactor: 1,
     size: 1,
   },
   fast: {
@@ -93,7 +93,7 @@ export const enemiesConfig: EnemyConfigs = {
     geometry: cubeGeometry,
     hpFactor: 0.5,
     speed: 0.024,
-    value: 1,
+    killRewardFactor: 1,
     size: 0.75,
   },
   tank: {
@@ -102,7 +102,7 @@ export const enemiesConfig: EnemyConfigs = {
     geometry: cubeGeometry,
     hpFactor: 3,
     speed: 0.008,
-    value: 2,
+    killRewardFactor: 2,
     size: 1.25,
   },
   boss: {
@@ -111,7 +111,7 @@ export const enemiesConfig: EnemyConfigs = {
     geometry: cubeGeometry,
     hpFactor: 10,
     speed: 0.012,
-    value: 10,
+    killRewardFactor: 10,
     size: 2,
   },
 }
