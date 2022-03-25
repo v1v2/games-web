@@ -104,3 +104,4 @@ dist
 
 .DS_Store
 ssl-localhost.*
+/tmp/

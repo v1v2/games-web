@@ -1,11 +1,11 @@
 import { useCallback, memo } from 'react'
 
-import { Billboard, Instance } from '@react-three/drei'
+import { Billboard } from '@react-three/drei'
 import { useSpring, a } from '@react-spring/three'
 import { useFrame } from '@react-three/fiber'
 import { Vector3 } from 'three'
 
-import PatchedInstances from 'components/PatchedInstances'
+import { Instances, Instance } from 'components/PatchedInstances'
 
 import {
   enemiesConfig,
@@ -99,36 +99,35 @@ const Enemy = ({ entity }: { entity: Entity }) => {
 
 const EnemyMemo = memo(Enemy)
 
+const enemiesByTypeConfig = [
+  { type: 'fast', limit: 30, material: purpleMaterial },
+  { type: 'basic', limit: 30, material: greenMaterial },
+  { type: 'tank', limit: 30, material: redMaterial },
+  { type: 'boss', limit: 30, material: blackMaterial },
+]
+
 const Enemies = () => {
   const enemies = useEnemyEntities()
 
-  const enemiesByType = [
-    { type: 'fast', limit: 30, material: purpleMaterial },
-    { type: 'basic', limit: 30, material: greenMaterial },
-    { type: 'tank', limit: 30, material: redMaterial },
-    { type: 'boss', limit: 30, material: blackMaterial },
-  ].map(x => ({ ...x, enemies: enemies.filter(e => e.enemyType === x.type) }))
+  const enemiesByType = enemiesByTypeConfig.map(x => ({
+    ...x,
+    enemies: enemies.filter(e => e.enemyType === x.type),
+  }))
 
   return (
     <>
       {enemiesByType.map(({ type, enemies, limit, material }) => (
-        <PatchedInstances
-          key={type}
-          limit={limit}
-          geometry={cubeGeometry}
-          material={material}
-          castShadow
-        >
+        <Instances key={type} limit={limit} geometry={cubeGeometry} material={material} castShadow>
           {enemies.map(e => (
             <EnemyMemo key={e.id} entity={e} />
           ))}
-        </PatchedInstances>
+        </Instances>
       ))}
-      <PatchedInstances limit={150} material={basicGreenMaterial} geometry={squareGeometry}>
+      <Instances limit={150} material={basicGreenMaterial} geometry={squareGeometry}>
         {enemies.map(e => (
           <HealthBarMemo key={e.id} entity={e} />
         ))}
-      </PatchedInstances>
+      </Instances>
     </>
   )
 }

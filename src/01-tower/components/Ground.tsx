@@ -1,8 +1,9 @@
 import { useState } from 'react'
 
 import { Interactive } from '@codyjasonbennett/xr'
-import { Instance, Instances } from '@react-three/drei'
 import { Vector3 } from 'three'
+
+import { Instances, Instance } from 'components/PatchedInstances'
 
 import { useCurrentConstruction, useMemoryStore } from '01-tower/lib/store'
 import {

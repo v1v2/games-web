@@ -2,9 +2,10 @@ import { memo } from 'react'
 
 import { Mesh, Vector3 } from 'three'
 
+import { Merged } from 'components/PatchedInstances'
+
 import { basicOrangeMaterial } from '01-tower/lib/materials'
 import { cubeGeometry, sphereGeometry } from '01-tower/lib/geometries'
-import { Merged } from '@react-three/drei'
 import { Projectile } from '01-tower/lib/types'
 import { useProjectilesEntities } from '01-tower/lib/ecs'
 
@@ -38,7 +39,7 @@ const Projectiles = () => {
   const projectiles = useProjectilesEntities()
 
   return (
-    <Merged meshes={[laserMesh, impactMesh]} limit={60} position={[999, 999, 999]}>
+    <Merged meshes={[laserMesh, impactMesh]} limit={60}>
       {(LaserMesh, ImpactMesh) =>
         projectiles.map(p => (
           <ProjectileMemo key={p.id} LaserMesh={LaserMesh} ImpactMesh={ImpactMesh} {...p.segment} />
