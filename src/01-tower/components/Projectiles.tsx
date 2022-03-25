@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+import { memo } from 'react'
 
 import { Mesh, Vector3 } from 'three'
 
 import { basicOrangeMaterial } from '01-tower/lib/materials'
 import { cubeGeometry, sphereGeometry } from '01-tower/lib/geometries'
 import { Merged } from '@react-three/drei'
-import { subscribeCreateProjectile } from '01-tower/lib/pubsub'
 import { Projectile } from '01-tower/lib/types'
+import { useProjectilesEntities } from '01-tower/lib/ecs'
 
 const Projectile = ({ fromX, toX, fromZ, toZ, LaserMesh, ImpactMesh }) => {
   const towerPos = new Vector3(fromX, 2, fromZ)
@@ -29,28 +29,19 @@ const Projectile = ({ fromX, toX, fromZ, toZ, LaserMesh, ImpactMesh }) => {
   )
 }
 
+const ProjectileMemo = memo(Projectile)
+
 const laserMesh = new Mesh(cubeGeometry, basicOrangeMaterial)
 const impactMesh = new Mesh(sphereGeometry, basicOrangeMaterial)
 
 const Projectiles = () => {
-  const [projectiles, setProjectiles] = useState([])
-
-  useEffect(() => {
-    const unsub = subscribeCreateProjectile((projectile: Projectile) => {
-      setProjectiles(x => [...x, projectile])
-      setTimeout(() => setProjectiles(x => x.filter(p => p.id !== projectile.id)), 100)
-    })
-
-    return () => {
-      unsub()
-    }
-  }, [])
+  const projectiles = useProjectilesEntities()
 
   return (
-    <Merged meshes={[laserMesh, impactMesh]} limit={60}>
+    <Merged meshes={[laserMesh, impactMesh]} limit={60} position={[999, 999, 999]}>
       {(LaserMesh, ImpactMesh) =>
         projectiles.map(p => (
-          <Projectile key={p.id} LaserMesh={LaserMesh} ImpactMesh={ImpactMesh} {...p} />
+          <ProjectileMemo key={p.id} LaserMesh={LaserMesh} ImpactMesh={ImpactMesh} {...p.segment} />
         ))
       }
     </Merged>
