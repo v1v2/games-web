@@ -1,9 +1,13 @@
 import { useFrame } from '@react-three/fiber'
 
-import { destroyEntity, useEnemyEntities, useTowerEntities } from '01-tower/lib/ecs'
+import {
+  createProjectile,
+  destroyEntity,
+  useEnemyEntities,
+  useTowerEntities,
+} from '01-tower/lib/ecs'
 import { useMemoryStore } from '01-tower/lib/store'
 import { detailedWaypoints, towersConfig } from '01-tower/lib/config'
-import { publishCreateProjectile } from '01-tower/lib/pubsub'
 import { Vector3 } from 'three'
 
 const { x: endX, z: endZ } = detailedWaypoints[detailedWaypoints.length - 1]
@@ -38,13 +42,14 @@ const Systems = () => {
             } else {
               e.health.current -= damage
             }
-            publishCreateProjectile({
-              id: Math.random().toString(),
+            const projectileEntity = createProjectile({
               fromX: tower.transform.position.x,
               fromZ: tower.transform.position.z,
               toX: e.transform.position.x,
               toZ: e.transform.position.z,
             })
+            setTimeout(() => destroyEntity(projectileEntity), 100)
+
             tower.isReadyToShoot = false
             setTimeout(() => (tower.isReadyToShoot = true), reloadTime)
             break

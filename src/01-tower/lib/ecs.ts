@@ -12,6 +12,7 @@ import {
 export type Entity = {
   enemy?: Tag
   tower?: Tag
+  projectile?: Tag
   transform?: {
     position?: { x?: number; y?: number; z?: number }
     rotation?: { x?: number; y?: number; z?: number }
@@ -25,12 +26,15 @@ export type Entity = {
   isReadyToShoot?: boolean
   killReward?: number
   enemyType?: EnemyType
+  segment?: { fromX: number; fromZ: number; toX: number; toZ: number }
 } & IEntity
 
 const ecs = createECS<Entity>()
 
 export const useEnemyEntities = () => ecs.useArchetype('enemy').entities
+export const useEnemies = () => ecs.useArchetype('enemy')
 export const useTowerEntities = () => ecs.useArchetype('tower').entities
+export const useProjectilesEntities = () => ecs.useArchetype('projectile').entities
 
 type TowerCreationData = {
   type: TowerType
@@ -69,5 +73,18 @@ export const createEnemy = ({ type, maxHealth, killReward }: EnemyCreationData) 
     killReward,
   })
 }
+
+type ProjectileCreationData = {
+  fromX: number
+  fromZ: number
+  toX: number
+  toZ: number
+}
+
+export const createProjectile = ({ fromX, fromZ, toX, toZ }: ProjectileCreationData) =>
+  ecs.world.createEntity({
+    projectile: Tag,
+    segment: { fromX, fromZ, toX, toZ },
+  })
 
 export const destroyEntity = ecs.world.destroyEntity
