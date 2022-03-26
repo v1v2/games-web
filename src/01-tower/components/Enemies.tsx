@@ -41,6 +41,7 @@ const HealthBar = ({ entity }: { entity: Entity }) => {
     ref.current.scale.x = 5 * (entity.health.current / entity.health.max)
   })
 
+  // The Billboard currently doesn't work
   return (
     <Billboard ref={ref} scale={[5, 0.6, 1]}>
       <Instance />

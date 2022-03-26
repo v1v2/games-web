@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import { Interactive } from '@codyjasonbennett/xr'
-import { Vector3 } from 'three'
 
 import { Instances, Instance } from 'components/PatchedInstances'
 
@@ -86,21 +85,12 @@ const Ground = () => (
     </Instances>
     {cells.map((row, i) =>
       row.map((c, j) =>
-        c === 2 ? (
+        c === 2 || c === 3 ? (
           <mesh
             key={`cell-${i}-${j}`}
             rotation={[-Math.PI / 2, 0, 0]}
-            position={new Vector3(mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5)}
-            material={greenMaterial}
-            geometry={baseGeometry}
-            castShadow
-          />
-        ) : c === 3 ? (
-          <mesh
-            key={`cell-${i}-${j}`}
-            rotation={[-Math.PI / 2, 0, 0]}
-            position={new Vector3(mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5)}
-            material={redMaterial}
+            position={[mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5]}
+            material={c === 2 ? greenMaterial : redMaterial}
             geometry={baseGeometry}
             castShadow
           />
