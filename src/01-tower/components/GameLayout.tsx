@@ -9,7 +9,7 @@ import { useCurrentConstruction, useMemoryStore } from '01-tower/lib/store'
 import { towersConfig } from '01-tower/lib/config'
 import { destroyEntity, useEnemyEntities } from '01-tower/lib/ecs'
 
-const music = typeof window !== 'undefined' && new Audio('/audio/Quincas Moreira - Chtulthu.mp3')
+const music = typeof window !== 'undefined' && new Audio('/01-tower/audio/Quincas Moreira - Chtulthu.mp3')
 
 const GameLayout = ({ children }) => {
   const { currentConstruction, setCurrentConstruction, clearCurrentConstruction } =
