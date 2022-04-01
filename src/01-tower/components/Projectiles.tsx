@@ -6,7 +6,6 @@ import { Merged } from 'components/PatchedInstances'
 
 import { basicOrangeMaterial } from '01-tower/lib/materials'
 import { cubeGeometry, sphereGeometry } from '01-tower/lib/geometries'
-import { Projectile } from '01-tower/lib/types'
 import { useProjectilesEntities } from '01-tower/lib/ecs'
 
 const Projectile = ({ fromX, toX, fromZ, toZ, LaserMesh, ImpactMesh }) => {

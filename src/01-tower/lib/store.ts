@@ -60,10 +60,13 @@ export const useLocalStore = create<LocalStore>(
   persist((set, get) => ({}), { name: 'zustand-local' })
 )
 
-if (process.env.NODE_ENV === 'development') {
-  // To not break SSR
-  if (typeof document !== 'undefined') {
-    mountStoreDevtool('Zustand Memory Store', useMemoryStore)
-    mountStoreDevtool('Zustand Local Store', useLocalStore)
-  }
-}
+// The Zustand devtools is not compatible with React concurrent mode
+// https://github.com/beerose/simple-zustand-devtools/issues/21
+
+// if (process.env.NODE_ENV === 'development') {
+//   // To not break SSR
+//   if (typeof document !== 'undefined') {
+//     mountStoreDevtool('Zustand Memory Store', useMemoryStore)
+//     mountStoreDevtool('Zustand Local Store', useLocalStore)
+//   }
+// }

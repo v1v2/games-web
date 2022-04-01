@@ -1,0 +1,80 @@
+diff --git a/node_modules/miniplex-react/dist/miniplex-react.cjs.dev.js b/node_modules/miniplex-react/dist/miniplex-react.cjs.dev.js
+index 806b4b5..6885a19 100644
+--- a/node_modules/miniplex-react/dist/miniplex-react.cjs.dev.js
++++ b/node_modules/miniplex-react/dist/miniplex-react.cjs.dev.js
+@@ -48,7 +48,7 @@ function createECS() {
+     });
+     /* If the entity was freshly created, manage its presence in the ECS world. */
+ 
+-    React.useLayoutEffect(function () {
++    React.useEffect(function () {
+       if (existingEntity) return;
+       return function () {
+         return world.destroyEntity(entity);
+@@ -92,7 +92,7 @@ function createECS() {
+     var _useArchetype = useArchetype(tag),
+         entities = _useArchetype.entities;
+ 
+-    React.useLayoutEffect(function () {
++    React.useEffect(function () {
+       /* When firing up, create the requested number of entities. */
+       for (var i = 0; i < initial; i++) {
+         var _entity = world.createEntity();
+@@ -139,7 +139,7 @@ function createECS() {
+       throw new Error("<Component> will only accept a single React child.");
+     }
+ 
+-    React.useLayoutEffect(function () {
++    React.useEffect(function () {
+       world.addComponent(entity, _defineProperty({}, name, data !== null && data !== void 0 ? data : ref.current));
+       return function () {
+         /* The entity might already have been destroyed, so let's check. */
+@@ -167,7 +167,7 @@ function createECS() {
+     var archetype = reactToolbox.useConst(function () {
+       return world.archetype.apply(world, query);
+     });
+-    React.useLayoutEffect(function () {
++    React.useEffect(function () {
+       archetype.onEntityAdded.add(rerender);
+       archetype.onEntityRemoved.add(rerender);
+       /* We need to rerender at least once, because other effects might have set up
+diff --git a/node_modules/miniplex-react/dist/miniplex-react.cjs.prod.js b/node_modules/miniplex-react/dist/miniplex-react.cjs.prod.js
+index 806b4b5..6885a19 100644
+--- a/node_modules/miniplex-react/dist/miniplex-react.cjs.prod.js
++++ b/node_modules/miniplex-react/dist/miniplex-react.cjs.prod.js
+@@ -48,7 +48,7 @@ function createECS() {
+     });
+     /* If the entity was freshly created, manage its presence in the ECS world. */
+ 
+-    React.useLayoutEffect(function () {
++    React.useEffect(function () {
+       if (existingEntity) return;
+       return function () {
+         return world.destroyEntity(entity);
+@@ -92,7 +92,7 @@ function createECS() {
+     var _useArchetype = useArchetype(tag),
+         entities = _useArchetype.entities;
+ 
+-    React.useLayoutEffect(function () {
++    React.useEffect(function () {
+       /* When firing up, create the requested number of entities. */
+       for (var i = 0; i < initial; i++) {
+         var _entity = world.createEntity();
+@@ -139,7 +139,7 @@ function createECS() {
+       throw new Error("<Component> will only accept a single React child.");
+     }
+ 
+-    React.useLayoutEffect(function () {
++    React.useEffect(function () {
+       world.addComponent(entity, _defineProperty({}, name, data !== null && data !== void 0 ? data : ref.current));
+       return function () {
+         /* The entity might already have been destroyed, so let's check. */
+@@ -167,7 +167,7 @@ function createECS() {
+     var archetype = reactToolbox.useConst(function () {
+       return world.archetype.apply(world, query);
+     });
+-    React.useLayoutEffect(function () {
++    React.useEffect(function () {
+       archetype.onEntityAdded.add(rerender);
+       archetype.onEntityRemoved.add(rerender);
+       /* We need to rerender at least once, because other effects might have set up

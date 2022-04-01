@@ -15,10 +15,10 @@ const FullCanvas = ({ children }) => (
     </Head>
     <ClientOnly>
       <Stats showPanel={0} className="stats" />
+      <VRCanvas shadows={true}>
+        <Suspense fallback={<Loader />}>{children}</Suspense>
+      </VRCanvas>
     </ClientOnly>
-    <VRCanvas mode="concurrent" shadows={true}>
-      <Suspense fallback={<Loader />}>{children}</Suspense>
-    </VRCanvas>
     <style global jsx>{`
       html,
       body,
