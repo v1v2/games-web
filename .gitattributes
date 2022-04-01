@@ -1,3 +1,6 @@
+# As of April 2022, Vercel does not support serving Git LFS files,
+# so keeping some binaries checked in for now.
+
 # *.mp3 filter=lfs diff=lfs merge=lfs -text
 # *.wav filter=lfs diff=lfs merge=lfs -text
 

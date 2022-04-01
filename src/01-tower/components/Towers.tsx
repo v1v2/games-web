@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, Suspense } from 'react'
 
 import { Interactive } from '@react-three/xr'
 
@@ -51,7 +51,7 @@ const Towers = () => {
   ].map(x => ({ ...x, towers: towers.filter(t => t.towerType === x.type) }))
 
   return (
-    <>
+    <Suspense fallback={null}>
       {towersByType.map(({ model, towers, type }) => (
         <Instances
           key={type}
@@ -65,7 +65,7 @@ const Towers = () => {
           ))}
         </Instances>
       ))}
-    </>
+    </Suspense>
   )
 }
 
