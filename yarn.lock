@@ -697,10 +697,10 @@ minimist@^1.2.0:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.6.tgz#8637a5b759ea0d6e98702cfb3a9283323c93af44"
   integrity sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==
 
-miniplex-react@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/miniplex-react/-/miniplex-react-0.2.0.tgz#673c62c0ecc76d1b08b3bf537ce7ab25e70086a7"
-  integrity sha512-PiJLS8/mBtvaGKXrJMQkKfyHCoOGS0D0maXoWNSOJQsKGPPAfP5nCylGaGekif64TXJrkK0uQF9DpQu7icTNbQ==
+miniplex-react@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/miniplex-react/-/miniplex-react-0.2.1.tgz#79c9781a70160579923f84058825f316b4b7f60b"
+  integrity sha512-tOkmtVOPu/Xl7mFHjnl6gTzrozp4SLo3lNebKd/d/CMcuR4EToIKlXArQRKqJdO06pqvtVdj9urJWZX2E6wf2Q==
   dependencies:
     "@hmans/react-toolbox" "^0.1.4"
 
