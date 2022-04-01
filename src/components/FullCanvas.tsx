@@ -1,9 +1,12 @@
+import { Suspense } from 'react'
+
 import Head from 'next/head'
 
 import { VRCanvas } from '@react-three/xr'
 import { Stats } from '@react-three/drei'
 
 import ClientOnly from 'components/ClientOnly'
+import Loader from 'components/Loader'
 
 const FullCanvas = ({ children }) => (
   <>
@@ -14,7 +17,7 @@ const FullCanvas = ({ children }) => (
       <Stats showPanel={0} className="stats" />
     </ClientOnly>
     <VRCanvas mode="concurrent" shadows={true}>
-      {children}
+      <Suspense fallback={<Loader />}>{children}</Suspense>
     </VRCanvas>
     <style global jsx>{`
       html,

@@ -131,11 +131,8 @@ const TowerPage = () => {
 
   return (
     <>
-      {/* Because they load models */}
-      <Suspense fallback={null}>
-        <Ground />
-        <Towers />
-      </Suspense>
+      <Ground />
+      <Towers />
       <Enemies />
       <Systems />
       <Projectiles />
