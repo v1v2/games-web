@@ -2,9 +2,9 @@ import { useGLTF } from '@react-three/drei'
 import { Mesh, MeshStandardMaterial } from 'three'
 import { GLTF } from 'three-stdlib'
 
-const SIMPLE_TOWER_PATH = '/01-tower/emp-tower/emp-tower.glb'
-const SPLASH_TOWER_PATH = '/01-tower/energy-pilon/energy-pilon.glb'
-const STRONG_TOWER_PATH = '/01-tower/big-emp-tower/big-emp-tower.glb'
+const SIMPLE_TOWER_PATH = '/01-tower/models/emp-tower/emp-tower.glb'
+const SPLASH_TOWER_PATH = '/01-tower/models/energy-pilon/energy-pilon.glb'
+const STRONG_TOWER_PATH = '/01-tower/models/big-emp-tower/big-emp-tower.glb'
 
 const modelConfigs = {
   simple: {
