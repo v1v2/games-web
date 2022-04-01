@@ -3,10 +3,10 @@ import { useEffect } from 'react'
 import { DefaultXRControllers, useController, useXR } from '@react-three/xr'
 import { Debug, Physics, useBox, usePlane, useSphere } from '@verekia/react-three-cannon'
 
-import FullCanvas from 'components/FullCanvas'
-import { sphereGeometry, squareGeometry } from '02-island/lib/geometries'
-import { greenMaterial, redMaterial } from '02-island/lib/materials'
+import { sphereGeometry, squareGeometry } from '04-island/lib/geometries'
+import { greenMaterial, redMaterial } from '04-island/lib/materials'
 
+import FullCanvas from 'components/FullCanvas'
 import LeftHandModel from 'components/models/LeftHand'
 import RightHandModel from 'components/models/RightHand'
 import VRControls from 'components/VRControls'
