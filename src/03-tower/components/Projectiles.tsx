@@ -1,14 +1,17 @@
 import { memo } from 'react'
 
-import { Mesh, Vector3 } from 'three'
+import { Vector3 } from 'three'
 
-import { Merged } from 'components/PatchedInstances'
+import { makeInstanceComponents } from 'lib/InstancesTrinity'
 
 import { basicOrangeMaterial } from '03-tower/lib/materials'
 import { cubeGeometry, sphereGeometry } from '03-tower/lib/geometries'
 import { useProjectilesEntities } from '03-tower/lib/ecs'
 
-const Projectile = ({ fromX, toX, fromZ, toZ, LaserMesh, ImpactMesh }) => {
+const ImpactInstancer = makeInstanceComponents()
+const LaserInstancer = makeInstanceComponents()
+
+const Projectile = ({ fromX, toX, fromZ, toZ }) => {
   const towerPos = new Vector3(fromX, 2, fromZ)
   const enemyPos = new Vector3(toX, 2, toZ)
   const distance = towerPos.distanceTo(enemyPos)
@@ -18,33 +21,33 @@ const Projectile = ({ fromX, toX, fromZ, toZ, LaserMesh, ImpactMesh }) => {
   const lookAngle = -(angle - Math.PI / 2)
 
   return (
-    <>
-      <LaserMesh
+    <group position={[-999, -999, -999]}>
+      <LaserInstancer.Instance
         position={[betweenPos.x, betweenPos.y, betweenPos.z]}
         rotation={[0, lookAngle, 0]}
         scale={[0.3, 0.3, distance]}
       />
-      <ImpactMesh position={[toX, 3, toZ]} />
-    </>
+      <ImpactInstancer.Instance position={[toX, 3, toZ]} />
+    </group>
   )
 }
 
 const ProjectileMemo = memo(Projectile)
 
-const laserMesh = new Mesh(cubeGeometry, basicOrangeMaterial)
-const impactMesh = new Mesh(sphereGeometry, basicOrangeMaterial)
-
 const Projectiles = () => {
   const projectiles = useProjectilesEntities()
 
   return (
-    <Merged meshes={[laserMesh, impactMesh]} limit={60}>
-      {(LaserMesh, ImpactMesh) =>
-        projectiles.map(p => (
-          <ProjectileMemo key={p.id} LaserMesh={LaserMesh} ImpactMesh={ImpactMesh} {...p.segment} />
-        ))
-      }
-    </Merged>
+    <>
+      <group position={[999, 999, 999]}>
+        <LaserInstancer.Root geometry={cubeGeometry} material={basicOrangeMaterial} />
+        <ImpactInstancer.Root geometry={sphereGeometry} material={basicOrangeMaterial} />
+      </group>
+
+      {projectiles.map(p => (
+        <ProjectileMemo key={p.id} {...p.segment} />
+      ))}
+    </>
   )
 }
 
