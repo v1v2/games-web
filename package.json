@@ -13,6 +13,7 @@
     "@react-three/fiber": "^8.0.6",
     "@react-three/xr": "^3.5.0",
     "@v1v2/next": "^1.0.0",
+    "@verekia/react-three-cannon": "^5.1.2",
     "lodash": "^4.17.21",
     "miniplex": "^0.8.1",
     "miniplex-react": "^0.2.1",

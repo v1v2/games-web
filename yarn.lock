@@ -299,6 +299,15 @@
   resolved "https://registry.yarnpkg.com/@v1v2/next/-/next-1.0.0.tgz#7142fb97c26dcd7d53afab98b0c16249069a945a"
   integrity sha512-VAzv04ODpkzbFCQi6jgOG3rlOMTtUFmPJdp/RrU+EEBSJcybC8x1sBJsImtT+fhugfV71BD+QuIC/OStCBAVmA==
 
+"@verekia/react-three-cannon@^5.1.2":
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/@verekia/react-three-cannon/-/react-three-cannon-5.1.2.tgz#d5a6b14ea3ed2364f6298f5a70ab059dbdce2cd4"
+  integrity sha512-Du62YsIjH/p1ZgxlPY/Rhpv/Ge2NLo8fnDw3jf/thyAEgSf7hCJO2oh6dnv8vZdqZKn65E1OlEbGVvZCIni5Qw==
+  dependencies:
+    "@react-three/fiber" "^8.0.6"
+    react "^18.0.0"
+    three "^0.139.2"
+
 "@webgpu/glslang@^0.0.15":
   version "0.0.15"
   resolved "https://registry.yarnpkg.com/@webgpu/glslang/-/glslang-0.0.15.tgz#f5ccaf6015241e6175f4b90906b053f88483d1f2"
