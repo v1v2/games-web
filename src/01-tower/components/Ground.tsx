@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react'
+import { useState } from 'react'
 
 import { Interactive } from '@react-three/xr'
 
@@ -72,15 +72,13 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
         />
       </Interactive>
       {currentConstruction && hovered && (
-        <Suspense fallback={null}>
-          <mesh
-            position={[x, TOWER_DISANCE_TO_GROUND - 1.4, z]}
-            rotation={[Math.PI / 2, 0, 0]}
-            scale={0.04}
-            geometry={currentConstructionModel.geometry}
-            material={currentConstructionModel.material}
-          />
-        </Suspense>
+        <mesh
+          position={[x, TOWER_DISANCE_TO_GROUND - 1.4, z]}
+          rotation={[Math.PI / 2, 0, 0]}
+          scale={0.04}
+          geometry={currentConstructionModel.geometry}
+          material={currentConstructionModel.material}
+        />
       )}
     </>
   )
