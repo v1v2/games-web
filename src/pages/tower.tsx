@@ -101,7 +101,7 @@ const TowerPage = () => {
   const spawnTimerRef = useRef(0)
   const isAlive = useMemoryStore(isAliveSelector)
 
-  console.log('tower re-rendered')
+  // console.log('tower re-rendered')
 
   useEffect(() => {
     if ('gpu' in navigator) {

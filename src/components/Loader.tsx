@@ -1,11 +1,15 @@
 import { Html, useProgress } from '@react-three/drei'
 
 const Loader = () => {
-  const { progress } = useProgress()
+  const { progress, active } = useProgress()
 
   return (
     <Html center>
-      <div style={{ color: 'white' }}>{progress} % loaded</div>
+      {active && (
+        <div style={{ color: 'white', width: '200px', textAlign: 'center' }}>
+          {Math.round(progress)}% loaded
+        </div>
+      )}
     </Html>
   )
 }
