@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Interactive } from '@codyjasonbennett/xr'
+import { Interactive } from '@react-three/xr'
 
 import { Instances, Instance } from 'components/PatchedInstances'
 
@@ -18,13 +18,31 @@ import {
   redMaterial,
   undergroundMaterial,
 } from '01-tower/lib/materials'
-import { squareGeometry, sphereGeometry, baseGeometry } from '01-tower/lib/geometries'
+import { squareGeometry, baseGeometry } from '01-tower/lib/geometries'
 import { createTower, useTowerEntities } from '01-tower/lib/ecs'
+import {
+  useSimpleTowerModel,
+  useSplashTowerModel,
+  useStrongTowerModel,
+} from '01-tower/lib/model-hooks'
 
 const Tile = ({ rowIndex, colIndex, x, z }) => {
   const { currentConstruction, clearCurrentConstruction } = useCurrentConstruction()
   const addMoney = useMemoryStore(s => s.addMoney)
   const towers = useTowerEntities()
+
+  const simpleTowerModel = useSimpleTowerModel()
+  const splashTowerModel = useSplashTowerModel()
+  const strongTowerModel = useStrongTowerModel()
+
+  const currentConstructionModel =
+    currentConstruction === 'simple'
+      ? simpleTowerModel
+      : currentConstruction === 'splash'
+      ? splashTowerModel
+      : currentConstruction === 'strong'
+      ? strongTowerModel
+      : null
 
   const [hovered, setHovered] = useState(false)
 
@@ -55,9 +73,11 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
       </Interactive>
       {currentConstruction && hovered && (
         <mesh
-          position={[x, TOWER_DISANCE_TO_GROUND, z]}
-          geometry={sphereGeometry}
-          material={towersConfig[currentConstruction].material}
+          position={[x, TOWER_DISANCE_TO_GROUND - 1.4, z]}
+          rotation={[Math.PI / 2, 0, 0]}
+          scale={0.04}
+          geometry={currentConstructionModel.geometry}
+          material={currentConstructionModel.material}
         />
       )}
     </>

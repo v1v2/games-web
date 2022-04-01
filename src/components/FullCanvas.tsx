@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-import { VRCanvas } from '@codyjasonbennett/xr'
+import { VRCanvas } from '@react-three/xr'
 import { Stats } from '@react-three/drei'
 
 import ClientOnly from 'components/ClientOnly'

@@ -1,14 +1,17 @@
 import { memo } from 'react'
 
-import { Interactive } from '@codyjasonbennett/xr'
+import { Interactive } from '@react-three/xr'
 
 import { Instances, Instance } from 'components/PatchedInstances'
 
 import { emptyCells } from '01-tower/lib/config'
 import { useMemoryStore } from '01-tower/lib/store'
-import { blueMaterial, greenMaterial, redMaterial } from '01-tower/lib/materials'
-import { sphereGeometry } from '01-tower/lib/geometries'
 import { Entity, useTowerEntities } from '01-tower/lib/ecs'
+import {
+  useSimpleTowerModel,
+  useSplashTowerModel,
+  useStrongTowerModel,
+} from '01-tower/lib/model-hooks'
 
 const Tower = ({ entity }: { entity: Entity }) => {
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
@@ -20,9 +23,11 @@ const Tower = ({ entity }: { entity: Entity }) => {
   return (
     <Interactive onSelect={onUniversalClick}>
       <Instance
+        rotation={[Math.PI / 2, 0, 0]}
+        scale={0.04}
         position={[
           entity.transform.position.x,
-          entity.transform.position.y,
+          entity.transform.position.y - 1.4,
           entity.transform.position.z,
         ]}
         onClick={onUniversalClick}
@@ -35,21 +40,24 @@ const TowerMemo = memo(Tower)
 
 const Towers = () => {
   const towers = useTowerEntities()
+  const simpleTowerModel = useSimpleTowerModel()
+  const splashTowerModel = useSplashTowerModel()
+  const strongTowerModel = useStrongTowerModel()
 
   const towersByType = [
-    { type: 'simple', material: greenMaterial },
-    { type: 'splash', material: redMaterial },
-    { type: 'strong', material: blueMaterial },
+    { type: 'simple', model: simpleTowerModel },
+    { type: 'splash', model: splashTowerModel },
+    { type: 'strong', model: strongTowerModel },
   ].map(x => ({ ...x, towers: towers.filter(t => t.towerType === x.type) }))
 
   return (
     <>
-      {towersByType.map(({ material, towers, type }) => (
+      {towersByType.map(({ model, towers, type }) => (
         <Instances
           key={type}
           limit={emptyCells.length}
-          material={material}
-          geometry={sphereGeometry}
+          material={model.material}
+          geometry={model.geometry}
           castShadow
         >
           {towers.map(t => (

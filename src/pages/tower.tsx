@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useRef } from 'react'
 
 import { useFrame } from '@react-three/fiber'
-import { DefaultXRControllers, Interactive, useXR } from '@codyjasonbennett/xr'
+import { DefaultXRControllers, Interactive, useXR } from '@react-three/xr'
 import { Billboard, Text } from '@react-three/drei'
 import { Object3D } from 'three'
 
