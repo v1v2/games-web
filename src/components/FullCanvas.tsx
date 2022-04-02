@@ -2,49 +2,68 @@ import { Suspense } from 'react'
 
 import Head from 'next/head'
 
+import { Icon, IconButton } from '@chakra-ui/react'
 import { VRCanvas } from '@react-three/xr'
 import { Stats } from '@react-three/drei'
 
 import ClientOnly from 'components/ClientOnly'
 import Loader from 'components/Loader'
+import { EnterFullscreenIcon, ExitFullscreenIcon } from 'lib/icons'
+import { useFullscreen } from 'lib/hooks'
 
-const FullCanvas = ({ children }) => (
-  <>
-    <Head>
-      <meta httpEquiv="origin-trial" content={process.env.NEXT_PUBLIC_ORIGIN_TRIAL_KEY} />
-    </Head>
-    <ClientOnly>
-      <Stats showPanel={0} className="stats" />
-      <VRCanvas shadows={true}>
-        <Suspense fallback={<Loader />}>{children}</Suspense>
-      </VRCanvas>
-    </ClientOnly>
-    <style global jsx>{`
-      html,
-      body,
-      #__next {
-        height: 100%;
-      }
+const FullCanvas = ({ children }) => {
+  const { isFullscreen, toggleFullscreen } = useFullscreen()
 
-      body {
-        margin: 0;
-        background: #222;
-        font-family: sans-serif;
-      }
+  return (
+    <>
+      <Head>
+        <meta httpEquiv="origin-trial" content={process.env.NEXT_PUBLIC_ORIGIN_TRIAL_KEY} />
+      </Head>
+      <IconButton
+        colorScheme="blackAlpha"
+        aria-label="Enter fullscreen"
+        icon={<Icon as={isFullscreen ? ExitFullscreenIcon : EnterFullscreenIcon} boxSize={7} />}
+        pos="absolute"
+        top={3}
+        right={3}
+        zIndex={10}
+        onClick={toggleFullscreen}
+      />
+      <ClientOnly>
+        <Stats showPanel={0} className="stats" />
+        <VRCanvas shadows={true}>
+          <Suspense fallback={<Loader />}>{children}</Suspense>
+        </VRCanvas>
+      </ClientOnly>
+      <style global jsx>{`
+        html,
+        body,
+        #__next {
+          height: 100%;
+        }
 
-      canvas {
-        width: 100%;
-        height: 100vh;
-        outline: none;
-        -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-      }
+        body {
+          margin: 0;
+          background: #222;
+          font-family: sans-serif;
+        }
 
-      .stats {
-        right: 0;
-        left: auto !important;
-      }
-    `}</style>
-  </>
-)
+        canvas {
+          width: 100%;
+          height: 100vh;
+          outline: none;
+          -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+        }
+
+        .stats {
+          top: initial !important;
+          right: 0;
+          left: auto !important;
+          bottom: 0 !important;
+        }
+      `}</style>
+    </>
+  )
+}
 
 export default FullCanvas

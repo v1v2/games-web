@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 
 import { OrbitControls, OrthographicCamera } from '@react-three/drei'
+import { Button, Icon, Stack } from '@chakra-ui/react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import FullCanvas from 'components/FullCanvas'
+import { GunIcon, LaserIcon, SplashIcon } from 'lib/icons'
 
 import { useCurrentConstruction, useMemoryStore } from '03-tower/lib/store'
 import { towersConfig } from '03-tower/lib/config'
@@ -50,62 +52,67 @@ const GameLayout = ({ children }) => {
   return (
     <>
       <div style={{ position: 'fixed', zIndex: 1 }}>
-        {currentConstruction ? (
-          <button onClick={() => clearCurrentConstruction()}>Cancel</button>
-        ) : (
-          <>
-            <button
-              disabled={money < towersConfig.simple.cost}
-              onClick={() => setCurrentConstruction('simple')}
-            >
-              Simple Tower
-            </button>
-            <button
-              disabled={money < towersConfig.splash.cost}
-              onClick={() => setCurrentConstruction('splash')}
-            >
-              Splash Tower
-            </button>
-            <button
-              disabled={money < towersConfig.strong.cost}
-              onClick={() => setCurrentConstruction('strong')}
-            >
-              Strong Tower
-            </button>
-          </>
-        )}
-        {selectedTower && (
-          <>
-            <button
-              onClick={() => {
-                addMoney(Math.round(towersConfig[selectedTower.towerDetails.type].cost / 2))
-                destroyEntity(selectedTower)
-                selectTower(null)
-              }}
-            >
-              Sell
-            </button>
-            <button onClick={() => selectTower(null)}>Cancel selection</button>
-          </>
-        )}
+        <Stack direction="row" p={2}>
+          {currentConstruction ? (
+            <Button onClick={() => clearCurrentConstruction()}>Cancel</Button>
+          ) : (
+            <>
+              <Button
+                leftIcon={<Icon as={GunIcon} />}
+                disabled={money < towersConfig.simple.cost}
+                onClick={() => setCurrentConstruction('simple')}
+              >
+                Simple
+              </Button>
+              <Button
+                leftIcon={<Icon as={SplashIcon} />}
+                disabled={money < towersConfig.splash.cost}
+                onClick={() => setCurrentConstruction('splash')}
+              >
+                Splash
+              </Button>
+              <Button
+                leftIcon={<Icon as={LaserIcon} />}
+                disabled={money < towersConfig.strong.cost}
+                onClick={() => setCurrentConstruction('strong')}
+              >
+                Laser
+              </Button>
+
+              {!isStarted && (
+                <Button
+                  bgColor="#292"
+                  onClick={() => {
+                    start()
+                    if (!process.env.NEXT_PUBLIC_DISABLE_MUSIC) {
+                      music.play()
+                    }
+                  }}
+                >
+                  Start
+                </Button>
+              )}
+              {selectedTower && (
+                <>
+                  <Button
+                    onClick={() => {
+                      addMoney(Math.round(towersConfig[selectedTower.towerType].cost / 2))
+                      destroyEntity(selectedTower)
+                      selectTower(null)
+                    }}
+                  >
+                    Sell
+                  </Button>
+                  <Button onClick={() => selectTower(null)}>Cancel selection</Button>
+                </>
+              )}
+            </>
+          )}
+        </Stack>
         <div style={{ color: 'white', fontSize: 24 }}>{livesLeft} lives left</div>
         <div style={{ color: 'white', fontSize: 24 }}>Money: ${money}</div>
         <div style={{ color: 'white', fontSize: 24 }}>Wave {wave}</div>
         {isWebGPUEnabled && <div style={{ color: 'white', fontSize: 24 }}>WebGPU!</div>}
-        {!isStarted && (
-          <div>
-            <button
-              onClick={() => {
-                start()
-                if (!process.env.NEXT_PUBLIC_DISABLE_MUSIC) {
-                  music.play()
-                }
-              }}
-            >
-              Start
-            </button>
-          </div>
-        )}
       </div>
       <FullCanvas>
         <ambientLight intensity={0.7} />

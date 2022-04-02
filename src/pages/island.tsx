@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { DefaultXRControllers, useController, useXR } from '@react-three/xr'
-import { Debug, Physics, useBox, usePlane, useSphere } from '@verekia/react-three-cannon'
+import { Debug, Physics, useBox, usePlane, useSphere } from '@react-three/cannon'
 
 import { sphereGeometry, squareGeometry } from '04-island/lib/geometries'
 import { greenMaterial, redMaterial } from '04-island/lib/materials'

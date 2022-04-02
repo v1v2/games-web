@@ -4,16 +4,21 @@
     "dev": "node server.js",
     "build": "next build",
     "start": "next start",
-    "postinstall": "patch-package && rimraf .next"
+    "postinstall": "patch-package && rimraf .next && rimraf node_modules/@react-three/cannon/node_modules"
   },
   "dependencies": {
+    "@chakra-ui/react": "^1.8.7",
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
     "@react-spring/three": "^9.4.4",
     "@react-three/cannon": "^5.1.0",
     "@react-three/drei": "^9.0.1",
     "@react-three/fiber": "^8.0.6",
     "@react-three/xr": "^3.5.0",
+    "@v1v2/chakra": "^1.2.0",
     "@v1v2/next": "^1.0.0",
-    "@verekia/react-three-cannon": "^5.1.2",
+    "focus-visible": "^5.2.0",
+    "framer-motion": "^6.2.8",
     "lodash": "^4.17.21",
     "miniplex": "^0.8.1",
     "miniplex-react": "^0.2.1",
@@ -21,6 +26,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-hotkeys-hook": "^3.4.4",
+    "react-icons": "^4.3.1",
     "react-merge-refs": "^1.1.0",
     "react-use": "^17.3.2",
     "simple-zustand-devtools": "^1.0.1",
@@ -33,6 +39,7 @@
     "@types/three": "^0.139.0",
     "next-transpile-modules": "^9.0.0",
     "patch-package": "^6.4.7",
+    "postinstall-postinstall": "^2.1.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.6.3"
   }
