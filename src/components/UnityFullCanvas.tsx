@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import Script from 'next/script'
 
 import FullscreenButton from 'components/FullscreenButton'
@@ -9,7 +8,7 @@ var canvas = document.querySelector('#unity-canvas')
 var loadingBar = document.querySelector('#unity-loading-bar')
 var progressBarFull = document.querySelector('#unity-progress-bar-full')
 var fullscreenButton = document.querySelector('#unity-fullscreen-button')
-var warningBanner = document.querySelector('#unity-warning')
+// var warningBanner = document.querySelector('#unity-warning')
 
 // Shows a temporary message banner/ribbon for a few seconds, or
 // a permanent error message on top of the canvas if type=='error'.
@@ -17,23 +16,23 @@ var warningBanner = document.querySelector('#unity-warning')
 // Modify or remove this function to customize the visually presented
 // way that non-critical warnings and error messages are presented to the
 // user.
-function unityShowBanner(msg, type) {
-  function updateBannerVisibility() {
-    warningBanner.style.display = warningBanner.children.length ? 'block' : 'none'
-  }
-  var div = document.createElement('div')
-  div.innerHTML = msg
-  warningBanner.appendChild(div)
-  if (type == 'error') div.style = 'background: red; padding: 10px;'
-  else {
-    if (type == 'warning') div.style = 'background: yellow; padding: 10px;'
-    setTimeout(function () {
-      warningBanner.removeChild(div)
-      updateBannerVisibility()
-    }, 5000)
-  }
-  updateBannerVisibility()
-}
+// function unityShowBanner(msg, type) {
+//   function updateBannerVisibility() {
+//     warningBanner.style.display = warningBanner.children.length ? 'block' : 'none'
+//   }
+//   var div = document.createElement('div')
+//   div.innerHTML = msg
+//   warningBanner.appendChild(div)
+//   if (type == 'error') div.style = 'background: red; padding: 10px;'
+//   else {
+//     if (type == 'warning') div.style = 'background: yellow; padding: 10px;'
+//     setTimeout(function () {
+//       warningBanner.removeChild(div)
+//       updateBannerVisibility()
+//     }, 5000)
+//   }
+//   updateBannerVisibility()
+// }
 
 var buildUrl = '${path}'
 var loaderUrl = buildUrl + '/${name}.loader.js'
@@ -45,7 +44,7 @@ var config = {
   companyName: 'DefaultCompany',
   productName: '${name}',
   productVersion: '1.0',
-  showBanner: unityShowBanner,
+  showBanner: () => {},
 }
 
 // By default Unity keeps WebGL canvas render target size matched with
@@ -72,7 +71,7 @@ if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
   // canvas.style.width = window.innerWidth + 'px'
   // canvas.style.height = window.innerHeight + 'px'
 
-  unityShowBanner('WebGL builds are not supported on mobile devices.')
+  // unityShowBanner('WebGL builds are not supported on mobile devices.')
 } else {
   // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
@@ -103,12 +102,11 @@ const UnityFullCanvas = ({ path, name }) => (
     <div id="unity-container" className="unity-desktop">
       <canvas id="unity-canvas" />
       <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
+        <div id="unity-logo" />
         <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
+          <div id="unity-progress-bar-full" />
         </div>
       </div>
-      <div id="unity-warning"></div>
     </div>
     <FullscreenButton pos="absolute" top={3} right={3} zIndex={100000} />
     <Script>{makeScript(path, name)}</Script>
@@ -173,15 +171,6 @@ const UnityFullCanvas = ({ path, name }) => (
         line-height: 38px;
         font-family: arial;
         font-size: 18px;
-      }
-      #unity-warning {
-        position: absolute;
-        left: 50%;
-        top: 5%;
-        transform: translate(-50%);
-        background: white;
-        padding: 10px;
-        display: none;
       }
     `}</style>
   </>
