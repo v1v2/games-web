@@ -1,4 +1,4 @@
-import { useCallback, memo, useState, useMemo, useRef } from 'react'
+import { Fragment, useCallback, memo, useState, useMemo, useRef } from 'react'
 
 import { Billboard } from '@react-three/drei'
 import { useSpring, a } from '@react-spring/three'
@@ -182,17 +182,12 @@ const Enemies = () => {
   return (
     <>
       {enemiesByType.map(({ type, enemies, material, Instancer }) => (
-        <>
-          <Instancer.Root
-            key={type}
-            geometry={basicEnemyModel.geometry}
-            material={material}
-            castShadow
-          />
+        <Fragment key={type}>
+          <Instancer.Root geometry={basicEnemyModel.geometry} material={material} castShadow />
           {enemies.map(e => (
             <EnemyMemo key={e.id} entity={e} Instancer={Instancer} />
           ))}
-        </>
+        </Fragment>
       ))}
       <HealthInstancer.Root
         material={basicGreenMaterial}

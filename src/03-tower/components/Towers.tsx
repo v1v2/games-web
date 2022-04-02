@@ -1,10 +1,9 @@
-import { memo } from 'react'
+import { Fragment, memo } from 'react'
 
 import { Interactive } from '@react-three/xr'
 
-import { Instances, Instance } from 'components/PatchedInstances'
+import { makeInstanceComponents } from 'lib/InstancesTrinity'
 
-import { emptyCells } from '03-tower/lib/config'
 import { useMemoryStore } from '03-tower/lib/store'
 import { Entity, useTowerEntities } from '03-tower/lib/ecs'
 import {
@@ -13,7 +12,11 @@ import {
   useStrongTowerModel,
 } from '03-tower/lib/model-hooks'
 
-const Tower = ({ entity }: { entity: Entity }) => {
+const SimpleInstancer = makeInstanceComponents()
+const SplashInstancer = makeInstanceComponents()
+const StrongInstancer = makeInstanceComponents()
+
+const Tower = ({ entity, Instancer }: { entity: Entity; Instancer: typeof SimpleInstancer }) => {
   const currentConstruction = useMemoryStore(s => s.currentConstruction)
   const selectedTower = useMemoryStore(s => s.selectedTower)
   const selectTower = useMemoryStore(s => s.selectTower)
@@ -22,7 +25,7 @@ const Tower = ({ entity }: { entity: Entity }) => {
 
   return (
     <Interactive onSelect={onUniversalClick}>
-      <Instance
+      <Instancer.Instance
         rotation={[Math.PI / 2, 0, 0]}
         scale={0.04}
         position={[
@@ -45,25 +48,25 @@ const Towers = () => {
   const strongTowerModel = useStrongTowerModel()
 
   const towersByType = [
-    { type: 'simple', model: simpleTowerModel },
-    { type: 'splash', model: splashTowerModel },
-    { type: 'strong', model: strongTowerModel },
+    { type: 'simple', model: simpleTowerModel, Instancer: SimpleInstancer },
+    { type: 'splash', model: splashTowerModel, Instancer: SplashInstancer },
+    { type: 'strong', model: strongTowerModel, Instancer: StrongInstancer },
   ].map(x => ({ ...x, towers: towers.filter(t => t.towerType === x.type) }))
 
   return (
     <>
-      {towersByType.map(({ model, towers, type }) => (
-        <Instances
-          key={type}
-          limit={emptyCells.length}
-          material={model.material}
-          geometry={model.geometry}
-          castShadow
-        >
+      {towersByType.map(({ model, towers, type, Instancer }) => (
+        <Fragment key={type}>
+          <Instancer.Root
+            key={type}
+            material={model.material}
+            geometry={model.geometry}
+            castShadow
+          />
           {towers.map(t => (
-            <TowerMemo key={t.id} entity={t} />
+            <TowerMemo key={t.id} entity={t} Instancer={Instancer} />
           ))}
-        </Instances>
+        </Fragment>
       ))}
     </>
   )
