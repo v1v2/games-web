@@ -21,14 +21,14 @@ const Projectile = ({ fromX, toX, fromZ, toZ }) => {
   const lookAngle = -(angle - Math.PI / 2)
 
   return (
-    <group position={[-999, -999, -999]}>
+    <>
       <LaserInstancer.Instance
         position={[betweenPos.x, betweenPos.y, betweenPos.z]}
         rotation={[0, lookAngle, 0]}
         scale={[0.3, 0.3, distance]}
       />
       <ImpactInstancer.Instance position={[toX, 3, toZ]} />
-    </group>
+    </>
   )
 }
 
@@ -39,10 +39,8 @@ const Projectiles = () => {
 
   return (
     <>
-      <group position={[999, 999, 999]}>
-        <LaserInstancer.Root geometry={cubeGeometry} material={basicOrangeMaterial} />
-        <ImpactInstancer.Root geometry={sphereGeometry} material={basicOrangeMaterial} />
-      </group>
+      <LaserInstancer.Root geometry={cubeGeometry} material={basicOrangeMaterial} />
+      <ImpactInstancer.Root geometry={sphereGeometry} material={basicOrangeMaterial} />
 
       {projectiles.map(p => (
         <ProjectileMemo key={p.id} {...p.segment} />

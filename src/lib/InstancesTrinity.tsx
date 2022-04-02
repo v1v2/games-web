@@ -47,7 +47,13 @@ export const makeInstanceComponents = () => {
     useFrame(updateInstances)
 
     return (
-      <instancedMesh ref={instancedMesh} {...props} args={[null!, null!, instanceLimit]}>
+      <instancedMesh
+        ref={instancedMesh}
+        // My fix
+        position={[999, 999, 999]}
+        {...props}
+        args={[null!, null!, instanceLimit]}
+      >
         {children}
       </instancedMesh>
     )
@@ -69,8 +75,11 @@ export const makeInstanceComponents = () => {
     }, [])
 
     return (
-      <group ref={mergeRefs([ref, group])} {...groupProps}>
-        {children}
+      // My fix
+      <group position={[-999, -999, -999]}>
+        <group ref={mergeRefs([ref, group])} {...groupProps}>
+          {children}
+        </group>
       </group>
     )
   })

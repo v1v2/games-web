@@ -22,16 +22,12 @@ const modelConfigs = {
       material: 'EnergyPylon_V006:l03',
     },
   },
-  enemies: {
-    basic: {
-      path: BUGGY_PATH,
-      nodes: 'main',
-      material: 'unused',
-    },
-  },
+  enemies: { basic: { path: BUGGY_PATH, nodes: 'main' } },
 }
 
-const useModel = ({ path, nodes, material }: { path: string; nodes: string; material: string }) => {
+type Props = { path: string; nodes: string; material?: string }
+
+const useModel = ({ path, nodes, material }: Props) => {
   // @ts-ignore
   const gltf = useGLTF(path) as GLTF & {
     nodes: { string: Mesh }
