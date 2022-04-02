@@ -51,6 +51,7 @@ const Systems = () => {
               e.health.current -= damage
             }
             const projectileEntity = createProjectile({
+              towerType: tower.towerType,
               fromX: tower.transform.position.x,
               fromY: tower.transform.position.y + towersConfig[tower.towerType].projectileOriginY,
               fromZ: tower.transform.position.z,

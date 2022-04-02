@@ -75,6 +75,7 @@ export const createEnemy = ({ type, maxHealth, killReward }: EnemyCreationData) 
 }
 
 type ProjectileCreationData = {
+  towerType: TowerType
   fromX: number
   fromY: number
   fromZ: number
@@ -83,9 +84,18 @@ type ProjectileCreationData = {
   toZ: number
 }
 
-export const createProjectile = ({ fromX, fromY, fromZ, toX, toY, toZ }: ProjectileCreationData) =>
+export const createProjectile = ({
+  fromX,
+  fromY,
+  fromZ,
+  toX,
+  toY,
+  toZ,
+  towerType,
+}: ProjectileCreationData) =>
   ecs.world.createEntity({
     projectile: Tag,
+    towerType,
     segment: { fromX, fromY, fromZ, toX, toY, toZ },
   })
 

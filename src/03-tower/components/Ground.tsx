@@ -109,9 +109,10 @@ const Ground = () => (
           <mesh
             key={`cell-${i}-${j}`}
             rotation={[-Math.PI / 2, 0, 0]}
-            position={[mapSize / 2 - i * 10 - 5, 3, mapSize / 2 - j * 10 - 5]}
+            position={[mapSize / 2 - i * 10 - 5, 3.5, mapSize / 2 - j * 10 - 5]}
             material={c === 2 ? greenMaterial : redMaterial}
             geometry={baseGeometry}
+            scale={[1, 1, 1.5]}
             castShadow
           />
         ) : null

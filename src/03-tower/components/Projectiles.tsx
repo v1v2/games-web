@@ -11,7 +11,7 @@ import { useProjectilesEntities } from '03-tower/lib/ecs'
 const ImpactInstancer = makeInstanceComponents()
 const LaserInstancer = makeInstanceComponents()
 
-const Projectile = ({ fromX, fromY, fromZ, toX, toY, toZ }) => {
+const Projectile = ({ fromX, fromY, fromZ, toX, toY, toZ, towerType }) => {
   const towerPos = new Vector3(fromX, fromY, fromZ)
   const enemyPos = new Vector3(toX, toY, toZ)
   const distance = towerPos.distanceTo(enemyPos)
@@ -28,7 +28,10 @@ const Projectile = ({ fromX, fromY, fromZ, toX, toY, toZ }) => {
         rotation={[verticalAngle, horizAngleWtf, 0, 'YZX']}
         scale={[0.3, 0.3, distance]}
       />
-      <ImpactInstancer.Instance position={[toX, toY, toZ]} />
+      <ImpactInstancer.Instance
+        position={[toX, toY, toZ]}
+        scale={towerType === 'splash' ? [4, 1, 4] : towerType === 'strong' ? [1, 3, 1] : undefined}
+      />
     </>
   )
 }
@@ -44,7 +47,7 @@ const Projectiles = () => {
       <ImpactInstancer.Root geometry={sphereGeometry} material={basicOrangeMaterial} />
 
       {projectiles.map(p => (
-        <ProjectileMemo key={p.id} {...p.segment} />
+        <ProjectileMemo key={p.id} {...p.segment} towerType={p.towerType} />
       ))}
     </>
   )

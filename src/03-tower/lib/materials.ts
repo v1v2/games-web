@@ -10,4 +10,8 @@ export const blueMaterial = new MeshStandardMaterial({ color: '#00f' })
 export const wireFrameMaterial = new MeshStandardMaterial({ color: '#fff', wireframe: true })
 
 export const basicGreenMaterial = new MeshBasicMaterial({ color: '#0f0' })
-export const basicOrangeMaterial = new MeshBasicMaterial({ color: '#f60' })
+export const basicOrangeMaterial = new MeshBasicMaterial({
+  color: '#f60',
+  transparent: true,
+  opacity: 0.8,
+})
