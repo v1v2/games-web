@@ -26,7 +26,7 @@ export type Entity = {
   isReadyToShoot?: boolean
   killReward?: number
   enemyType?: EnemyType
-  segment?: { fromX: number; fromZ: number; toX: number; toZ: number }
+  segment?: { fromX: number; fromY: number; fromZ: number; toX: number; toY: number; toZ: number }
 } & IEntity
 
 const ecs = createECS<Entity>()
@@ -76,15 +76,17 @@ export const createEnemy = ({ type, maxHealth, killReward }: EnemyCreationData) 
 
 type ProjectileCreationData = {
   fromX: number
+  fromY: number
   fromZ: number
   toX: number
+  toY: number
   toZ: number
 }
 
-export const createProjectile = ({ fromX, fromZ, toX, toZ }: ProjectileCreationData) =>
+export const createProjectile = ({ fromX, fromY, fromZ, toX, toY, toZ }: ProjectileCreationData) =>
   ecs.world.createEntity({
     projectile: Tag,
-    segment: { fromX, fromZ, toX, toZ },
+    segment: { fromX, fromY, fromZ, toX, toY, toZ },
   })
 
 export const destroyEntity = ecs.world.destroyEntity

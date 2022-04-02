@@ -25,6 +25,7 @@ type TowerConfig = {
   range: number
   cost: number
   splashRange?: number
+  projectileOriginY: number
 }
 
 type EnemyConfig = {
@@ -56,6 +57,7 @@ export const towersConfig: TowerConfigs = {
     damage: 10,
     range: 30,
     cost: 10,
+    projectileOriginY: 6,
   },
   splash: {
     color: '#ff0000',
@@ -66,6 +68,7 @@ export const towersConfig: TowerConfigs = {
     range: 20,
     cost: 20,
     splashRange: 20,
+    projectileOriginY: 5.2,
   },
   strong: {
     color: '#0000ff',
@@ -75,6 +78,7 @@ export const towersConfig: TowerConfigs = {
     damage: 100,
     range: 40,
     cost: 50,
+    projectileOriginY: 12,
   },
 }
 

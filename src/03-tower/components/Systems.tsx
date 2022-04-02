@@ -8,7 +8,7 @@ import {
   useTowerEntities,
 } from '03-tower/lib/ecs'
 import { useMemoryStore } from '03-tower/lib/store'
-import { detailedWaypoints, towersConfig } from '03-tower/lib/config'
+import { detailedWaypoints, ENEMY_DISTANCE_TO_GROUND, towersConfig } from '03-tower/lib/config'
 
 const { x: endX, z: endZ } = detailedWaypoints[detailedWaypoints.length - 1]
 
@@ -26,8 +26,16 @@ const Systems = () => {
       const { reloadTime, range, splashRange, damage } = towersConfig[tower.towerType]
       if (tower.isReadyToShoot) {
         for (const e of enemies) {
-          const enemyVector = new Vector3(e.transform.position.x, 0, e.transform.position.z)
-          const towerVector = new Vector3(tower.transform.position.x, 0, tower.transform.position.z)
+          const enemyVector = new Vector3(
+            e.transform.position.x,
+            e.transform.position.y,
+            e.transform.position.z
+          )
+          const towerVector = new Vector3(
+            tower.transform.position.x,
+            tower.transform.position.y,
+            tower.transform.position.z
+          )
           if (enemyVector.distanceTo(towerVector) < range) {
             if (splashRange) {
               enemies.forEach(en => {
@@ -44,8 +52,10 @@ const Systems = () => {
             }
             const projectileEntity = createProjectile({
               fromX: tower.transform.position.x,
+              fromY: tower.transform.position.y + towersConfig[tower.towerType].projectileOriginY,
               fromZ: tower.transform.position.z,
               toX: e.transform.position.x,
+              toY: e.transform.position.y + ENEMY_DISTANCE_TO_GROUND,
               toZ: e.transform.position.z,
             })
             setTimeout(() => destroyEntity(projectileEntity), 100)

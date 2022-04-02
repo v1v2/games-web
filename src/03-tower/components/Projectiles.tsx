@@ -11,23 +11,24 @@ import { useProjectilesEntities } from '03-tower/lib/ecs'
 const ImpactInstancer = makeInstanceComponents()
 const LaserInstancer = makeInstanceComponents()
 
-const Projectile = ({ fromX, toX, fromZ, toZ }) => {
-  const towerPos = new Vector3(fromX, 2, fromZ)
-  const enemyPos = new Vector3(toX, 2, toZ)
+const Projectile = ({ fromX, fromY, fromZ, toX, toY, toZ }) => {
+  const towerPos = new Vector3(fromX, fromY, fromZ)
+  const enemyPos = new Vector3(toX, toY, toZ)
   const distance = towerPos.distanceTo(enemyPos)
 
   const betweenPos = towerPos.clone().lerp(enemyPos, 0.5)
-  const angle = Math.atan2(enemyPos.z - towerPos.z, enemyPos.x - towerPos.x)
-  const lookAngle = -(angle - Math.PI / 2)
+  const horizAngle = Math.atan2(enemyPos.z - towerPos.z, enemyPos.x - towerPos.x)
+  const horizAngleWtf = -(horizAngle - Math.PI / 2)
+  const verticalAngle = Math.atan2(towerPos.y - enemyPos.y, distance)
 
   return (
     <>
       <LaserInstancer.Instance
         position={[betweenPos.x, betweenPos.y, betweenPos.z]}
-        rotation={[0, lookAngle, 0]}
+        rotation={[verticalAngle, horizAngleWtf, 0, 'YZX']}
         scale={[0.3, 0.3, distance]}
       />
-      <ImpactInstancer.Instance position={[toX, 3, toZ]} />
+      <ImpactInstancer.Instance position={[toX, toY, toZ]} />
     </>
   )
 }
