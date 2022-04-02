@@ -6,14 +6,29 @@ const SIMPLE_TOWER_PATH = '/03-tower/models/emp-tower/emp-tower.glb'
 const SPLASH_TOWER_PATH = '/03-tower/models/energy-pilon/energy-pilon.glb'
 const STRONG_TOWER_PATH = '/03-tower/models/big-emp-tower/big-emp-tower.glb'
 
+const BUGGY_PATH = '/03-tower/models/buggy/buggy.glb'
+
 const modelConfigs = {
-  simple: {
-    path: SIMPLE_TOWER_PATH,
-    nodes: 'EMP_Tower_level_1',
-    material: 'EnergyPylon_V006:l0001',
+  towers: {
+    simple: {
+      path: SIMPLE_TOWER_PATH,
+      nodes: 'EMP_Tower_level_1',
+      material: 'EnergyPylon_V006:l0001',
+    },
+    splash: { path: SPLASH_TOWER_PATH, nodes: 'pylon_level_1', material: 'pylon_01' },
+    strong: {
+      path: STRONG_TOWER_PATH,
+      nodes: 'EMP_Tower_level_3',
+      material: 'EnergyPylon_V006:l03',
+    },
   },
-  splash: { path: SPLASH_TOWER_PATH, nodes: 'pylon_level_1', material: 'pylon_01' },
-  strong: { path: STRONG_TOWER_PATH, nodes: 'EMP_Tower_level_3', material: 'EnergyPylon_V006:l03' },
+  enemies: {
+    basic: {
+      path: BUGGY_PATH,
+      nodes: 'Buggy_Geo',
+      material: 'Jeep',
+    },
+  },
 }
 
 const useModel = ({ path, nodes, material }: { path: string; nodes: string; material: string }) => {
@@ -29,10 +44,14 @@ const useModel = ({ path, nodes, material }: { path: string; nodes: string; mate
   }
 }
 
-export const useSimpleTowerModel = () => useModel(modelConfigs.simple)
-export const useSplashTowerModel = () => useModel(modelConfigs.splash)
-export const useStrongTowerModel = () => useModel(modelConfigs.strong)
+export const useSimpleTowerModel = () => useModel(modelConfigs.towers.simple)
+export const useSplashTowerModel = () => useModel(modelConfigs.towers.splash)
+export const useStrongTowerModel = () => useModel(modelConfigs.towers.strong)
+
+export const useBasicEnemyModel = () => useModel(modelConfigs.enemies.basic)
 
 useGLTF.preload(SIMPLE_TOWER_PATH)
 useGLTF.preload(SPLASH_TOWER_PATH)
 useGLTF.preload(STRONG_TOWER_PATH)
+
+useGLTF.preload(BUGGY_PATH)

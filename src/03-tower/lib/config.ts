@@ -44,7 +44,7 @@ type EnemyConfigs = {
   boss: EnemyConfig
 }
 
-export const ENEMY_DISTANCE_TO_GROUND = 2
+export const ENEMY_DISTANCE_TO_GROUND = 0.5
 export const TOWER_DISANCE_TO_GROUND = 2
 
 export const towersConfig: TowerConfigs = {

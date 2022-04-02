@@ -1,6 +1,6 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useState } from 'react'
 
-import { Billboard } from '@react-three/drei'
+import { Billboard, useTexture } from '@react-three/drei'
 import { useSpring, a } from '@react-spring/three'
 import { useFrame } from '@react-three/fiber'
 import { Vector3 } from 'three'
@@ -20,9 +20,10 @@ import {
   purpleMaterial,
   redMaterial,
 } from '03-tower/lib/materials'
-import { cubeGeometry, squareGeometry } from '03-tower/lib/geometries'
+import { squareGeometry } from '03-tower/lib/geometries'
 import { Entity, useEnemyEntities } from '03-tower/lib/ecs'
 import { useUpdateTransform } from '03-tower/lib/hooks'
+import { useBasicEnemyModel } from '03-tower/lib/model-hooks'
 
 const mapSeries = async (iterable, action) => {
   for (const x of iterable) {
@@ -34,7 +35,7 @@ const HealthBar = ({ entity }: { entity: Entity }) => {
   const { size } = enemiesConfig[entity.enemyType]
   const ref = useUpdateTransform({
     entity,
-    modify: ({ position }) => ({ position: { y: position.y + size + 2.5 } }),
+    modify: ({ position }) => ({ position: { y: position.y + size + 4.5 } }),
   })
 
   useFrame(() => {
@@ -60,6 +61,7 @@ const waypointTuples = waypoints.map((w, i) => ({
 
 const Enemy = ({ entity }: { entity: Entity }) => {
   const { size, speed } = enemiesConfig[entity.enemyType]
+  const [direction, setDirection] = useState('bottom-left')
 
   useSpring({
     // useCallback prevents re-rendering from causing the animation to reset
@@ -71,6 +73,17 @@ const Enemy = ({ entity }: { entity: Entity }) => {
           const curPos = new Vector3(curX, ENEMY_DISTANCE_TO_GROUND, curZ)
           const nextPos = new Vector3(nextX, ENEMY_DISTANCE_TO_GROUND, nextZ)
           const distance = curPos.distanceTo(nextPos)
+          const dir =
+            curX === nextX
+              ? nextZ > curZ
+                ? 'bottom-left'
+                : 'top-right'
+              : curZ === nextZ
+              ? nextX > curX
+                ? 'bottom-right'
+                : 'top-left'
+              : null
+          setDirection(dir)
           await next({
             config: { duration: distance / speed },
             position: [nextX, ENEMY_DISTANCE_TO_GROUND, nextZ],
@@ -90,25 +103,43 @@ const Enemy = ({ entity }: { entity: Entity }) => {
 
   const ref = useUpdateTransform({ entity })
 
+  const scaleFactor = 0.005
+
   return (
     // @ts-ignore
     <a.group ref={ref} userData={{ id: entity.id }}>
-      <Instance scale={[3 * size, 3 * size, 3 * size]} />
+      <Instance
+        scale={[scaleFactor * 3 * size, scaleFactor * 3 * size, scaleFactor * 3 * size]}
+        rotation={[
+          Math.PI / 2,
+          0,
+          direction === 'bottom-left'
+            ? 0
+            : direction === 'bottom-right'
+            ? -Math.PI / 2
+            : direction === 'top-left'
+            ? Math.PI / 2
+            : direction === 'top-right'
+            ? Math.PI
+            : 0,
+        ]}
+      />
     </a.group>
   )
 }
 
 const EnemyMemo = memo(Enemy)
 
-const enemiesByTypeConfig = [
-  { type: 'fast', limit: 30, material: purpleMaterial },
-  { type: 'basic', limit: 30, material: greenMaterial },
-  { type: 'tank', limit: 30, material: redMaterial },
-  { type: 'boss', limit: 30, material: blackMaterial },
-]
-
 const Enemies = () => {
   const enemies = useEnemyEntities()
+  const basicEnemyModel = useBasicEnemyModel()
+
+  const enemiesByTypeConfig = [
+    { type: 'fast', limit: 30, material: purpleMaterial },
+    { type: 'basic', limit: 30, material: greenMaterial },
+    { type: 'tank', limit: 30, material: redMaterial },
+    { type: 'boss', limit: 30, material: blackMaterial },
+  ]
 
   const enemiesByType = enemiesByTypeConfig.map(x => ({
     ...x,
@@ -118,7 +149,13 @@ const Enemies = () => {
   return (
     <>
       {enemiesByType.map(({ type, enemies, limit, material }) => (
-        <Instances key={type} limit={limit} geometry={cubeGeometry} material={material} castShadow>
+        <Instances
+          key={type}
+          limit={limit}
+          geometry={basicEnemyModel.geometry}
+          material={material}
+          castShadow
+        >
           {enemies.map(e => (
             <EnemyMemo key={e.id} entity={e} />
           ))}
