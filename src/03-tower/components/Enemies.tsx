@@ -116,7 +116,7 @@ const Enemy = ({ entity, Instancer }: { entity: Entity; Instancer: typeof BasicI
 
   return (
     // @ts-ignore
-    <a.group ref={ref} userData={{ id: entity.id }}>
+    <a.group ref={ref}>
       <Instancer.Instance
         scale={[scaleFactor * 3 * size, scaleFactor * 3 * size, scaleFactor * 3 * size]}
         rotation={[

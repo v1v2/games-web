@@ -1,5 +1,6 @@
-import { IEntity, Tag } from 'miniplex'
+import { Tag } from 'miniplex'
 import { createECS } from 'miniplex-react'
+import { nanoid } from 'nanoid'
 
 import { EnemyType, TowerType } from '03-tower/lib/types'
 import {
@@ -10,6 +11,7 @@ import {
 } from '03-tower/lib/config'
 
 export type Entity = {
+  id: string
   enemy?: Tag
   tower?: Tag
   projectile?: Tag
@@ -27,7 +29,7 @@ export type Entity = {
   killReward?: number
   enemyType?: EnemyType
   segment?: { fromX: number; fromY: number; fromZ: number; toX: number; toY: number; toZ: number }
-} & IEntity
+}
 
 const ecs = createECS<Entity>()
 
@@ -43,6 +45,7 @@ type TowerCreationData = {
 
 export const createTower = ({ type, cell }: TowerCreationData) =>
   ecs.world.createEntity({
+    id: nanoid(),
     tower: Tag,
     isReadyToShoot: true,
     towerType: type,
@@ -64,6 +67,7 @@ type EnemyCreationData = {
 export const createEnemy = ({ type, maxHealth, killReward }: EnemyCreationData) => {
   const firstWaypoint = detailedWaypoints[0]
   ecs.world.createEntity({
+    id: nanoid(),
     enemy: Tag,
     health: { current: maxHealth, max: maxHealth },
     transform: {
@@ -94,6 +98,7 @@ export const createProjectile = ({
   towerType,
 }: ProjectileCreationData) =>
   ecs.world.createEntity({
+    id: nanoid(),
     projectile: Tag,
     towerType,
     segment: { fromX, fromY, fromZ, toX, toY, toZ },

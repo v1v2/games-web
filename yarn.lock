@@ -1667,10 +1667,10 @@ miniplex-react@^0.2.1:
   dependencies:
     "@hmans/react-toolbox" "^0.1.4"
 
-miniplex@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/miniplex/-/miniplex-0.8.1.tgz#74912a3d8400d9f5e90ecafd515dc3cbceeb03ec"
-  integrity sha512-AdTV5AihrtTVd1KJCjPA2BTvPIkX7rpCVaopG+PAuHUSVMuyjFcWG0wYQPNlEGsssINqea0FhzI7WIlJ0xZXMQ==
+miniplex@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/miniplex/-/miniplex-0.9.0.tgz#e7ce7a7a7a36c62adaff7b6568082d2a8c0dcde7"
+  integrity sha512-mBmESBX2ZsuKo6DFxjw2OINRqEMKt1KtMr67Rb8QE0kFJbkuhbzkcjfdTqH2sDdOWvSs7vcmAsTfWOhdair/gQ==
   dependencies:
     "@hmans/signal" "^0.1.7"
 
@@ -1697,6 +1697,11 @@ nanoid@^3.1.30:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.1.tgz#6347a18cac88af88f58af0b3594b723d5e99bb35"
   integrity sha512-n6Vs/3KGyxPQd6uO0eH4Bv0ojGSUvuLlIHtC3Y0kEO23YRge8H9x1GCzLn28YX0H66pMkxuaeESFq4tKISKwdw==
+
+nanoid@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.2.tgz#c89622fafb4381cd221421c69ec58547a1eec557"
+  integrity sha512-CuHBogktKwpm5g2sRgv83jEy2ijFzBwMoYA60orPDR7ynsLijJDqgsi4RDGj3OJpy3Ieb+LYwiRmIOGyytgITA==
 
 next-transpile-modules@^9.0.0:
   version "9.0.0"
