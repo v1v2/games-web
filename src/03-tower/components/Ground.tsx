@@ -49,7 +49,7 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
   const onUniversalClick = (i, j) => {
     if (currentConstruction && !towers.some(t => t.cell.rowIndex === i && t.cell.colIndex === j)) {
       addMoney(-towersConfig[currentConstruction].cost)
-      createTower({ cell: { rowIndex: i, colIndex: j }, type: currentConstruction })
+      createTower({ rowIndex: i, colIndex: j, type: currentConstruction })
       clearCurrentConstruction()
     }
   }

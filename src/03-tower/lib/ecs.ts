@@ -15,6 +15,8 @@ export type Entity = {
   enemy?: Tag
   tower?: Tag
   projectile?: Tag
+  enemyType?: EnemyType
+  towerType?: TowerType
   transform?: {
     position?: { x?: number; y?: number; z?: number }
     rotation?: { x?: number; y?: number; z?: number }
@@ -24,14 +26,27 @@ export type Entity = {
   rotation?: { x: number; y: number; z: number }
   scale?: { x: number; y: number; z: number }
   health?: { current: number; max: number }
-  towerType?: TowerType
   isReadyToShoot?: boolean
   killReward?: number
-  enemyType?: EnemyType
   segment?: { fromX: number; fromY: number; fromZ: number; toX: number; toY: number; toZ: number }
 }
 
 const ecs = createECS<Entity>()
+
+type EntityTag = 'tower' | 'enemy' | 'projectile'
+
+// Component factories
+const id = () => ({ id: nanoid() })
+const tag = (tag: EntityTag) => ({ [tag]: Tag as Tag })
+const health = (maxHealth: number) => ({ health: { current: maxHealth, max: maxHealth } })
+const tower = (towerType: TowerType) => ({ tower: Tag as Tag, towerType, isReadyToShoot: true })
+const enemy = (enemyType: EnemyType, killReward: number) => ({
+  enemy: Tag as Tag,
+  enemyType,
+  killReward,
+})
+const pos = (x: number, y: number, z: number) => ({ transform: { position: { x, y, z } } })
+const cell = (rowIndex: number, colIndex: number) => ({ cell: { rowIndex, colIndex } })
 
 export const useEnemyEntities = () => ecs.useArchetype('enemy').entities
 export const useEnemies = () => ecs.useArchetype('enemy')
@@ -40,20 +55,19 @@ export const useProjectilesEntities = () => ecs.useArchetype('projectile').entit
 
 type TowerCreationData = {
   type: TowerType
-  cell: { rowIndex: number; colIndex: number }
+  rowIndex: number
+  colIndex: number
 }
 
-export const createTower = ({ type, cell }: TowerCreationData) =>
-  ecs.world.createEntity({
-    id: nanoid(),
-    tower: Tag,
-    isReadyToShoot: true,
-    towerType: type,
-    cell,
-    transform: {
-      position: { ...getCellPosition(cell.rowIndex, cell.colIndex), y: TOWER_DISANCE_TO_GROUND },
-    },
-  })
+export const createTower = ({ type, rowIndex, colIndex }: TowerCreationData) => {
+  const { x, z } = getCellPosition(rowIndex, colIndex)
+  return ecs.world.createEntity(
+    id(),
+    tower(type),
+    pos(x, TOWER_DISANCE_TO_GROUND, z),
+    cell(rowIndex, colIndex)
+  )
+}
 
 // Note: To update x and z based on cell position, I could have an updateTower
 // functon here that keeps the rowIndex and colIndex in sync with x and z
@@ -65,17 +79,13 @@ type EnemyCreationData = {
 }
 
 export const createEnemy = ({ type, maxHealth, killReward }: EnemyCreationData) => {
-  const firstWaypoint = detailedWaypoints[0]
-  ecs.world.createEntity({
-    id: nanoid(),
-    enemy: Tag,
-    health: { current: maxHealth, max: maxHealth },
-    transform: {
-      position: { x: firstWaypoint.x, y: ENEMY_DISTANCE_TO_GROUND, z: firstWaypoint.z },
-    },
-    enemyType: type,
-    killReward,
-  })
+  const { x, z } = detailedWaypoints[0]
+  ecs.world.createEntity(
+    id(),
+    health(maxHealth),
+    enemy(type, killReward),
+    pos(x, ENEMY_DISTANCE_TO_GROUND, z)
+  )
 }
 
 type ProjectileCreationData = {
@@ -97,13 +107,16 @@ export const createProjectile = ({
   toZ,
   towerType,
 }: ProjectileCreationData) =>
-  ecs.world.createEntity({
-    id: nanoid(),
-    projectile: Tag,
+  ecs.world.createEntity(id(), tag('projectile'), {
     towerType,
     segment: { fromX, fromY, fromZ, toX, toY, toZ },
   })
 
 export const destroyEntity = ecs.world.destroyEntity
-export const queueDestroyEntity = ecs.world.queue.destroyEntity
-export const flushQueue = ecs.world.queue.flush
+
+export const destroyAllEnemies = () => {
+  for (const e of ecs.world.archetype('enemy').entities) {
+    ecs.world.queue.destroyEntity(e)
+  }
+  ecs.world.queue.flush()
+}
