@@ -9,7 +9,7 @@ import { GunIcon, LaserIcon, SplashIcon } from 'lib/icons'
 
 import { useCurrentConstruction, useMemoryStore } from '03-tower/lib/store'
 import { towersConfig } from '03-tower/lib/config'
-import { destroyEntity, useEnemyEntities } from '03-tower/lib/ecs'
+import { destroyEntity, flushQueue, queueDestroyEntity, useEnemyEntities } from '03-tower/lib/ecs'
 
 const music =
   typeof window !== 'undefined' && new Audio('/03-tower/audio/Quincas Moreira - Chtulthu.mp3')
@@ -38,7 +38,8 @@ const GameLayout = ({ children }) => {
 
   useEffect(() => {
     if (livesLeft <= 0) {
-      enemies.forEach(e => destroyEntity(e))
+      enemies.forEach(e => queueDestroyEntity(e))
+      flushQueue()
       console.log(`You lost at wave ${wave}!`)
       // window.location.reload()
     }

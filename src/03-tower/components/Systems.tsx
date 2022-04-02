@@ -50,7 +50,7 @@ const Systems = () => {
             } else {
               e.health.current -= damage
             }
-            const projectileEntity = createProjectile({
+            createProjectile({
               towerType: tower.towerType,
               fromX: tower.transform.position.x,
               fromY: tower.transform.position.y + towersConfig[tower.towerType].projectileOriginY,
@@ -59,7 +59,6 @@ const Systems = () => {
               toY: e.transform.position.y + ENEMY_DISTANCE_TO_GROUND,
               toZ: e.transform.position.z,
             })
-            setTimeout(() => destroyEntity(projectileEntity), 100)
 
             tower.isReadyToShoot = false
             setTimeout(() => (tower.isReadyToShoot = true), reloadTime)

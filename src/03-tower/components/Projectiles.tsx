@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useEffect, useRef } from 'react'
 
 import { Vector3 } from 'three'
 
@@ -6,12 +6,16 @@ import { makeInstanceComponents } from 'lib/InstancesTrinity'
 
 import { basicOrangeMaterial } from '03-tower/lib/materials'
 import { cubeGeometry, sphereGeometry } from '03-tower/lib/geometries'
-import { useProjectilesEntities } from '03-tower/lib/ecs'
+import { destroyEntity, Entity, useProjectilesEntities } from '03-tower/lib/ecs'
 
 const ImpactInstancer = makeInstanceComponents()
 const LaserInstancer = makeInstanceComponents()
 
-const Projectile = ({ fromX, fromY, fromZ, toX, toY, toZ, towerType }) => {
+const Projectile = ({ entity }: { entity: Entity }) => {
+  const {
+    segment: { fromX, fromY, fromZ, toX, toY, toZ },
+    towerType,
+  } = entity
   const towerPos = new Vector3(fromX, fromY, fromZ)
   const enemyPos = new Vector3(toX, toY, toZ)
   const distance = towerPos.distanceTo(enemyPos)
@@ -20,6 +24,17 @@ const Projectile = ({ fromX, fromY, fromZ, toX, toY, toZ, towerType }) => {
   const horizAngle = Math.atan2(enemyPos.z - towerPos.z, enemyPos.x - towerPos.x)
   const horizAngleWtf = -(horizAngle - Math.PI / 2)
   const verticalAngle = Math.atan2(towerPos.y - enemyPos.y, distance)
+
+  const timeoutRef = useRef(null)
+
+  useEffect(() => {
+    timeoutRef.current = setTimeout(() => {
+      destroyEntity(entity)
+    }, 100)
+    return () => {
+      clearTimeout(timeoutRef.current)
+    }
+  }, [])
 
   return (
     <>
@@ -47,7 +62,7 @@ const Projectiles = () => {
       <ImpactInstancer.Root geometry={sphereGeometry} material={basicOrangeMaterial} />
 
       {projectiles.map(p => (
-        <ProjectileMemo key={p.id} {...p.segment} towerType={p.towerType} />
+        <ProjectileMemo key={p.id} entity={p} />
       ))}
     </>
   )

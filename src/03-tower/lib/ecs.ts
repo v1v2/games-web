@@ -105,3 +105,5 @@ export const createProjectile = ({
   })
 
 export const destroyEntity = ecs.world.destroyEntity
+export const queueDestroyEntity = ecs.world.queue.destroyEntity
+export const flushQueue = ecs.world.queue.flush
