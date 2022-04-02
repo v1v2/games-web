@@ -4,10 +4,10 @@ import { useFrame, InstancedMeshProps, GroupProps } from '@react-three/fiber'
 import { IEntity } from 'miniplex'
 import { createECS } from 'miniplex-react'
 import mergeRefs from 'react-merge-refs'
-import { Group, InstancedMesh, Object3D, Vector3 } from 'three'
+import { Group, InstancedMesh, Object3D } from 'three'
 
-export const MOVE_AWAY_POS = new Vector3(999, 999, 999)
-export const BRING_BACK_POS = new Vector3(-999, -999, -999)
+export const MOVE_AWAY_POS = 1000
+export const BRING_BACK_POS = -1000
 
 type InstanceEntity = {
   instance: {

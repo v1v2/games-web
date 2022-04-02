@@ -63,7 +63,7 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
       >
         <Instance
           position={[mapSize / 2 - rowIndex * 10 - 5, 0.5, mapSize / 2 - colIndex * 10 - 5]}
-          rotation={[-Math.PI / 2, 0, 0]}
+          rotation-x={-Math.PI / 2}
           scale={[9, 9, 1]}
           onClick={() => onUniversalClick(rowIndex, colIndex)}
           onPointerEnter={() => setHovered(true)}
@@ -74,7 +74,7 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
       {currentConstruction && hovered && (
         <mesh
           position={[x, TOWER_DISANCE_TO_GROUND - 1.4, z]}
-          rotation={[Math.PI / 2, 0, 0]}
+          rotation-x={Math.PI / 2}
           scale={0.04}
           geometry={currentConstructionModel.geometry}
           material={currentConstructionModel.material}
@@ -87,7 +87,7 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
 const Ground = () => (
   <>
     <mesh
-      rotation={[-Math.PI / 2, 0, 0]}
+      rotation-x={-Math.PI / 2}
       material={undergroundMaterial}
       scale={[mapSize + 1, mapSize + 1, 1]}
       geometry={squareGeometry}
@@ -108,7 +108,7 @@ const Ground = () => (
         c === 2 || c === 3 ? (
           <mesh
             key={`cell-${i}-${j}`}
-            rotation={[-Math.PI / 2, 0, 0]}
+            rotation-x={-Math.PI / 2}
             position={[mapSize / 2 - i * 10 - 5, 3.5, mapSize / 2 - j * 10 - 5]}
             material={c === 2 ? greenMaterial : redMaterial}
             geometry={baseGeometry}

@@ -112,13 +112,11 @@ const Enemy = ({ entity, Instancer }: { entity: Entity; Instancer: typeof BasicI
 
   const ref = useUpdateTransform({ entity })
 
-  const scaleFactor = 0.005
-
   return (
     // @ts-ignore
     <a.group ref={ref}>
       <Instancer.Instance
-        scale={[scaleFactor * 3 * size, scaleFactor * 3 * size, scaleFactor * 3 * size]}
+        scale={0.015 * size}
         rotation={[
           Math.PI / 2,
           0,

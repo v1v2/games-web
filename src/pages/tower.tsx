@@ -48,46 +48,26 @@ const PlayerEnv = () => {
 
   return (
     <>
-      <group ref={uiRef} visible={false} position={[-100, 0, 0]}>
-        <Billboard position={[0, 50, 0]} scale={[10, 10, 1]}>
+      <group ref={uiRef} visible={false} position-x={-100}>
+        <Billboard position-y={50} scale={[10, 10, 1]}>
           <Suspense fallback={null}>
             <Text fontSize={1}>Wave {wave}</Text>
           </Suspense>
         </Billboard>
         <Interactive onSelect={() => setCurrentConstruction('simple')}>
-          <mesh scale={[3, 3, 3]} geometry={sphereGeometry} material={greenMaterial} />
+          <mesh scale={3} geometry={sphereGeometry} material={greenMaterial} />
         </Interactive>
         <Interactive onSelect={() => setCurrentConstruction('splash')}>
-          <mesh
-            position={[0, 0, 20]}
-            scale={[3, 3, 3]}
-            geometry={sphereGeometry}
-            material={redMaterial}
-          />
+          <mesh position-z={20} scale={3} geometry={sphereGeometry} material={redMaterial} />
         </Interactive>
         <Interactive onSelect={() => setCurrentConstruction('strong')}>
-          <mesh
-            position={[0, 0, 40]}
-            scale={[3, 3, 3]}
-            geometry={sphereGeometry}
-            material={blueMaterial}
-          />
+          <mesh position-z={40} scale={3} geometry={sphereGeometry} material={blueMaterial} />
         </Interactive>
         <Interactive onSelect={() => start()}>
-          <mesh
-            position={[0, 30, 0]}
-            scale={[10, 10, 10]}
-            geometry={cubeGeometry}
-            material={greenMaterial}
-          />
+          <mesh position-z={30} scale={10} geometry={cubeGeometry} material={greenMaterial} />
         </Interactive>
         <Interactive onSelect={() => clearCurrentConstruction()}>
-          <mesh
-            position={[0, 30, 20]}
-            scale={[10, 10, 10]}
-            geometry={cubeGeometry}
-            material={redMaterial}
-          />
+          <mesh position={[0, 30, 20]} scale={10} geometry={cubeGeometry} material={redMaterial} />
         </Interactive>
       </group>
       <DefaultXRControllers />

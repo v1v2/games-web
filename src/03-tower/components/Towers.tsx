@@ -22,7 +22,7 @@ const Tower = ({ entity }: { entity: Entity }) => {
   return (
     <Interactive onSelect={onUniversalClick}>
       <Instance
-        rotation={[Math.PI / 2, 0, 0]}
+        rotation-x={Math.PI / 2}
         scale={0.04}
         position={[
           entity.transform.position.x,

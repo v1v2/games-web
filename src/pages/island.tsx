@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 
 import { DefaultXRControllers, useController, useXR } from '@react-three/xr'
 import { Debug, Physics, useBox, usePlane, useSphere } from '@react-three/cannon'
+import { FirstPersonControls, PointerLockControls, Sky } from '@react-three/drei'
+import { useThree } from '@react-three/fiber'
 
 import { sphereGeometry, squareGeometry } from '04-island/lib/geometries'
 import { greenMaterial, redMaterial } from '04-island/lib/materials'
@@ -32,7 +34,7 @@ function Cube(props) {
 }
 
 const Ball = props => {
-  const [ref] = useSphere(() => ({ mass: 10, position: [0, 5, 0], scale: [10, 10, 10], ...props }))
+  const [ref] = useSphere(() => ({ mass: 10, position: [0, 5, 0], scale: 10, ...props }))
 
   return <mesh ref={ref} geometry={sphereGeometry} material={redMaterial} />
 }
@@ -40,9 +42,7 @@ const Ball = props => {
 const Ground = props => {
   const [ref] = usePlane(() => ({ rotation: [-Math.PI / 2, 0, 0], ...props }))
 
-  return (
-    <mesh ref={ref} geometry={squareGeometry} material={greenMaterial} scale={[100, 100, 100]} />
-  )
+  return <mesh ref={ref} geometry={squareGeometry} material={greenMaterial} scale={100} />
 }
 
 const LeftHand = () => (
@@ -78,6 +78,7 @@ const PlayerContainer = ({ children }) => {
 
 const Player = () => {
   const { player, isPresenting } = useXR()
+  const { camera } = useThree()
   const leftController = useController('left')
   const rightController = useController('right')
 
@@ -88,6 +89,7 @@ const Player = () => {
   return (
     <PlayerContainer>
       <primitive object={player}>
+        <primitive object={camera} />
         <primitive object={leftController.controller}>
           <LeftHand />
         </primitive>
@@ -107,7 +109,9 @@ const IslandPage = () => {
     <>
       <ambientLight intensity={0.7} />
 
-      {/* <FirstPersonControls /> */}
+      {/* <FlyControls /> */}
+      <FirstPersonControls lookSpeed={0.3} />
+      <PointerLockControls />
       {/* <Systems /> */}
       <Physics>
         <Debug color="black" scale={1.1}>
@@ -118,6 +122,7 @@ const IslandPage = () => {
           <Ground />
         </Debug>
       </Physics>
+      <Sky />
       <directionalLight
         position={[10, 40, -20]}
         intensity={0.7}
