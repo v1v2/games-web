@@ -5,7 +5,7 @@ import { useSpring, a } from '@react-spring/three'
 import { useFrame } from '@react-three/fiber'
 import { Group, MeshStandardMaterial, Vector3 } from 'three'
 
-import { Instances, Instance } from 'components/PatchedInstances'
+import { makeInstanceComponents, BRING_BACK_POS, MOVE_AWAY_POS } from 'lib/InstancesTrinity'
 
 import {
   enemiesConfig,
@@ -24,6 +24,12 @@ import {
   useBuggyPurpleTexture,
   useBuggyRedTexture,
 } from '03-tower/lib/textures'
+
+const FastInstancer = makeInstanceComponents()
+const BasicInstancer = makeInstanceComponents()
+const TankInstancer = makeInstanceComponents()
+const BossInstancer = makeInstanceComponents()
+const HealthInstancer = makeInstanceComponents(false)
 
 const mapSeries = async (iterable, action) => {
   for (const x of iterable) {
@@ -47,7 +53,7 @@ const HealthBar = ({ entity }: { entity: Entity }) => {
   return (
     <group ref={ref}>
       <Billboard ref={billboardRef} scale={[5, 0.6, 1]}>
-        <Instance />
+        <HealthInstancer.Instance />
       </Billboard>
     </group>
   )
@@ -62,7 +68,7 @@ const waypointTuples = waypoints.map((w, i) => ({
   nextWaypoint: waypoints[i + 1],
 }))
 
-const Enemy = ({ entity }: { entity: Entity }) => {
+const Enemy = ({ entity, Instancer }: { entity: Entity; Instancer: typeof BasicInstancer }) => {
   const { size, speed } = enemiesConfig[entity.enemyType]
   const [direction, setDirection] = useState('bottom-left')
 
@@ -111,7 +117,7 @@ const Enemy = ({ entity }: { entity: Entity }) => {
   return (
     // @ts-ignore
     <a.group ref={ref} userData={{ id: entity.id }}>
-      <Instance
+      <Instancer.Instance
         scale={[scaleFactor * 3 * size, scaleFactor * 3 * size, scaleFactor * 3 * size]}
         rotation={[
           Math.PI / 2,
@@ -162,10 +168,10 @@ const Enemies = () => {
   )
 
   const enemiesByTypeConfig = [
-    { type: 'fast', limit: 30, material: purpleBuggyMaterial },
-    { type: 'basic', limit: 30, material: greenBuggyMaterial },
-    { type: 'tank', limit: 30, material: orangeBuggyMaterial },
-    { type: 'boss', limit: 30, material: redBuggyMaterial },
+    { type: 'fast', material: purpleBuggyMaterial, Instancer: FastInstancer },
+    { type: 'basic', material: greenBuggyMaterial, Instancer: BasicInstancer },
+    { type: 'tank', material: orangeBuggyMaterial, Instancer: TankInstancer },
+    { type: 'boss', material: redBuggyMaterial, Instancer: BossInstancer },
   ]
 
   const enemiesByType = enemiesByTypeConfig.map(x => ({
@@ -175,24 +181,29 @@ const Enemies = () => {
 
   return (
     <>
-      {enemiesByType.map(({ type, enemies, limit, material }) => (
-        <Instances
-          key={type}
-          limit={limit}
-          geometry={basicEnemyModel.geometry}
-          material={material}
-          castShadow
-        >
+      {enemiesByType.map(({ type, enemies, material, Instancer }) => (
+        <>
+          <Instancer.Root
+            key={type}
+            geometry={basicEnemyModel.geometry}
+            material={material}
+            castShadow
+          />
           {enemies.map(e => (
-            <EnemyMemo key={e.id} entity={e} />
+            <EnemyMemo key={e.id} entity={e} Instancer={Instancer} />
           ))}
-        </Instances>
+        </>
       ))}
-      <Instances limit={150} material={basicGreenMaterial} geometry={squareGeometry}>
+      <HealthInstancer.Root
+        material={basicGreenMaterial}
+        geometry={squareGeometry}
+        position={MOVE_AWAY_POS}
+      />
+      <group position={BRING_BACK_POS}>
         {enemies.map(e => (
           <HealthBarMemo key={e.id} entity={e} />
         ))}
-      </Instances>
+      </group>
     </>
   )
 }

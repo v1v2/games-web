@@ -4,7 +4,10 @@ import { useFrame, InstancedMeshProps, GroupProps } from '@react-three/fiber'
 import { IEntity } from 'miniplex'
 import { createECS } from 'miniplex-react'
 import mergeRefs from 'react-merge-refs'
-import { Group, InstancedMesh, Object3D } from 'three'
+import { Group, InstancedMesh, Object3D, Vector3 } from 'three'
+
+export const MOVE_AWAY_POS = new Vector3(999, 999, 999)
+export const BRING_BACK_POS = new Vector3(-999, -999, -999)
 
 type InstanceEntity = {
   instance: {
@@ -13,7 +16,7 @@ type InstanceEntity = {
   }
 } & IEntity
 
-export const makeInstanceComponents = () => {
+export const makeInstanceComponents = (useFix: boolean = true) => {
   /* We're using Miniplex as a state container. */
   const ecs = createECS<InstanceEntity>()
 
@@ -50,7 +53,7 @@ export const makeInstanceComponents = () => {
       <instancedMesh
         ref={instancedMesh}
         // My fix
-        position={[999, 999, 999]}
+        position={useFix ? MOVE_AWAY_POS : undefined}
         {...props}
         args={[null!, null!, instanceLimit]}
       >
@@ -76,7 +79,7 @@ export const makeInstanceComponents = () => {
 
     return (
       // My fix
-      <group position={[-999, -999, -999]}>
+      <group position={useFix ? BRING_BACK_POS : undefined}>
         <group ref={mergeRefs([ref, group])} {...groupProps}>
           {children}
         </group>
