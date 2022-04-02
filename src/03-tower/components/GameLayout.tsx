@@ -115,7 +115,7 @@ const GameLayout = ({ children }) => {
         {isWebGPUEnabled && <div style={{ color: 'white', fontSize: 24 }}>WebGPU!</div>}
       </div>
       <FullCanvas>
-        <ambientLight intensity={0.7} />
+        <ambientLight intensity={0.6} />
         <OrbitControls makeDefault maxPolarAngle={Math.PI / 3} minPolarAngle={Math.PI / 3} />
         <OrthographicCamera makeDefault position={[100, 0, 100]} zoom={8} />
         {children}

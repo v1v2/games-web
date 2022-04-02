@@ -1,9 +1,9 @@
-import { useCallback, memo, useState } from 'react'
+import { useCallback, memo, useState, useMemo } from 'react'
 
-import { Billboard, useTexture } from '@react-three/drei'
+import { Billboard } from '@react-three/drei'
 import { useSpring, a } from '@react-spring/three'
 import { useFrame } from '@react-three/fiber'
-import { Vector3 } from 'three'
+import { MeshStandardMaterial, Vector3 } from 'three'
 
 import { Instances, Instance } from 'components/PatchedInstances'
 
@@ -24,6 +24,12 @@ import { squareGeometry } from '03-tower/lib/geometries'
 import { Entity, useEnemyEntities } from '03-tower/lib/ecs'
 import { useUpdateTransform } from '03-tower/lib/hooks'
 import { useBasicEnemyModel } from '03-tower/lib/model-hooks'
+import {
+  useBuggyGreenTexture,
+  useBuggyOrangeTexture,
+  useBuggyPurpleTexture,
+  useBuggyRedTexture,
+} from '03-tower/lib/textures'
 
 const mapSeries = async (iterable, action) => {
   for (const x of iterable) {
@@ -133,12 +139,36 @@ const EnemyMemo = memo(Enemy)
 const Enemies = () => {
   const enemies = useEnemyEntities()
   const basicEnemyModel = useBasicEnemyModel()
+  const buggyRedTexture = useBuggyRedTexture()
+  const buggyOrangeTexture = useBuggyOrangeTexture()
+  const buggyGreenTexture = useBuggyGreenTexture()
+  const buggyPurpleTexture = useBuggyPurpleTexture()
+
+  const redBuggyMaterial = useMemo(
+    () => new MeshStandardMaterial({ map: buggyRedTexture }),
+    [buggyRedTexture]
+  )
+
+  const orangeBuggyMaterial = useMemo(
+    () => new MeshStandardMaterial({ map: buggyOrangeTexture }),
+    [buggyOrangeTexture]
+  )
+
+  const greenBuggyMaterial = useMemo(
+    () => new MeshStandardMaterial({ map: buggyGreenTexture }),
+    [buggyGreenTexture]
+  )
+
+  const purpleBuggyMaterial = useMemo(
+    () => new MeshStandardMaterial({ map: buggyPurpleTexture }),
+    [buggyPurpleTexture]
+  )
 
   const enemiesByTypeConfig = [
-    { type: 'fast', limit: 30, material: purpleMaterial },
-    { type: 'basic', limit: 30, material: greenMaterial },
-    { type: 'tank', limit: 30, material: redMaterial },
-    { type: 'boss', limit: 30, material: blackMaterial },
+    { type: 'fast', limit: 30, material: purpleBuggyMaterial },
+    { type: 'basic', limit: 30, material: greenBuggyMaterial },
+    { type: 'tank', limit: 30, material: orangeBuggyMaterial },
+    { type: 'boss', limit: 30, material: redBuggyMaterial },
   ]
 
   const enemiesByType = enemiesByTypeConfig.map(x => ({

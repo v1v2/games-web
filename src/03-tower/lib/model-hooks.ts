@@ -25,8 +25,8 @@ const modelConfigs = {
   enemies: {
     basic: {
       path: BUGGY_PATH,
-      nodes: 'Buggy_Geo',
-      material: 'Jeep',
+      nodes: 'main',
+      material: 'unused',
     },
   },
 }
