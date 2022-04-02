@@ -1,9 +1,9 @@
-import { useCallback, memo, useState, useMemo } from 'react'
+import { useCallback, memo, useState, useMemo, useRef } from 'react'
 
 import { Billboard } from '@react-three/drei'
 import { useSpring, a } from '@react-spring/three'
 import { useFrame } from '@react-three/fiber'
-import { MeshStandardMaterial, Vector3 } from 'three'
+import { Group, MeshStandardMaterial, Vector3 } from 'three'
 
 import { Instances, Instance } from 'components/PatchedInstances'
 
@@ -13,13 +13,7 @@ import {
   getCellPosition,
   waypoints,
 } from '03-tower/lib/config'
-import {
-  basicGreenMaterial,
-  blackMaterial,
-  greenMaterial,
-  purpleMaterial,
-  redMaterial,
-} from '03-tower/lib/materials'
+import { basicGreenMaterial } from '03-tower/lib/materials'
 import { squareGeometry } from '03-tower/lib/geometries'
 import { Entity, useEnemyEntities } from '03-tower/lib/ecs'
 import { useUpdateTransform } from '03-tower/lib/hooks'
@@ -39,20 +33,23 @@ const mapSeries = async (iterable, action) => {
 
 const HealthBar = ({ entity }: { entity: Entity }) => {
   const { size } = enemiesConfig[entity.enemyType]
+  const billboardRef = useRef<Group>()
+
   const ref = useUpdateTransform({
     entity,
     modify: ({ position }) => ({ position: { y: position.y + size + 4.5 } }),
   })
 
   useFrame(() => {
-    ref.current.scale.x = 5 * (entity.health.current / entity.health.max)
+    billboardRef.current.scale.x = 5 * (entity.health.current / entity.health.max)
   })
 
-  // The Billboard currently doesn't work
   return (
-    <Billboard ref={ref} scale={[5, 0.6, 1]}>
-      <Instance />
-    </Billboard>
+    <group ref={ref}>
+      <Billboard ref={billboardRef} scale={[5, 0.6, 1]}>
+        <Instance />
+      </Billboard>
+    </group>
   )
 }
 
