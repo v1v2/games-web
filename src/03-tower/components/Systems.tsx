@@ -1,6 +1,8 @@
 import { useFrame } from '@react-three/fiber'
 import { Vector3 } from 'three'
 
+import { flattenXYZ } from 'lib/util'
+
 import {
   createProjectile,
   destroyEntity,
@@ -26,24 +28,17 @@ const Systems = () => {
       const { reloadTime, range, splashRange, damage } = towersConfig[tower.towerType]
       if (tower.isReadyToShoot) {
         for (const e of enemies) {
-          const enemyVector = new Vector3(
-            e.transform.position.x,
-            e.transform.position.y,
-            e.transform.position.z
-          )
-          const towerVector = new Vector3(
-            tower.transform.position.x,
-            tower.transform.position.y,
-            tower.transform.position.z
-          )
-          if (enemyVector.distanceTo(towerVector) < range) {
+          const enemyPos = new Vector3(...flattenXYZ(e.transform.position))
+          const towerPos = new Vector3(...flattenXYZ(tower.transform.position))
+          if (enemyPos.distanceTo(towerPos) < range) {
             if (splashRange) {
               enemies.forEach(en => {
-                if (
-                  enemyVector.distanceTo(
-                    new Vector3(en.transform.position.x, 0, en.transform.position.z)
-                  ) < splashRange
-                ) {
+                const splahedEnemyPos = new Vector3(
+                  en.transform.position.x,
+                  0,
+                  en.transform.position.z
+                )
+                if (enemyPos.distanceTo(splahedEnemyPos) < splashRange) {
                   en.health.current -= damage
                 }
               })
