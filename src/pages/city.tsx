@@ -2,7 +2,7 @@ import Head from 'next/head'
 
 import UnityFullCanvas from 'components/UnityFullCanvas'
 
-const CityPage = () => (
+const Page = () => (
   <>
     <Head>
       <title>02-city</title>
@@ -11,4 +11,4 @@ const CityPage = () => (
   </>
 )
 
-export default CityPage
+export default Page

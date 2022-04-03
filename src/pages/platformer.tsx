@@ -2,7 +2,7 @@ import Head from 'next/head'
 
 import UnityFullCanvas from 'components/UnityFullCanvas'
 
-const PlatformerPage = () => (
+const Page = () => (
   <>
     <Head>
       <title>01-platformer</title>
@@ -11,4 +11,4 @@ const PlatformerPage = () => (
   </>
 )
 
-export default PlatformerPage
+export default Page

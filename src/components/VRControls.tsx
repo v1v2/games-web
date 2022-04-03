@@ -10,6 +10,7 @@ const SnapRotation = ({ increment = Math.PI / 6, threshold = 0.6 }) => {
   const controller = useController('right')
   const { player } = useXR()
   const snapping = useRef(false)
+
   useFrame(() => {
     if (controller?.inputSource?.gamepad) {
       // @ts-ignore
@@ -22,6 +23,7 @@ const SnapRotation = ({ increment = Math.PI / 6, threshold = 0.6 }) => {
       }
     }
   })
+
   return null
 }
 
@@ -33,9 +35,10 @@ const playerDir3 = new Vector3()
 const speed = 2
 
 const SmoothLocomotion = () => {
-  const { camera } = useThree()
+  const camera = useThree(s => s.camera)
   const { player } = useXR()
   const controller = useController('left')
+
   useFrame((_, delta) => {
     if (controller?.inputSource?.gamepad) {
       // @ts-ignore
@@ -50,6 +53,7 @@ const SmoothLocomotion = () => {
       player.position.z -= cameraDir.dot(joystickDir) * delta * speed
     }
   })
+
   return null
 }
 
