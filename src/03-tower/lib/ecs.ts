@@ -49,9 +49,11 @@ const pos = (x: number, y: number, z: number) => ({ transform: { position: { x, 
 const cell = (rowIndex: number, colIndex: number) => ({ cell: { rowIndex, colIndex } })
 
 export const useEnemyEntities = () => ecs.useArchetype('enemy').entities
-export const useEnemies = () => ecs.useArchetype('enemy')
 export const useTowerEntities = () => ecs.useArchetype('tower').entities
 export const useProjectilesEntities = () => ecs.useArchetype('projectile').entities
+
+export const enemyEntities = ecs.world.archetype('enemy').entities
+export const towerEntities = ecs.world.archetype('tower').entities
 
 type TowerCreationData = {
   type: TowerType

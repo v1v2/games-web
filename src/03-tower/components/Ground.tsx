@@ -19,7 +19,7 @@ import {
   undergroundMaterial,
 } from '03-tower/lib/materials'
 import { squareGeometry, baseGeometry } from '03-tower/lib/geometries'
-import { createTower, useTowerEntities } from '03-tower/lib/ecs'
+import { createTower, towerEntities } from '03-tower/lib/ecs'
 import {
   useSimpleTowerModel,
   useSplashTowerModel,
@@ -29,7 +29,6 @@ import {
 const Tile = ({ rowIndex, colIndex, x, z }) => {
   const { currentConstruction, clearCurrentConstruction } = useCurrentConstruction()
   const addMoney = useMemoryStore(s => s.addMoney)
-  const towers = useTowerEntities()
 
   const simpleTowerModel = useSimpleTowerModel()
   const splashTowerModel = useSplashTowerModel()
@@ -47,7 +46,10 @@ const Tile = ({ rowIndex, colIndex, x, z }) => {
   const [hovered, setHovered] = useState(false)
 
   const onUniversalClick = (i, j) => {
-    if (currentConstruction && !towers.some(t => t.cell.rowIndex === i && t.cell.colIndex === j)) {
+    if (
+      currentConstruction &&
+      !towerEntities.some(t => t.cell.rowIndex === i && t.cell.colIndex === j)
+    ) {
       addMoney(-towersConfig[currentConstruction].cost)
       createTower({ rowIndex: i, colIndex: j, type: currentConstruction })
       clearCurrentConstruction()
