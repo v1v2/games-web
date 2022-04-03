@@ -1,4 +1,4 @@
-import { Fragment, useCallback, memo, useState, useMemo, useRef } from 'react'
+import { Fragment, useCallback, useState, useMemo, useRef } from 'react'
 
 import { Billboard } from '@react-three/drei'
 import { useSpring, a } from '@react-spring/three'
@@ -15,7 +15,7 @@ import {
 } from '03-tower/lib/config'
 import { basicGreenMaterial } from '03-tower/lib/materials'
 import { squareGeometry } from '03-tower/lib/geometries'
-import { Entity, useEnemyEntities } from '03-tower/lib/ecs'
+import { Entities, Entity, useEnemyEntities } from '03-tower/lib/ecs'
 import { useUpdateTransform } from '03-tower/lib/hooks'
 import { useBasicEnemyModel } from '03-tower/lib/model-hooks'
 import {
@@ -58,8 +58,6 @@ const HealthBar = ({ entity }: { entity: Entity }) => {
     </group>
   )
 }
-
-const HealthBarMemo = memo(HealthBar)
 
 const { x: initX, z: initZ } = getCellPosition(waypoints[0][0], waypoints[0][1])
 
@@ -135,8 +133,6 @@ const Enemy = ({ entity, Instancer }: { entity: Entity; Instancer: typeof BasicI
   )
 }
 
-const EnemyMemo = memo(Enemy)
-
 const Enemies = () => {
   const enemies = useEnemyEntities()
   const basicEnemyModel = useBasicEnemyModel()
@@ -182,9 +178,9 @@ const Enemies = () => {
       {enemiesByType.map(({ type, enemies, material, Instancer }) => (
         <Fragment key={type}>
           <Instancer.Root geometry={basicEnemyModel.geometry} material={material} castShadow />
-          {enemies.map(e => (
-            <EnemyMemo key={e.id} entity={e} Instancer={Instancer} />
-          ))}
+          <Entities entities={enemies}>
+            {entity => <Enemy entity={entity} Instancer={Instancer} />}
+          </Entities>
         </Fragment>
       ))}
       <HealthInstancer.Root
@@ -193,9 +189,7 @@ const Enemies = () => {
         position={MOVE_AWAY_POS}
       />
       <group position={BRING_BACK_POS}>
-        {enemies.map(e => (
-          <HealthBarMemo key={e.id} entity={e} />
-        ))}
+        <Entities entities={enemies}>{entity => <HealthBar entity={entity} />}</Entities>
       </group>
     </>
   )

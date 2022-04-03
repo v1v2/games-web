@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { Vector3 } from 'three'
 
@@ -6,7 +6,7 @@ import { makeInstanceComponents } from 'lib/InstancesTrinity'
 
 import { basicOrangeMaterial } from '03-tower/lib/materials'
 import { cubeGeometry, sphereGeometry } from '03-tower/lib/geometries'
-import { destroyEntity, Entity, useProjectilesEntities } from '03-tower/lib/ecs'
+import { destroyEntity, Entity, Entities, useProjectilesEntities } from '03-tower/lib/ecs'
 
 const ImpactInstancer = makeInstanceComponents()
 const LaserInstancer = makeInstanceComponents()
@@ -51,21 +51,14 @@ const Projectile = ({ entity }: { entity: Entity }) => {
   )
 }
 
-const ProjectileMemo = memo(Projectile)
-
-const Projectiles = () => {
-  const projectiles = useProjectilesEntities()
-
-  return (
-    <>
-      <LaserInstancer.Root geometry={cubeGeometry} material={basicOrangeMaterial} />
-      <ImpactInstancer.Root geometry={sphereGeometry} material={basicOrangeMaterial} />
-
-      {projectiles.map(p => (
-        <ProjectileMemo key={p.id} entity={p} />
-      ))}
-    </>
-  )
-}
+const Projectiles = () => (
+  <>
+    <LaserInstancer.Root geometry={cubeGeometry} material={basicOrangeMaterial} />
+    <ImpactInstancer.Root geometry={sphereGeometry} material={basicOrangeMaterial} />
+    <Entities entities={useProjectilesEntities()}>
+      {entity => <Projectile entity={entity} />}
+    </Entities>
+  </>
+)
 
 export default Projectiles

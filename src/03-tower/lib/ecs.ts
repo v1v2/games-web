@@ -122,3 +122,7 @@ export const destroyAllEnemies = () => {
   }
   ecs.world.queue.flush()
 }
+
+export const Entities = ecs.Entities
+export const Component = ecs.Component
+export const Collection = ecs.Collection

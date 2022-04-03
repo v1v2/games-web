@@ -1,11 +1,9 @@
-import { memo } from 'react'
-
 import { Interactive } from '@react-three/xr'
 
 import { Instance, Instances } from 'components/PatchedInstances'
 
 import { useMemoryStore } from '03-tower/lib/store'
-import { Entity, useTowerEntities } from '03-tower/lib/ecs'
+import { Entities, Entity, useTowerEntities } from '03-tower/lib/ecs'
 import {
   useSimpleTowerModel,
   useSplashTowerModel,
@@ -35,8 +33,6 @@ const Tower = ({ entity }: { entity: Entity }) => {
   )
 }
 
-const TowerMemo = memo(Tower)
-
 const Towers = () => {
   const towers = useTowerEntities()
   const simpleTowerModel = useSimpleTowerModel()
@@ -53,9 +49,7 @@ const Towers = () => {
     <>
       {towersByType.map(({ model, towers, type }) => (
         <Instances key={type} material={model.material} geometry={model.geometry} castShadow>
-          {towers.map(t => (
-            <TowerMemo key={t.id} entity={t} />
-          ))}
+          <Entities entities={towers}>{entity => <Tower entity={entity} />}</Entities>
         </Instances>
       ))}
     </>
