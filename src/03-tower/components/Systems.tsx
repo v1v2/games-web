@@ -22,23 +22,26 @@ const Systems = () => {
   const addMoney = useMemoryStore(s => s.addMoney)
   const decrementLivesLeft = useMemoryStore(s => s.decrementLivesLeft)
 
+  const enemiesWithVectors = enemies.map(e => ({
+    ...e,
+    vectorPos: new Vector3(...flattenXYZ(e.transform.position)),
+  }))
+
+  const towersWithVectors = towers.map(t => ({
+    ...t,
+    vectorPos: new Vector3(...flattenXYZ(t.transform.position)),
+  }))
+
   useFrame(() => {
     // Shooting system
-    for (const tower of towers) {
+    for (const tower of towersWithVectors) {
       const { reloadTime, range, splashRange, damage } = towersConfig[tower.towerType]
       if (tower.isReadyToShoot) {
-        for (const e of enemies) {
-          const enemyPos = new Vector3(...flattenXYZ(e.transform.position))
-          const towerPos = new Vector3(...flattenXYZ(tower.transform.position))
-          if (enemyPos.distanceTo(towerPos) < range) {
+        for (const e of enemiesWithVectors) {
+          if (e.vectorPos.distanceTo(tower.vectorPos) < range) {
             if (splashRange) {
-              enemies.forEach(en => {
-                const splahedEnemyPos = new Vector3(
-                  en.transform.position.x,
-                  0,
-                  en.transform.position.z
-                )
-                if (enemyPos.distanceTo(splahedEnemyPos) < splashRange) {
+              enemiesWithVectors.forEach(en => {
+                if (e.vectorPos.distanceTo(en.vectorPos) < splashRange) {
                   en.health.current -= damage
                 }
               })
