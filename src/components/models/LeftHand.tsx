@@ -44,7 +44,7 @@ type GLTFResult = GLTF & {
 export default function Model({ ...props }: JSX.IntrinsicElements['group']) {
   const group = useRef<THREE.Group>()
   // @ts-ignore
-  const { nodes, materials } = useGLTF('/left-hand.glb') as GLTFResult
+  const { nodes, materials } = useGLTF('/models/left-hand.glb') as GLTFResult
   return (
     <group ref={group} {...props} dispose={null}>
       <primitive object={nodes['pinky-finger-tip']} />
@@ -72,9 +72,13 @@ export default function Model({ ...props }: JSX.IntrinsicElements['group']) {
       <primitive object={nodes['thumb-phalanx-proximal']} />
       <primitive object={nodes['thumb-metacarpal']} />
       <primitive object={nodes.wrist} />
-      <skinnedMesh geometry={nodes.l_handMeshNode.geometry} material={materials.Default_Material} skeleton={nodes.l_handMeshNode.skeleton} />
+      <skinnedMesh
+        geometry={nodes.l_handMeshNode.geometry}
+        material={materials.Default_Material}
+        skeleton={nodes.l_handMeshNode.skeleton}
+      />
     </group>
   )
 }
 
-useGLTF.preload('/left-hand.glb')
+useGLTF.preload('/models/left-hand.glb')
