@@ -117,7 +117,7 @@ const TowerGame = () => {
       <PlayerEnv />
       <directionalLight
         position={[10, 40, -20]}
-        intensity={0.7}
+        intensity={1}
         castShadow
         shadow-bias={-0.001}
         shadow-mapSize={[4096, 4096]}

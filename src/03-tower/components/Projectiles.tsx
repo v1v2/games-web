@@ -6,7 +6,7 @@ import { makeInstanceComponents } from 'lib/InstancesTrinity'
 
 import { basicOrangeMaterial } from '03-tower/lib/materials'
 import { cubeGeometry, sphereGeometry } from '03-tower/lib/geometries'
-import { destroyEntity, Entity, Entities, useProjectilesEntities } from '03-tower/lib/ecs'
+import { destroyEntity, Entity, Collection } from '03-tower/lib/ecs'
 
 const ImpactInstancer = makeInstanceComponents()
 const LaserInstancer = makeInstanceComponents()
@@ -55,9 +55,7 @@ const Projectiles = () => (
   <>
     <LaserInstancer.Root geometry={cubeGeometry} material={basicOrangeMaterial} />
     <ImpactInstancer.Root geometry={sphereGeometry} material={basicOrangeMaterial} />
-    <Entities entities={useProjectilesEntities()}>
-      {entity => <Projectile entity={entity} />}
-    </Entities>
+    <Collection tag="projectile">{entity => <Projectile entity={entity} />}</Collection>
   </>
 )
 

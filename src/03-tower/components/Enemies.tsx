@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState, useMemo, useRef } from 'react'
+import { useCallback, useState, useRef } from 'react'
 
 import { Billboard } from '@react-three/drei'
 import { useSpring, a } from '@react-spring/three'
@@ -15,7 +15,7 @@ import {
 } from '03-tower/lib/config'
 import { basicGreenMaterial } from '03-tower/lib/materials'
 import { squareGeometry } from '03-tower/lib/geometries'
-import { Entities, Entity, useEnemyEntities } from '03-tower/lib/ecs'
+import { Collection, Entity } from '03-tower/lib/ecs'
 import { useUpdateTransform } from '03-tower/lib/hooks'
 import { useBasicEnemyModel } from '03-tower/lib/model-hooks'
 import {
@@ -133,64 +133,56 @@ const Enemy = ({ entity, Instancer }: { entity: Entity; Instancer: typeof BasicI
   )
 }
 
+const EnemiesByType = ({ Instancer, material, tag }) => (
+  <>
+    <Instancer.Root geometry={useBasicEnemyModel().geometry} material={material} castShadow />
+    <Collection tag={tag}>
+      {entity => (
+        <>
+          <Enemy entity={entity} Instancer={Instancer} />
+          <group position={BRING_BACK_POS}>
+            <HealthBar entity={entity} />
+          </group>
+        </>
+      )}
+    </Collection>
+  </>
+)
+
 const Enemies = () => {
-  const enemies = useEnemyEntities()
-  const basicEnemyModel = useBasicEnemyModel()
-  const buggyRedTexture = useBuggyRedTexture()
-  const buggyOrangeTexture = useBuggyOrangeTexture()
-  const buggyGreenTexture = useBuggyGreenTexture()
-  const buggyPurpleTexture = useBuggyPurpleTexture()
+  const fastMatRef = useRef<MeshStandardMaterial>(null)
+  const basicMatRef = useRef<MeshStandardMaterial>(null)
+  const tankMatRef = useRef<MeshStandardMaterial>(null)
+  const bossMatRef = useRef<MeshStandardMaterial>(null)
 
-  const redBuggyMaterial = useMemo(
-    () => new MeshStandardMaterial({ map: buggyRedTexture }),
-    [buggyRedTexture]
-  )
-
-  const orangeBuggyMaterial = useMemo(
-    () => new MeshStandardMaterial({ map: buggyOrangeTexture }),
-    [buggyOrangeTexture]
-  )
-
-  const greenBuggyMaterial = useMemo(
-    () => new MeshStandardMaterial({ map: buggyGreenTexture }),
-    [buggyGreenTexture]
-  )
-
-  const purpleBuggyMaterial = useMemo(
-    () => new MeshStandardMaterial({ map: buggyPurpleTexture }),
-    [buggyPurpleTexture]
-  )
-
-  const enemiesByTypeConfig = [
-    { type: 'fast', material: purpleBuggyMaterial, Instancer: FastInstancer },
-    { type: 'basic', material: greenBuggyMaterial, Instancer: BasicInstancer },
-    { type: 'tank', material: orangeBuggyMaterial, Instancer: TankInstancer },
-    { type: 'boss', material: redBuggyMaterial, Instancer: BossInstancer },
-  ]
-
-  const enemiesByType = enemiesByTypeConfig.map(x => ({
-    ...x,
-    enemies: enemies.filter(e => e.enemyType === x.type),
-  }))
+  const areMaterialsReady =
+    fastMatRef.current && basicMatRef.current && tankMatRef.current && bossMatRef.current
 
   return (
     <>
-      {enemiesByType.map(({ type, enemies, material, Instancer }) => (
-        <Fragment key={type}>
-          <Instancer.Root geometry={basicEnemyModel.geometry} material={material} castShadow />
-          <Entities entities={enemies}>
-            {entity => <Enemy entity={entity} Instancer={Instancer} />}
-          </Entities>
-        </Fragment>
-      ))}
+      <meshStandardMaterial ref={fastMatRef} map={useBuggyPurpleTexture()} />
+      <meshStandardMaterial ref={basicMatRef} map={useBuggyGreenTexture()} />
+      <meshStandardMaterial ref={tankMatRef} map={useBuggyOrangeTexture()} />
+      <meshStandardMaterial ref={bossMatRef} map={useBuggyRedTexture()} />
+
+      {areMaterialsReady && (
+        <>
+          <EnemiesByType Instancer={FastInstancer} material={fastMatRef.current} tag="enemy:fast" />
+          <EnemiesByType
+            Instancer={BasicInstancer}
+            material={basicMatRef.current}
+            tag="enemy:basic"
+          />
+          <EnemiesByType Instancer={TankInstancer} material={tankMatRef.current} tag="enemy:tank" />
+          <EnemiesByType Instancer={BossInstancer} material={bossMatRef.current} tag="enemy:boss" />
+        </>
+      )}
+
       <HealthInstancer.Root
         material={basicGreenMaterial}
         geometry={squareGeometry}
         position={MOVE_AWAY_POS}
       />
-      <group position={BRING_BACK_POS}>
-        <Entities entities={enemies}>{entity => <HealthBar entity={entity} />}</Entities>
-      </group>
     </>
   )
 }

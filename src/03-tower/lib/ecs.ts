@@ -13,6 +13,10 @@ import {
 export type Entity = {
   id: string
   enemy?: Tag
+  'enemy:fast'?: Tag
+  'enemy:basic'?: Tag
+  'enemy:tank'?: Tag
+  'enemy:boss'?: Tag
   tower?: Tag
   projectile?: Tag
   enemyType?: EnemyType
@@ -42,6 +46,7 @@ const health = (maxHealth: number) => ({ health: { current: maxHealth, max: maxH
 const tower = (towerType: TowerType) => ({ tower: Tag as Tag, towerType, isReadyToShoot: true })
 const enemy = (enemyType: EnemyType, killReward: number) => ({
   enemy: Tag as Tag,
+  [`enemy:${enemyType}`]: Tag as Tag,
   enemyType,
   killReward,
 })
@@ -51,6 +56,11 @@ const cell = (rowIndex: number, colIndex: number) => ({ cell: { rowIndex, colInd
 export const useEnemyEntities = () => ecs.useArchetype('enemy').entities
 export const useTowerEntities = () => ecs.useArchetype('tower').entities
 export const useProjectilesEntities = () => ecs.useArchetype('projectile').entities
+
+export const useFastEnemyEntities = () => ecs.useArchetype('enemy:fast').entities
+export const useBasicEnemyEntities = () => ecs.useArchetype('enemy:basic').entities
+export const useTankEnemyEntities = () => ecs.useArchetype('enemy:tank').entities
+export const useBossEnemyEntities = () => ecs.useArchetype('enemy:boss').entities
 
 export const enemyEntities = ecs.world.archetype('enemy').entities
 export const towerEntities = ecs.world.archetype('tower').entities
