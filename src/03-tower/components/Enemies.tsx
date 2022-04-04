@@ -15,7 +15,7 @@ import {
 } from '03-tower/lib/config'
 import { basicGreenMaterial } from '03-tower/lib/materials'
 import { squareGeometry } from '03-tower/lib/geometries'
-import { Collection, Entity } from '03-tower/lib/ecs'
+import { ManagedEntities, Entity } from '03-tower/lib/ecs'
 import { useUpdateTransform } from '03-tower/lib/hooks'
 import { useBasicEnemyModel } from '03-tower/lib/model-hooks'
 import {
@@ -136,7 +136,7 @@ const Enemy = ({ entity, Instancer }: { entity: Entity; Instancer: typeof BasicI
 const EnemiesByType = ({ Instancer, material, tag }) => (
   <>
     <Instancer.Root geometry={useBasicEnemyModel().geometry} material={material} castShadow />
-    <Collection tag={tag}>
+    <ManagedEntities tag={tag}>
       {entity => (
         <>
           <Enemy entity={entity} Instancer={Instancer} />
@@ -145,7 +145,7 @@ const EnemiesByType = ({ Instancer, material, tag }) => (
           </group>
         </>
       )}
-    </Collection>
+    </ManagedEntities>
   </>
 )
 

@@ -3,7 +3,7 @@ import { Interactive } from '@react-three/xr'
 import { Instance, Instances } from 'components/PatchedInstances'
 
 import { useMemoryStore } from '03-tower/lib/store'
-import { Entities, Entity, useTowerEntities } from '03-tower/lib/ecs'
+import { ManagedEntities, Entity } from '03-tower/lib/ecs'
 import {
   useSimpleTowerModel,
   useSplashTowerModel,
@@ -33,27 +33,18 @@ const Tower = ({ entity }: { entity: Entity }) => {
   )
 }
 
-const Towers = () => {
-  const towers = useTowerEntities()
-  const simpleTowerModel = useSimpleTowerModel()
-  const splashTowerModel = useSplashTowerModel()
-  const strongTowerModel = useStrongTowerModel()
-
-  const towersByType = [
-    { type: 'simple', model: simpleTowerModel },
-    { type: 'splash', model: splashTowerModel },
-    { type: 'strong', model: strongTowerModel },
-  ].map(x => ({ ...x, towers: towers.filter(t => t.towerType === x.type) }))
-
-  return (
-    <>
-      {towersByType.map(({ model, towers, type }) => (
-        <Instances key={type} material={model.material} geometry={model.geometry} castShadow>
-          <Entities entities={towers}>{entity => <Tower entity={entity} />}</Entities>
-        </Instances>
-      ))}
-    </>
-  )
-}
+const Towers = () => (
+  <>
+    <Instances {...useSimpleTowerModel()} castShadow>
+      <ManagedEntities tag="tower:simple">{entity => <Tower entity={entity} />}</ManagedEntities>
+    </Instances>
+    <Instances {...useSplashTowerModel()} castShadow>
+      <ManagedEntities tag="tower:splash">{entity => <Tower entity={entity} />}</ManagedEntities>
+    </Instances>
+    <Instances {...useStrongTowerModel()} castShadow>
+      <ManagedEntities tag="tower:strong">{entity => <Tower entity={entity} />}</ManagedEntities>
+    </Instances>
+  </>
+)
 
 export default Towers

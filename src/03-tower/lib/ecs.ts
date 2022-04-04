@@ -18,6 +18,9 @@ export type Entity = {
   'enemy:tank'?: Tag
   'enemy:boss'?: Tag
   tower?: Tag
+  'tower:simple'?: Tag
+  'tower:splash'?: Tag
+  'tower:strong'?: Tag
   projectile?: Tag
   enemyType?: EnemyType
   towerType?: TowerType
@@ -43,7 +46,12 @@ type EntityTag = 'tower' | 'enemy' | 'projectile'
 const id = () => ({ id: nanoid() })
 const tag = (tag: EntityTag) => ({ [tag]: Tag as Tag })
 const health = (maxHealth: number) => ({ health: { current: maxHealth, max: maxHealth } })
-const tower = (towerType: TowerType) => ({ tower: Tag as Tag, towerType, isReadyToShoot: true })
+const tower = (towerType: TowerType) => ({
+  tower: Tag as Tag,
+  [`tower:${towerType}`]: Tag as Tag,
+  towerType,
+  isReadyToShoot: true,
+})
 const enemy = (enemyType: EnemyType, killReward: number) => ({
   enemy: Tag as Tag,
   [`enemy:${enemyType}`]: Tag as Tag,
@@ -61,6 +69,10 @@ export const useFastEnemyEntities = () => ecs.useArchetype('enemy:fast').entitie
 export const useBasicEnemyEntities = () => ecs.useArchetype('enemy:basic').entities
 export const useTankEnemyEntities = () => ecs.useArchetype('enemy:tank').entities
 export const useBossEnemyEntities = () => ecs.useArchetype('enemy:boss').entities
+
+export const useSimpleTowerEntities = () => ecs.useArchetype('tower:simple').entities
+export const useSplashTowerEntities = () => ecs.useArchetype('tower:splash').entities
+export const useStrongTowerEntities = () => ecs.useArchetype('tower:strong').entities
 
 export const enemyEntities = ecs.world.archetype('enemy').entities
 export const towerEntities = ecs.world.archetype('tower').entities
@@ -135,4 +147,4 @@ export const destroyAllEnemies = () => {
 
 export const Entities = ecs.Entities
 export const Component = ecs.Component
-export const Collection = ecs.Collection
+export const ManagedEntities = ecs.Collection
