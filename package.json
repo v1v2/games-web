@@ -11,7 +11,7 @@
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
     "@react-spring/three": "^9.4.4",
-    "@react-three/cannon": "^5.1.0",
+    "@react-three/cannon": "^6.1.0",
     "@react-three/drei": "^9.0.1",
     "@react-three/fiber": "^8.0.6",
     "@react-three/xr": "^3.5.0",
